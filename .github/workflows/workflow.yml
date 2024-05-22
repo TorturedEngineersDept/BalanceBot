@@ -1,0 +1,16 @@
+name: Integration test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on:
+        group: linux
+    steps:
+        - uses: actions/checkout@v2
+        - run: |
+            cd esp32
+            pio test

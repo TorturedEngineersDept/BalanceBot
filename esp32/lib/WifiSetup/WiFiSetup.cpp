@@ -4,7 +4,7 @@
 WifiSetup::WifiSetup(const char *ssid, const char *password)
     : ssid(ssid), password(password) {}
 
-void WifiSetup::connect()
+void WifiSetup::connect(unsigned long timeout)
 {
     delay(10);
     // Start connecting to WiFi network
@@ -14,10 +14,14 @@ void WifiSetup::connect()
 
     WiFi.begin(ssid, password);
 
-    while (WiFi.status() != WL_CONNECTED)
+    unsigned long start = 0;
+    uint32_t d = 500;
+
+    while (WiFi.status() != WL_CONNECTED && start < timeout)
     {
-        delay(500);
+        delay(d);
         Serial.print(".");
+        start += d;
     }
 
     Serial.println("");
