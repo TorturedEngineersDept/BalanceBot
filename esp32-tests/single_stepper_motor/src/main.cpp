@@ -11,6 +11,8 @@
 //        - at the end the motor should return to the same position it started
 //        at.
 
+#include <Arduino.h>
+
 // Define pin connections & motor's steps per revolution
 const int dirPin = 2;
 const int stepPin = 3;
