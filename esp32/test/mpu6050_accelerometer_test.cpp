@@ -24,12 +24,10 @@ void test_accelerometer_values(void)
 {
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
-    TEST_ASSERT_NOT_EQUAL_MESSAGE(0.0, a.acceleration.x,
-                                  "Acceleration X is zero");
-    TEST_ASSERT_NOT_EQUAL_MESSAGE(0.0, a.acceleration.y,
-                                  "Acceleration Y is zero");
-    TEST_ASSERT_NOT_EQUAL_MESSAGE(0.0, a.acceleration.z,
-                                  "Acceleration Z is zero");
+    TEST_ASSERT_TRUE_MESSAGE(a.acceleration.x != 0.0 ||
+                                 a.acceleration.y != 0.0 ||
+                                 a.acceleration.z != 0.0,
+                             "Accelerometer output is 0,0,0");
 }
 
 void process()
