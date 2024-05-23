@@ -6,9 +6,10 @@ MqttSetup::MqttSetup(const char *server, int port)
     client.setServer(server, port);
 }
 
-void MqttSetup::connect()
+void MqttSetup::connect(unsigned long timeout)
 {
-    while (!client.connected())
+    unsigned long start = 0;
+    while (!client.connected() && start < timeout)
     {
         Serial.print("Attempting MQTT connection...");
         if (client.connect("ESP32Client"))
@@ -20,14 +21,37 @@ void MqttSetup::connect()
         {
             Serial.print("failed, rc=");
             Serial.print(client.state());
-            Serial.println(" try again in 5 seconds");
-            delay(5000);
+            Serial.println(" try again in 0.5 seconds");
+            delay(500);
         }
     }
 }
 
 void MqttSetup::loop()
 {
+    // Ensure the client remains connected
+    if (!isConnected())
+    {
+        Serial.println("MQTT not connected, attempting to reconnect...");
+        connect();
+    }
+
+    // Send a new message every 2 seconds
+    int current_time = millis();
+    if (current_time - lastMsgSent > delayMsgSent)
+    {
+        lastMsgSent = millis();
+
+        // Update battery status and publish message
+        batteryLevel -= 7;
+        if (batteryLevel < 0)
+        {
+            batteryLevel = 100;
+        }
+        BatteryMessage batteryMessage(batteryLevel);
+        publishMessage(batteryMessage);
+    }
+
     client.loop();
 }
 

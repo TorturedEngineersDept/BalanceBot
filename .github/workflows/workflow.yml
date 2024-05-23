@@ -10,12 +10,6 @@ jobs:
     runs-on: [self-hosted, linux]
     steps:
         - uses: actions/checkout@v2
-        - uses: actions/cache@v3
-          with:
-            path: |
-              ~/.platformio
-              ~/.cache/pip
-            key: ${{ runner.os }}-pio
 
         - name: Create Passwords.h
           run: |
@@ -25,5 +19,4 @@ jobs:
         - name: Run PlatformIO tests 
           run: |
             cd esp32
-            ls lib/WifiSetup
             pio test
