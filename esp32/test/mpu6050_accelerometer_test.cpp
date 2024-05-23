@@ -1,17 +1,15 @@
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
+#include "MPU6050.h"
 #include <Arduino.h>
 #include <Wire.h>
 #include <unity.h>
 
-Adafruit_MPU6050 mpu;
+MPU6050 mpu;
 
 void setUp(void)
 {
     // This will be run before each test
     Wire.begin();
-    TEST_ASSERT_TRUE_MESSAGE(mpu.begin(), "Failed to initialize MPU6050");
-    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+    TEST_ASSERT_TRUE_MESSAGE(mpu.begin(100), "Failed to initialize MPU6050");
 }
 
 void tearDown(void)
@@ -30,33 +28,14 @@ void test_accelerometer_values(void)
                              "Accelerometer output is 0,0,0");
 }
 
-void process()
-{
-    UNITY_BEGIN();
-    RUN_TEST(test_accelerometer_values);
-    UNITY_END();
-}
-
-#ifdef ARDUINO
-
-#include <Arduino.h>
 void setup()
 {
-    delay(2000);  // Allow some time for the serial port to initialize
-    process();
+    delay(2000); // Allow some time for the serial port to initialize
+    UNITY_BEGIN();
+    RUN_TEST(test_accelerometer_values);
 }
 
 void loop()
 {
-    // Not used in this test
+    UNITY_END();
 }
-
-#else
-
-int main(int argc, char **argv)
-{
-    process();
-    return 0;
-}
-
-#endif
