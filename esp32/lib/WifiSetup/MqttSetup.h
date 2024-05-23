@@ -6,6 +6,7 @@
 #include "MqttMessage.h"
 #include "BatteryMessage.h"
 #include "MappingMessage.h"
+#include "StatusMessage.h"
 
 class MqttSetup
 {

@@ -28,6 +28,10 @@ void MqttSetup::connect(unsigned long timeout)
             delay(500);
         }
     }
+
+    // Send a status message to update run number on server
+    StatusMessage statusMessage;
+    publishMessage(statusMessage);
 }
 
 void MqttSetup::loop()
