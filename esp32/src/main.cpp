@@ -1,20 +1,24 @@
-// Basic demo for accelerometer readings from Adafruit MPU6050
-
 // ESP32 Guide: https://RandomNerdTutorials.com/esp32-mpu-6050-accelerometer-gyroscope-arduino/
-// ESP8266 Guide: https://RandomNerdTutorials.com/esp8266-nodemcu-mpu-6050-accelerometer-gyroscope-arduino/
-// Arduino Guide: https://RandomNerdTutorials.com/arduino-mpu-6050-accelerometer-gyroscope/
 
+#include <Arduino.h>
 #include "MPU6050.h"
+#include "WifiSetup.h"
+#include "ESP32Ping.h" // Include the ESP32Ping library
 
+WifiSetup wifi(g_ssid, g_password);
 MPU6050 mpu;
+  
+void callback(char *topic, byte *payload, unsigned int length);
 
-void setup(void)
+void setup()
 {
     Serial.begin(115200);
-    while (!Serial)
-        delay(10); // will pause Zero, Leonardo, etc until serial console opens
+
+    // Setup WiFi
+    wifi.connect();
 }
 
 void loop()
 {
+    wifi.loop();
 }

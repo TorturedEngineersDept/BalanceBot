@@ -1,0 +1,22 @@
+name: Integration test
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+
+jobs:
+  test:
+    runs-on: [self-hosted, linux]
+    steps:
+        - uses: actions/checkout@v2
+
+        - name: Create Passwords.h
+          run: |
+            echo "#define g_ssid \"${{ secrets.WIFI_SSID }}\"" > esp32/lib/WifiSetup/Passwords.h
+            echo "#define g_password \"${{ secrets.WIFI_PASSWORD }}\"" >> esp32/lib/WifiSetup/Passwords.h
+
+        - name: Run PlatformIO tests 
+          run: |
+            cd esp32
+            pio test
