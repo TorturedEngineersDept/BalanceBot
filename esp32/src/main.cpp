@@ -4,8 +4,6 @@
 #include "BatteryMessage.h"
 #include "ESP32Ping.h" // Include the ESP32Ping library
 
-const char *ssid = "Sara";
-const char *password = "hello231";
 const char *mqtt_server = "18.132.10.124";
 int mqtt_port = 1883;
 
@@ -13,7 +11,7 @@ int batteryLevel = 100;
 float speed;
 float angle;
 
-WifiSetup wifi(ssid, password);
+WifiSetup wifi(g_ssid, g_password);
 MqttSetup mqtt(mqtt_server, mqtt_port);
 
 int lastMsgSent = 0;
