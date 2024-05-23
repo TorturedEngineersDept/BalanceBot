@@ -22,6 +22,7 @@ client.on('connect', function () {
         }
     });
     client.subscribe('esp32/battery');
+    client.subscribe('esp32/mapping');
 });
 
 client.on('message', function (topic, message) {
@@ -32,6 +33,20 @@ client.on('message', function (topic, message) {
         const percentage = data.battery; // Ensure correct key
         console.log('Battery percentage:', percentage); // Log percentage
         update_battery(percentage);
+    }
+    if (topic === 'esp32/mapping') {
+        const data = JSON.parse(message.toString());
+        console.log('Received data:', data); // Log received data for debugging
+
+        // Extract the data from the message
+        const timestamp = data.timestamp;
+        const x = data.x;
+        const y = data.y;
+        const orientation = data.orientation;
+
+        console.log('Coordinates:', x, y); // Log coordinates
+        // Call a function to handle the coordinates
+        handleCoordinates(x, y);
     }
     const msgString = message.toString();
     console.log(`Received message: ${msgString} on topic: ${topic}`);

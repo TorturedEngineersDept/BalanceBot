@@ -1,5 +1,8 @@
 #include "MqttSetup.h"
 
+float x = 0;
+float y = 0;
+
 MqttSetup::MqttSetup(const char *server, int port)
     : server(server), port(port), client(espClient)
 {
@@ -25,6 +28,10 @@ void MqttSetup::connect(unsigned long timeout)
             delay(500);
         }
     }
+
+    // Send a status message to update run number on server
+    StatusMessage statusMessage;
+    publishMessage(statusMessage);
 }
 
 void MqttSetup::loop()
@@ -50,6 +57,15 @@ void MqttSetup::loop()
         }
         BatteryMessage batteryMessage(batteryLevel);
         publishMessage(batteryMessage);
+
+        // Update mapping status and publish message
+        int speed = random(0, 101);
+        int angle = random(0, 361);
+        int orientation = random(0, 361);
+        x += speed * cos(angle * PI / 180);
+        y += speed * sin(angle * PI / 180);
+        MappingMessage mappingMessage(x, y, orientation * PI / 180);
+        publishMessage(mappingMessage);
     }
 
     client.loop();

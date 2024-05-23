@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <title>Controller</title>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="mqtt.js"></script>
     <script src="controller.js"></script>
     <script src="battery.js"></script>
+
     <style>
         .container {
             position: relative;
@@ -26,20 +28,29 @@
             left: 10px;
             background-color: green;
         }
+        #chartContainer { height: 10000px; width: 100%; }
     </style>
 </head>
 <body scroll="no">
+
     <div id="coordinates">
         <p>X Coordinate: <span id="x_coordinate">0</span></p>
         <p>Y Coordinate: <span id="y_coordinate">0</span></p>
         <p>Speed: <span id="speed">0</span></p>
         <p>Angle: <span id="angle">0</span></p>
     </div>
+
     <canvas id="canvas"></canvas><br>
 
     <div class="container">
         <div id="rectangle"></div>
         <img src="battery.png" alt="Battery Image" width="128" height="69">
     </div>
+
+    <div id="chartContainer">
+        <canvas id="map"></canvas>
+    </div>
+
+    <script src ="map.js"></script>
 </body>
 </html>
