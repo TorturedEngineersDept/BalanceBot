@@ -1,21 +1,21 @@
 #include <Arduino.h>
 
 // Define the pins connected to the PCB
-#define VB_PIN 34  // Analog pin for battery voltage
-#define I5_PIN 35  // Analog pin for 5V current sense
-#define IM_PIN 32  // Analog pin for motor current sense
+#define VB_PIN 34 // Analog pin for battery voltage
+#define I5_PIN 35 // Analog pin for 5V current sense
+#define IM_PIN 32 // Analog pin for motor current sense
 
 // Constants for voltage dividers and calibration
 const float VOLTAGE_DIVIDER_RATIO =
-    0.167;  // Example ratio based on 100k and 20k resistors
-const float CURRENT_SENSE_RESISTOR = 0.1;  // Example value in ohms
-const float ADC_MAX_VOLTAGE = 3.3;  // Maximum voltage for the ADC (ESP32)
-const int ADC_RESOLUTION = 4096;    // 12-bit ADC resolution
+    0.167;                                // Example ratio based on 100k and 20k resistors
+const float CURRENT_SENSE_RESISTOR = 0.1; // Example value in ohms
+const float ADC_MAX_VOLTAGE = 3.3;        // Maximum voltage for the ADC (ESP32)
+const int ADC_RESOLUTION = 4096;          // 12-bit ADC resolution
 
 void setup()
 {
     Serial.begin(115200);
-    analogReadResolution(12);  // Set ADC resolution to 12-bit
+    analogReadResolution(12); // Set ADC resolution to 12-bit
 }
 
 void loop()

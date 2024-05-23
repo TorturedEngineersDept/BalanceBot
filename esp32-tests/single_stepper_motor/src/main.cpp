@@ -24,6 +24,7 @@ void setup()
     pinMode(stepPin, OUTPUT);
     pinMode(dirPin, OUTPUT);
 }
+
 void loop()
 {
     // Set motor direction clockwise
@@ -37,7 +38,7 @@ void loop()
         digitalWrite(stepPin, LOW);
         delayMicroseconds(1000);
     }
-    delay(1000);  // Wait a second
+    delay(1000); // Wait a second
 
     // Set motor direction counterclockwise
     digitalWrite(dirPin, LOW);
@@ -50,5 +51,5 @@ void loop()
         digitalWrite(stepPin, LOW);
         delayMicroseconds(1000);
     }
-    delay(1000);  // Wait a second
+    delay(1000); // Wait a second
 }
