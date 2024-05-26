@@ -1,0 +1,29 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  position: relative;
+  width: 128px;
+  height: 70px;
+  padding: 0 5px;
+  margin: 0 auto;
+}
+
+.container img,
+.container #rectangle {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#rectangle {
+  height: 69px;
+  left: 10px;
+  background-color: green;
+}
+
+#chartContainer {
+  height: 10000px;
+  width: 100%;
+}
