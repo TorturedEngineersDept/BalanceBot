@@ -14,18 +14,27 @@ const ControlPage = () => {
 
     return (
         <div className="ControlPage">
-            <div className="left">
-                <NavigationBar />
-                <div id="rectangle" className="Rectangle12" />
-                <PrimaryButton />
-                <Battery />
-                <div className="JoystickContainer">
-                    <Joystick />
+            <NavigationBar />
+            <div className="NavigationBody">
+                <div className="left">
+                    <div className="NavigationControl">
+                        <div className="Title">
+                            <div className="JoystickBatteryContainer">
+                                <div className="JoystickContainer">
+                                    <Joystick />
+                                </div>
+                                <div className="ButtonBatteryContainer">
+                                    <PrimaryButton />
+                                    <Battery />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="Camera">CAMERA</div>
                 </div>
-                <div className="Camera">CAMERA</div>
-            </div>
-            <div className="MapContainer">
-                <Map />
+                <div className="MapContainer">
+                    <Map />
+                </div>
             </div>
         </div>
     );

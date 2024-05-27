@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import batteryImage from '../assets/images/battery.png'; // Update with actual image path
+import { updateBattery } from '../utils/updateBattery';
+import './Battery.css';
 
-const Battery = () => (
-    <img src={batteryImage} alt="Battery" className="Battery" style={{ width: 159, height: 75, position: 'absolute', left: 539, top: 281 }} />
-);
+const Battery = () => {
+    useEffect(() => {
+        // Example of how to call updateBattery
+        updateBattery(50); // Set initial battery percentage to 50%
+    }, []);
+
+    return (
+        <div className="BatteryContainer">
+            <div id="rectangle" className="Rectangle12"></div>
+            <img src={batteryImage} alt="Battery" className="BatteryImage" />
+        </div>
+    );
+};
 
 export default Battery;

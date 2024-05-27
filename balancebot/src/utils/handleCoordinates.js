@@ -1,13 +1,18 @@
 import Chart from 'chart.js/auto';
 
-export function handleCoordinates(x, y) {
+let chart;
+
+export function initializeChart() {
     const ctx_map = document.getElementById('map').getContext('2d');
-    const chart = new Chart(ctx_map, {
+    if (chart) {
+        chart.destroy(); // Destroy the existing chart instance
+    }
+    chart = new Chart(ctx_map, {
         type: 'line',
         data: {
             datasets: [{
                 label: 'Position',
-                data: [{ x, y }],
+                data: [],
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
                 fill: false
@@ -36,10 +41,13 @@ export function handleCoordinates(x, y) {
             }
         }
     });
-
-    chart.data.datasets[0].data.push({ x, y });
-    chart.update('none');
 }
 
-// Ensure handleCoordinates is globally accessible
-window.handleCoordinates = handleCoordinates;
+export function handleCoordinates(x, y) {
+    if (chart) {
+        chart.data.datasets[0].data.push({ x, y });
+        chart.update('none');
+    } else {
+        console.error('Chart is not initialized');
+    }
+}

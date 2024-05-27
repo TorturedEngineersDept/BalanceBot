@@ -1,5 +1,5 @@
 import mqtt from 'mqtt';
-import { update_battery } from './updateBattery';
+import { updateBattery } from './updateBattery';
 import { handleCoordinates } from './handleCoordinates';
 
 export function initializeMQTT() {
@@ -34,7 +34,7 @@ export function initializeMQTT() {
             console.log('Received data:', data);
             const percentage = data.battery;
             console.log('Battery percentage:', percentage);
-            update_battery(percentage);
+            updateBattery(percentage);
         }
         if (topic === 'esp32/mapping') {
             const data = JSON.parse(message.toString());

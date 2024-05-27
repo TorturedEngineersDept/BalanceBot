@@ -1,6 +1,6 @@
 const max_length = 100;
 
-export function update_battery(percentage) {
+export function updateBattery(percentage) {
     if (percentage < 0 || percentage > 100) {
         console.error('Invalid battery percentage:', percentage);
         return;
@@ -13,4 +13,4 @@ export function update_battery(percentage) {
 }
 
 // Ensure update_battery is globally accessible
-window.update_battery = update_battery;
+window.updateBattery = updateBattery;
