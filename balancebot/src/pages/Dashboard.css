@@ -13,40 +13,6 @@
     width: 1920px;
 }
 
-.dash-board .element-tabbed-navigation {
-    align-items: flex-start;
-    display: inline-flex;
-    gap: 32px;
-    left: 68px;
-    position: absolute;
-    top: 45px;
-}
-
-.dash-board .text-wrapper {
-    color: #c0c0c0;
-    font-family: "Inter", Helvetica;
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.56px;
-    line-height: 30.8px;
-    margin-top: -1px;
-    position: relative;
-    white-space: nowrap;
-    width: fit-content;
-}
-
-.dash-board .text-wrapper-2 {
-    color: #000000;
-    font-family: "Inter", Helvetica;
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.56px;
-    line-height: 30.8px;
-    margin-top: -1px;
-    position: relative;
-    white-space: nowrap;
-    width: fit-content;
-}
 
 .dash-board .line-cart {
     background-color: #ffffff;

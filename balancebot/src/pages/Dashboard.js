@@ -1,15 +1,12 @@
 import React from "react";
 import "./Dashboard.css";
+import NavigationBar from "../components/NavigationBar";
 
 const DashBoard = () => {
     return (
         <div className="dash-board">
             <div className="div">
-                <div className="element-tabbed-navigation">
-                    <div className="text-wrapper">Navigation</div>
-                    <div className="text-wrapper-2">Dashboard</div>
-                    <div className="text-wrapper">About Me</div>
-                </div>
+                <NavigationBar />
                 <div className="line-cart">
                     <div className="text-wrapper-3">Battery Usage</div>
                     <div className="overlap-group">
