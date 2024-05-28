@@ -6,12 +6,12 @@ import './Battery.css';
 const Battery = () => {
     useEffect(() => {
         // Example of how to call updateBattery
-        updateBattery(50); // Set initial battery percentage to 50%
+        updateBattery(60); // Set initial battery percentage to 50%
     }, []);
 
     return (
         <div className="BatteryContainer">
-            <div id="rectangle" className="Rectangle12"></div>
+            <div id="rectangle" className="BatteryFilling"></div>
             <img src={batteryImage} alt="Battery" className="BatteryImage" />
         </div>
     );

@@ -1,51 +1,43 @@
-/* ToggleSwitch.css */
-.toggle-switch {
+.background {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.SwitchContainer {
+    display: flex;
     position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: 300px;
+    /* Adjust as needed */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    border-radius: 25px;
+    /* Make the container rounded */
 }
 
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
+.ToggleItem {
+    flex: 1;
+    padding: 10px 0;
+    text-align: center;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 34px;
+    z-index: 1;
 }
 
-.slider:before {
+.Text {
+    font-size: 14px;
+}
+
+.Slider {
     position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked+.slider {
-    background-color: #00CB21;
-}
-
-input:checked+.slider:before {
-    transform: translateX(26px);
-}
-
-.label {
-    margin-left: 10px;
-    font-size: 16px;
-    font-weight: 600;
+    top: 0;
+    bottom: 0;
+    width: 33.33%;
+    /* 100% divided by number of options */
+    background-color: #d0d0d0;
+    transition: transform 0.3s ease;
+    z-index: 0;
+    border-radius: 25px;
+    /* Make the slider rounded */
+    font-weight: bold;
 }

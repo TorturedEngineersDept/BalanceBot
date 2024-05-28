@@ -75,6 +75,7 @@ const Joystick = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             background();
             joystick(width / 2, height / 2);
+            window.polar_coordinates(0, 0);
         }
 
         function draw(event) {
@@ -96,7 +97,18 @@ const Joystick = () => {
                 joystick(x, y);
             }
 
-            speed = Math.round(100 * Math.sqrt(Math.pow(x - x_orig, 2) + Math.pow(y - y_orig, 2)) / radius);
+            // Add a threshold to ignore very small movements
+            const threshold = 2; // pixels
+            const distance_from_center = Math.sqrt(Math.pow(x - x_orig, 2) + Math.pow(y - y_orig, 2));
+
+            if (distance_from_center < threshold) {
+                speed = 0;
+                x = x_orig;
+                y = y_orig;
+            } else {
+                speed = Math.round(100 * distance_from_center / radius);
+            }
+
             window.polar_coordinates(speed, -angle);
         }
 
