@@ -1,7 +1,7 @@
 import React from "react";
 import "./Dashboard.css";
 
-export const DashBoard = () => {
+const DashBoard = () => {
     return (
         <div className="dash-board">
             <div className="div">
@@ -82,3 +82,5 @@ export const DashBoard = () => {
         </div>
     );
 };
+
+export default DashBoard;
