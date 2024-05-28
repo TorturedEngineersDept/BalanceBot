@@ -1,0 +1,427 @@
+.dash-board {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.dash-board .div {
+    background-color: #ffffff;
+    height: 1080px;
+    position: relative;
+    width: 1920px;
+}
+
+.dash-board .element-tabbed-navigation {
+    align-items: flex-start;
+    display: inline-flex;
+    gap: 32px;
+    left: 68px;
+    position: absolute;
+    top: 45px;
+}
+
+.dash-board .text-wrapper {
+    color: #c0c0c0;
+    font-family: "Inter", Helvetica;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.56px;
+    line-height: 30.8px;
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.dash-board .text-wrapper-2 {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.56px;
+    line-height: 30.8px;
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.dash-board .line-cart {
+    background-color: #ffffff;
+    border: 1px solid;
+    border-color: #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px #0000000a;
+    height: 448px;
+    left: 68px;
+    overflow: hidden;
+    position: absolute;
+    top: 112px;
+    width: 869px;
+}
+
+.dash-board .text-wrapper-3 {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 16px;
+    font-weight: 600;
+    left: 24px;
+    letter-spacing: 0;
+    line-height: 24px;
+    position: absolute;
+    top: 23px;
+    white-space: nowrap;
+}
+
+.dash-board .overlap-group {
+    height: 330px;
+    left: 23px;
+    position: absolute;
+    top: 70px;
+    width: 822px;
+}
+
+.dash-board .lines {
+    height: 330px;
+    left: 1px;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    width: 821px;
+}
+
+.dash-board .y-axis {
+    align-items: flex-start;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 35px;
+    left: 1px;
+    position: absolute;
+    top: 0;
+}
+
+.dash-board .text-wrapper-4 {
+    color: #828282;
+    font-family: "Inter", Helvetica;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 19.5px;
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.dash-board .text-wrapper-5 {
+    color: #828282;
+    font-family: "Inter", Helvetica;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 19.5px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.dash-board .graph {
+    height: 289px;
+    left: 0;
+    object-fit: cover;
+    position: absolute;
+    top: 38px;
+    width: 778px;
+}
+
+.dash-board .dot {
+    background-color: #000000;
+    border-radius: 6px;
+    height: 12px;
+    left: 771px;
+    position: absolute;
+    top: 34px;
+    width: 12px;
+}
+
+.dash-board .glow {
+    background-color: #000000;
+    border-radius: 24px;
+    height: 48px;
+    left: 753px;
+    opacity: 0.1;
+    position: absolute;
+    top: 16px;
+    width: 48px;
+}
+
+.dash-board .x-axis {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    left: 24px;
+    position: absolute;
+    top: 404px;
+    width: 821px;
+}
+
+.dash-board .frame {
+    height: 20px;
+    position: relative;
+    width: 18px;
+}
+
+.dash-board .text-wrapper-6 {
+    color: #828282;
+    font-family: "Inter", Helvetica;
+    font-size: 13px;
+    font-weight: 400;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 19.5px;
+    position: absolute;
+    top: -1px;
+    white-space: nowrap;
+}
+
+.dash-board .text-wrapper-7 {
+    color: #828282;
+    font-family: "Inter", Helvetica;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 19.5px;
+    margin-top: -1px;
+    position: relative;
+    text-align: right;
+    width: 18px;
+}
+
+.dash-board .text-wrapper-8 {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 32px;
+    font-weight: 600;
+    left: 78px;
+    letter-spacing: 0;
+    line-height: 48px;
+    position: absolute;
+    top: 613px;
+    white-space: nowrap;
+}
+
+.dash-board .overlap {
+    height: 422px;
+    left: 503px;
+    position: absolute;
+    top: 599px;
+    width: 487px;
+}
+
+.dash-board .text-wrapper-9 {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 32px;
+    font-weight: 600;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 48px;
+    position: absolute;
+    top: 14px;
+    white-space: nowrap;
+}
+
+.dash-board .overlap-2 {
+    height: 422px;
+    left: 24px;
+    position: absolute;
+    top: 0;
+    width: 463px;
+}
+
+.dash-board .line {
+    height: 422px;
+    left: 410px;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    width: 1px;
+}
+
+.dash-board .flexcontainer {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+    height: 65px;
+    left: 0;
+    position: absolute;
+    top: 177px;
+    width: 463px;
+}
+
+.dash-board .text {
+    align-self: stretch;
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 24px;
+    position: relative;
+}
+
+.dash-board .span {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+
+.dash-board .element-button-primary {
+    align-items: center;
+    background-color: #a9a7a7;
+    border-radius: 8px;
+    box-shadow: var(--button-shadow);
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    left: 22px;
+    padding: 14px 24px;
+    position: absolute;
+    top: 90px;
+    width: 343px;
+}
+
+.dash-board .text-wrapper-10 {
+    color: #ffffff;
+    font-family: "Inter", Helvetica;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 24px;
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.dash-board .element-input-field-with {
+    align-items: flex-start;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 8px;
+    left: 90px;
+    position: absolute;
+    top: 668px;
+}
+
+.dash-board .text-wrapper-11 {
+    align-self: stretch;
+    color: #000000;
+    font-family: var(--small-text-font-family);
+    font-size: var(--small-text-font-size);
+    font-style: var(--small-text-font-style);
+    font-weight: var(--small-text-font-weight);
+    letter-spacing: var(--small-text-letter-spacing);
+    line-height: var(--small-text-line-height);
+    margin-top: -1px;
+    position: relative;
+}
+
+.dash-board .field {
+    align-items: flex-start;
+    background-color: #ffffff;
+    border: 1px solid;
+    border-color: #e0e0e0;
+    border-radius: 8px;
+    box-shadow: var(--button-shadow);
+    color: #828282;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: var(--small-text-font-family);
+    font-size: var(--small-text-font-size);
+    font-style: var(--small-text-font-style);
+    font-weight: var(--small-text-font-weight);
+    gap: 8px;
+    letter-spacing: var(--small-text-letter-spacing);
+    line-height: var(--small-text-line-height);
+    margin-top: -1px;
+    padding: 12px 16px;
+    position: relative;
+    width: 263px;
+}
+
+.dash-board .element-input-field-with-2 {
+    align-items: flex-start;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 8px;
+    left: 90px;
+    position: absolute;
+    top: 766px;
+}
+
+.dash-board .element-input-field-with-3 {
+    align-items: flex-start;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 8px;
+    left: 90px;
+    position: absolute;
+    top: 864px;
+}
+
+.dash-board .element-button {
+    all: unset;
+    align-items: center;
+    background-color: #a9a7a7;
+    border-radius: 8px;
+    box-shadow: var(--button-shadow);
+    box-sizing: border-box;
+    display: inline-flex;
+    gap: 8px;
+    justify-content: center;
+    left: 90px;
+    padding: 14px 24px;
+    position: absolute;
+    top: 962px;
+}
+
+.dash-board .text-wrapper-12 {
+    color: #ffffff;
+    font-family: var(--small-text-font-family);
+    font-size: var(--small-text-font-size);
+    font-style: var(--small-text-font-style);
+    font-weight: var(--small-text-font-weight);
+    letter-spacing: var(--small-text-letter-spacing);
+    line-height: var(--small-text-line-height);
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.dash-board .line-wrapper {
+    background-image: url(https://c.animaapp.com/m7Msw9ve/img/line-2.svg);
+    background-position: 50% 50%;
+    background-size: cover;
+    height: 422px;
+    left: 456px;
+    position: absolute;
+    top: 599px;
+    width: 1px;
+}
+
+.dash-board .img {
+    height: 422px;
+    left: 0;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    width: 1px;
+}
