@@ -9,7 +9,7 @@ SemaphoreHandle_t PidController::paramsMutex = xSemaphoreCreateMutex();
 SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
 
 // Initialise PID parameters using known values
-PidParams PidController::params(3, 0.00, 0.12, -2.5);
+PidParams PidController::params(3, 0.00, 0.12, -2.5, 0.00, 0.00, 0.00, 0.00);
 PidDirection PidController::direction(0, 0);
 
 void PidController::setup()
@@ -49,10 +49,10 @@ void PidController::loop()
 
     // Fetch PID parameters - take mutex and wait forever until it is available
     xSemaphoreTake(paramsMutex, portMAX_DELAY);
-    float kp = params.Kp;
-    float ki = params.Ki;
-    float kd = params.Kd;
-    float setpoint = params.setpoint;
+    float kp_i = params.Kp_i;
+    float ki_i = params.Ki_i;
+    float kd_i = params.Kd_i;
+    float setpoint_i = params.setpoint_i;
     xSemaphoreGive(paramsMutex);
 
     double error;
@@ -84,17 +84,17 @@ void PidController::loop()
         theta_n = (1 - COMP_FILTER_COEFF) * (tiltx * 100) + COMP_FILTER_COEFF * ((gyrox * LOOP_INTERVAL) / 10 + theta_n);
 
         // PIDeez Nuts
-        error = setpoint - theta_n;
-        Pout = kp * error;
+        error = setpoint_i - theta_n;
+        Pout = kp_i * error;
 
         integral = integral + error * (LOOP_INTERVAL / 1000);
-        Iout = ki * integral;
+        Iout = ki_i * integral;
 
         derivative = ((error - previous_error) / LOOP_INTERVAL) * 1000;
         derivative = previous_derivative * (derivative - previous_derivative);
         previous_derivative = derivative;
 
-        Dout = kd * derivative;
+        Dout = kd_i * derivative;
         motor_out = Pout + Iout + Dout;
         previous_error = error;
 

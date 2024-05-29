@@ -157,17 +157,25 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
     else if (strcmp(topic, "user/pid") == 0)
     {
         // Extract values from the JSON document
-        float Kp = doc["Kp"];
-        float Ki = doc["Ki"];
-        float Kd = doc["Kd"];
-        float setpoint = doc["setpoint"];
-        Serial.println("Kp: " + String(Kp) +
-                       ", Ki: " + String(Ki) +
-                       ", Kd: " + String(Kd) +
-                       ", Setpoint: " + String(setpoint));
+        float Kp_i = doc["Kp_i"];
+        float Ki_i = doc["Ki_i"];
+        float Kd_i = doc["Kd_i"];
+        float setpoint_i = doc["setpoint_i"];
+        float Kp_o = doc["Kp_o"];
+        float Ki_o = doc["Ki_o"];
+        float Kd_o = doc["Kd_o"];
+        float setpoint_o = doc["setpoint_o"];
+        Serial.println("Kp_i: " + String(Kp_i) +
+                       ", Ki_i: " + String(Ki_i) +
+                       ", Kd_i: " + String(Kd_i) +
+                       ", Setpoint_i: " + String(setpoint_i) +
+                       ", Kp_o: " + String(Kp_o) +
+                       ", Ki_o: " + String(Ki_o) +
+                       ", Kd_o: " + String(Kd_o) +
+                       ", Setpoint_o: " + String(setpoint_o));
 
         // Use the callback given in the static class
-        PidController::setParams(PidParams(Kp, Ki, Kd, setpoint));
+        PidController::setParams(PidParams(Kp_i, Ki_i, Kd_i, setpoint_i, Kp_o, Ki_o, Kd_o, setpoint_o));
     }
     else
     {

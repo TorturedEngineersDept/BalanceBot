@@ -19,6 +19,7 @@ void MqttSetup::connect(unsigned long timeout)
         {
             Serial.println("connected");
             client.subscribe("user/joystick");
+            client.subscribe("user/pid");
         }
         else
         {

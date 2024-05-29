@@ -21,13 +21,17 @@
 
 struct PidParams
 {
-    PidParams(float Kp, float Ki, float Kd, float setpoint)
-        : Kp(Kp), Ki(Ki), Kd(Kd), setpoint(setpoint) {}
+    PidParams(float Ki_i, float Kp_i, float Kd_i, float setpoint_i, float Ki_o, float Kp_o, float Kd_o, float setpoint_o)
+        : Kp_i(Kp_i), Ki_i(Ki_i), Kd_i(Kd_i), setpoint_i(setpoint_i), Kp_o(Kp_o), Ki_o(Ki_o), Kd_o(Kd_o), setpoint_o(setpoint_o) {}
 
-    float Kp;
-    float Ki;
-    float Kd;
-    float setpoint;
+    float Kp_i;
+    float Ki_i;
+    float Kd_i;
+    float setpoint_i;
+    float Kp_o;
+    float Ki_o;
+    float Kd_o;
+    float setpoint_o;
 };
 
 struct PidDirection
