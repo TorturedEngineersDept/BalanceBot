@@ -89,7 +89,7 @@ sudo kill <process_id>
 You might also need to change privileges to allow Mosquitto to write to the log file:
 
 ```bash
-chmod +rwx /var/log/mosquitto/mosquitto.log 
+sudo chmod +rwx /var/log/mosquitto/mosquitto.log 
 ```
 
 Then, restart the mosquitto instance:

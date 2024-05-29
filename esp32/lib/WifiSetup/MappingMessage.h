@@ -1,5 +1,4 @@
-#ifndef MAPPING_MESSAGE_H
-#define MAPPING_MESSAGE_H
+#pragma once
 
 #include "MqttMessage.h"
 
@@ -16,5 +15,3 @@ private:
     float orientation;
     StaticJsonDocument<200> doc;
 };
-
-#endif // MAPPING_MESSAGE_H

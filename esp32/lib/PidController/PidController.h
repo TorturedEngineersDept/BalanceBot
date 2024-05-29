@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <TimerInterrupt_Generic.h>
+#include <freertos/semphr.h>
 #include "MPU6050.h"
 #include "Step.h"
 
@@ -18,20 +19,59 @@
 // Diagnostic pin for oscilloscope
 #define TOGGLE_PIN 32 // Arduino A4
 
+struct PidParams
+{
+    PidParams(float Kp, float Ki, float Kd, float setpoint)
+        : Kp(Kp), Ki(Ki), Kd(Kd), setpoint(setpoint) {}
+
+    float Kp;
+    float Ki;
+    float Kd;
+    float setpoint;
+};
+
+struct PidDirection
+{
+    PidDirection(float speed, float angle)
+        : speed(speed), angle(angle) {}
+
+    float speed;
+    float angle;
+};
+
 class PidController
 {
 public:
     PidController() = delete;
-    
+
     static void setup();
     static void loop();
-    static bool timerHandler(void *args);
+
+    /**
+     * The callback function to set the PID parameters.
+     */
+    static void setParams(PidParams params);
+
+    static PidParams getParams();
+
+    /**
+     * The callback function to set the direction of the motor.
+     */
+    static void setDirection(PidDirection direction);
+
+    static PidDirection getDirection();
 
 private:
+    static bool timerHandler(void *args);
+
     static MPU6050 mpu;
     static ESP32Timer ITimer;
     static Step step1;
     static Step step2;
+    static PidParams params;
+    static PidDirection direction;
+    static SemaphoreHandle_t paramsMutex;
+    static SemaphoreHandle_t directionMutex;
 
     // Class constants
     static constexpr int PRINT_INTERVAL = 50;

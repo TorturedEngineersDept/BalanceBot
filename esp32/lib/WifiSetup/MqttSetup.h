@@ -1,5 +1,4 @@
-#ifndef MQTT_SETUP_H
-#define MQTT_SETUP_H
+#pragma once
 
 #include <PubSubClient.h>
 #include <WiFiClient.h>
@@ -18,6 +17,7 @@ public:
     void publishMessage(MqttMessage &message);
     bool isConnected();
     void pingServer() const;
+    const char *getServer() const;
 
 private:
     const char *server;
@@ -31,5 +31,3 @@ private:
     float speed;
     float angle;
 };
-
-#endif // MQTT_SETUP_H

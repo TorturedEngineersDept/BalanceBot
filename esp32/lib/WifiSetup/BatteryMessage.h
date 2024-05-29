@@ -1,5 +1,4 @@
-#ifndef BATTERY_MESSAGE_H
-#define BATTERY_MESSAGE_H
+#pragma once
 
 #include "MqttMessage.h"
 
@@ -14,5 +13,3 @@ private:
     float batteryLevel;
     StaticJsonDocument<200> doc;
 };
-
-#endif // BATTERY_MESSAGE_H
