@@ -1,5 +1,4 @@
-#ifndef STATUS_MESSAGE_H
-#define STATUS_MESSAGE_H
+#pragma once
 
 #include "MqttMessage.h"
 
@@ -13,5 +12,3 @@ public:
 private:
     StaticJsonDocument<200> doc;
 };
-
-#endif // STATUS_MESSAGE_H

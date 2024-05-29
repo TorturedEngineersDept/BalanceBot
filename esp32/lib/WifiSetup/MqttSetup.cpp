@@ -87,3 +87,8 @@ bool MqttSetup::isConnected()
 {
     return client.connected();
 }
+
+const char *MqttSetup::getServer() const
+{
+    return server;
+}

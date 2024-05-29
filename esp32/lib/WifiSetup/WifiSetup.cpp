@@ -1,8 +1,29 @@
 #include "WifiSetup.h"
+#include "PidController.h"
 #include "ESP32Ping.h"
 
-WifiSetup::WifiSetup(const char *ssid, const char *password)
-    : ssid(ssid), password(password), mqtt(mqtt_server, mqtt_port)
+WifiSetup::WifiSetup(
+    const char *ssid,
+    const char *password,
+    const char *mqtt_server,
+    int mqtt_port)
+    : ssid(ssid),
+      username(nullptr),
+      password(password),
+      mqtt(mqtt_server, mqtt_port)
+{
+}
+
+WifiSetup::WifiSetup(
+    const char *ssid,
+    const char *username,
+    const char *password,
+    const char *mqtt_server,
+    int mqtt_port)
+    : ssid(ssid),
+      username(username),
+      password(password),
+      mqtt(mqtt_server, mqtt_port)
 {
 }
 
@@ -14,7 +35,16 @@ void WifiSetup::connect(unsigned long timeout)
     Serial.print("Connecting to ");
     Serial.println(ssid);
 
-    WiFi.begin(ssid, password);
+    if (username != nullptr)
+    {
+        WiFi.disconnect();
+        WiFi.mode(WIFI_STA);
+        WiFi.begin(ssid, WPA2_AUTH_PEAP, username, username, password);
+    }
+    else
+    {
+        WiFi.begin(ssid, password);
+    }
 
     unsigned long start = 0;
     uint32_t d = 500;
@@ -35,7 +65,7 @@ void WifiSetup::connect(unsigned long timeout)
     getStrength();
 
     // Ping the MQTT server to ensure it's reachable
-    pingServer(mqtt_server);
+    pingServer(mqtt.getServer());
 
     // Setup MQTT
     mqtt.setCallback(callback);
@@ -122,7 +152,22 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
         float angle = doc["angle"];
         Serial.println("Speed: " + String(speed) + ", Angle: " + String(angle));
 
-        // TODO: Processing logic here
+        PidController::setDirection(PidDirection(speed, angle));
+    }
+    else if (strcmp(topic, "user/pid") == 0)
+    {
+        // Extract values from the JSON document
+        float Kp = doc["Kp"];
+        float Ki = doc["Ki"];
+        float Kd = doc["Kd"];
+        float setpoint = doc["setpoint"];
+        Serial.println("Kp: " + String(Kp) +
+                       ", Ki: " + String(Ki) +
+                       ", Kd: " + String(Kd) +
+                       ", Setpoint: " + String(setpoint));
+
+        // Use the callback given in the static class
+        PidController::setParams(PidParams(Kp, Ki, Kd, setpoint));
     }
     else
     {

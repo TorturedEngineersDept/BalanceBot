@@ -5,6 +5,12 @@ MPU6050 PidController::mpu;
 ESP32Timer PidController::ITimer(PID_TIMER_NO);
 Step PidController::step1(STEPPER_INTERVAL_US, STEPPER1_STEP_PIN, STEPPER1_DIR_PIN);
 Step PidController::step2(STEPPER_INTERVAL_US, STEPPER2_STEP_PIN, STEPPER2_DIR_PIN);
+SemaphoreHandle_t PidController::paramsMutex = xSemaphoreCreateMutex();
+SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
+
+// Initialise PID parameters using known values
+PidParams PidController::params(3, 0.00, 0.12, -2.5);
+PidDirection PidController::direction(0, 0);
 
 void PidController::setup()
 {
@@ -39,15 +45,16 @@ void PidController::loop()
     static unsigned long loopTimer = 0;  // time of the next control update
     static double tiltx = 0.0;
     static double gyrox = 0.0; // current tilt angle
-    static double gyroangle = 0.0;
     static double theta_n = 0.0;
 
-    const float kp = 2;
-    // potentially don't need if we get the setpoint right
-    // (correct offset calibration)
-    const float ki = 0.002;
-    const float kd = 1;
-    const float setpoint = -0.51;
+    // Fetch PID parameters - take mutex and wait forever until it is available
+    xSemaphoreTake(paramsMutex, portMAX_DELAY);
+    float kp = params.Kp;
+    float ki = params.Ki;
+    float kd = params.Kd;
+    float setpoint = params.setpoint;
+    xSemaphoreGive(paramsMutex);
+
     double error;
     double previous_error = 0;
     double integral = 0;
@@ -64,14 +71,17 @@ void PidController::loop()
         sensors_event_t a, g, temp;
         mpu.getEvent(&a, &g, &temp);
 
+        const float ACCELOREMETER_OFFSET = 0.03;
+        const float GYRO_OFFSET = -0.05;
+        const float COMP_FILTER_COEFF = 0.98;
+
         // Calculate Tilt using accelerometer and sin x = x approximation for
         // a small tilt angle
-        tiltx = asin(a.acceleration.z / 9.81) - 0.05;
+        tiltx = a.acceleration.z / 9.81 - ACCELOREMETER_OFFSET;
 
-        gyrox = g.gyro.y - 0.04;
-        gyroangle = gyroangle + (gyrox * (LOOP_INTERVAL));
+        gyrox = g.gyro.y - GYRO_OFFSET;
 
-        theta_n = 0.04 * (tiltx * 100) + 0.96 * ((gyrox * LOOP_INTERVAL) / 10 + theta_n);
+        theta_n = (1 - COMP_FILTER_COEFF) * (tiltx * 100) + COMP_FILTER_COEFF * ((gyrox * LOOP_INTERVAL) / 10 + theta_n);
 
         // PIDeez Nuts
         error = setpoint - theta_n;
@@ -81,7 +91,7 @@ void PidController::loop()
         Iout = ki * integral;
 
         derivative = ((error - previous_error) / LOOP_INTERVAL) * 1000;
-        derivative = previous_derivative + 0.2 * (derivative - previous_derivative);
+        derivative = previous_derivative * (derivative - previous_derivative);
         previous_derivative = derivative;
 
         Dout = kd * derivative;
@@ -94,6 +104,40 @@ void PidController::loop()
     }
 }
 
+void PidController::setParams(PidParams params)
+{
+    // Take mutex and wait forever until it is available
+    xSemaphoreTake(paramsMutex, portMAX_DELAY);
+    PidController::params = params;
+    xSemaphoreGive(paramsMutex);
+}
+
+PidParams PidController::getParams()
+{
+    xSemaphoreTake(paramsMutex, portMAX_DELAY);
+    PidParams p = params;
+    xSemaphoreGive(paramsMutex);
+    return p;
+}
+
+void PidController::setDirection(PidDirection direction)
+{
+    // Take mutex and wait forever until it is available
+    xSemaphoreTake(directionMutex, portMAX_DELAY);
+    PidController::direction = direction;
+    xSemaphoreGive(directionMutex);
+}
+
+PidDirection PidController::getDirection()
+{
+    xSemaphoreTake(directionMutex, portMAX_DELAY);
+    PidDirection d = direction;
+    xSemaphoreGive(directionMutex);
+    return d;
+}
+
+// Interrupt Service Routine for motor update
+// Note: ESP32 doesn't support floating point calculations in an ISR
 bool PidController::timerHandler(void *args)
 {
     static bool toggle = false;

@@ -4,7 +4,8 @@
 #include "PidController.h"
 #include "WifiSetup.h"
 
-WifiSetup wifi(g_ssid, g_password);
+WifiSetup wifi(g_ssid, g_password, MQTT_SERVER, MQTT_PORT);
+// WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
 // PidController is a static class, so we don't need to create an instance of it
 
 void pidLoop(void *pvParameters);
