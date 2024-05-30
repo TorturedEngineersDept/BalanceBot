@@ -49,9 +49,9 @@ void PidController::loop()
 
     // Fetch PID parameters - take mutex and wait forever until it is available
     xSemaphoreTake(paramsMutex, portMAX_DELAY);
-    float kp_i = params.Kp_i;
-    float ki_i = params.Ki_i;
-    float kd_i = params.Kd_i;
+    float kp_i = params.kp_i;
+    float ki_i = params.ki_i;
+    float kd_i = params.kd_i;
     float setpoint_i = params.setpoint_i;
     xSemaphoreGive(paramsMutex);
 
@@ -101,6 +101,41 @@ void PidController::loop()
         // Set target motor speed
         step1.setTargetSpeedRad(motor_out);
         step2.setTargetSpeedRad(-motor_out);
+    }
+}
+
+void PidController::stabilizedLoop()
+{
+    // We don't care about PID stability here.
+    // Just get the robot movin
+    // Maybe someone can be bothered to research the maths here
+
+    PidDirection direction = getDirection();
+    float speed = direction.speed;
+    float angle = direction.angle;
+
+    const float SPEED = 10;
+
+    // Snap to forwards if angle is close to 0
+    if (angle < 45 || angle > 315)
+    {
+        step1.setTargetSpeedRad(SPEED);
+        step2.setTargetSpeedRad(SPEED);
+    }
+    else if (angle > 45 && angle < 135)
+    {
+        step1.setTargetSpeedRad(-SPEED);
+        step2.setTargetSpeedRad(SPEED);
+    }
+    else if (angle > 135 && angle < 225)
+    {
+        step1.setTargetSpeedRad(-SPEED);
+        step2.setTargetSpeedRad(-SPEED);
+    }
+    else
+    {
+        step1.setTargetSpeedRad(SPEED);
+        step2.setTargetSpeedRad(-SPEED);
     }
 }
 

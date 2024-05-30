@@ -89,13 +89,13 @@ function handleSubmitInner(event) {
 
     // Create a JSON object
     const data = {
-        Kp_i: newKP_i,
-        Kd_i: newKD_i,
-        Ki_i: newKI_i,
+        kp_i: newKP_i,
+        kd_i: newKD_i,
+        ki_i: newKI_i,
         setpoint_i: newSetpoint_i,
-        Kp_o: oldKP_o,
-        Kd_o: oldKD_o,
-        Ki_o: oldKI_o,
+        kp_o: oldKP_o,
+        kd_o: oldKD_o,
+        ki_o: oldKI_o,
         setpoint_o: oldSetpoint_o
     };
 
@@ -129,13 +129,13 @@ function handleSubmitOuter(event) {
 
     // Create a JSON object
     const data = {
-        Kp_i: oldKP_i,
-        Kd_i: oldKD_i,
-        Ki_i: oldKI_i,
+        kp_i: oldKP_i,
+        kd_i: oldKD_i,
+        ki_i: oldKI_i,
         setpoint_i: oldSetpoint_i,
-        Kp_o: newKP_o,
-        Kd_o: newKD_o,
-        Ki_o: newKI_o,
+        kp_o: newKP_o,
+        kd_o: newKD_o,
+        ki_o: newKI_o,
         setpoint_o: newSetpoint_o
     };
 
@@ -155,9 +155,9 @@ function addRowToTables(data) {
     const ki_iCell = newRowInner.insertCell(2);
     const setpoint_iCell = newRowInner.insertCell(3);
 
-    kp_iCell.textContent = data.Kp_i;
-    kd_iCell.textContent = data.Kd_i;
-    ki_iCell.textContent = data.Ki_i;
+    kp_iCell.textContent = data.kp_i;
+    kd_iCell.textContent = data.kd_i;
+    ki_iCell.textContent = data.ki_i;
     setpoint_iCell.textContent = data.setpoint_i;
 
     const tableOuter = document.getElementById('pidTableOuter').getElementsByTagName('tbody')[0];
@@ -168,8 +168,8 @@ function addRowToTables(data) {
     const ki_oCell = newRowOuter.insertCell(2);
     const setpoint_oCell = newRowOuter.insertCell(3);
 
-    kp_oCell.textContent = data.Kp_o;
-    kd_oCell.textContent = data.Kd_o;
-    ki_oCell.textContent = data.Ki_o;
+    kp_oCell.textContent = data.kp_o;
+    kd_oCell.textContent = data.kd_o;
+    ki_oCell.textContent = data.ki_o;
     setpoint_oCell.textContent = data.setpoint_o;
 }

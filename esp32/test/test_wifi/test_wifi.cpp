@@ -85,16 +85,20 @@ void test_remote_pid()
     // Use the callback
     char *topic = const_cast<char *>("user/pid");
     char *payload = const_cast<char *>(
-        R"({"Kp": 0.5, "Ki": 0.1, "Kd": 0.2, "setpoint": 30})");
+        R"({"kp_i": 0.5, "ki_i": 0.1, "kd_i": 0.2, "setpoint_i": 30,
+            "kp_o": 0.5, "ki_o": 0.1, "kd_o": 0.2, "setpoint_o": 30})");
     wifi.callback(topic, reinterpret_cast<byte *>(payload), strlen(payload));
 
-    PidParams expectedParams = PidParams(0.5, 0.1, 0.2, 30);
+    PidParams expectedParams = PidParams(0.5, 0.1, 0.2, 30, 0.4, 0.05, 0.1, 10);
     PidParams actualParams = PidController::getParams();
 
-    TEST_ASSERT_EQUAL(expectedParams.Kp, actualParams.Kp);
-    TEST_ASSERT_EQUAL(expectedParams.Ki, actualParams.Ki);
-    TEST_ASSERT_EQUAL(expectedParams.Kd, actualParams.Kd);
-    TEST_ASSERT_EQUAL(expectedParams.setpoint, actualParams.setpoint);
+    TEST_ASSERT_EQUAL(expectedParams.kp_i, actualParams.kp_i);
+    TEST_ASSERT_EQUAL(expectedParams.ki_i, actualParams.ki_i);
+    TEST_ASSERT_EQUAL(expectedParams.kd_i, actualParams.kd_i);
+    TEST_ASSERT_EQUAL(expectedParams.setpoint_i, actualParams.setpoint_i);
+    TEST_ASSERT_EQUAL(expectedParams.kp_o, actualParams.kp_o);
+    TEST_ASSERT_EQUAL(expectedParams.ki_o, actualParams.ki_o);
+    TEST_ASSERT_EQUAL(expectedParams.kd_o, actualParams.kd_o);
 }
 
 void setup()

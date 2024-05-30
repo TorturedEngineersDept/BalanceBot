@@ -21,16 +21,18 @@
 
 struct PidParams
 {
-    PidParams(float Ki_i, float Kp_i, float Kd_i, float setpoint_i, float Ki_o, float Kp_o, float Kd_o, float setpoint_o)
-        : Kp_i(Kp_i), Ki_i(Ki_i), Kd_i(Kd_i), setpoint_i(setpoint_i), Kp_o(Kp_o), Ki_o(Ki_o), Kd_o(Kd_o), setpoint_o(setpoint_o) {}
+    PidParams(float ki_i, float kp_i, float kd_i, float setpoint_i,
+              float ki_o, float kp_o, float kd_o, float setpoint_o)
+        : kp_i(kp_i), ki_i(ki_i), kd_i(kd_i), setpoint_i(setpoint_i),
+          kp_o(kp_o), ki_o(ki_o), kd_o(kd_o), setpoint_o(setpoint_o) {}
 
-    float Kp_i;
-    float Ki_i;
-    float Kd_i;
+    float kp_i;
+    float ki_i;
+    float kd_i;
     float setpoint_i;
-    float Kp_o;
-    float Ki_o;
-    float Kd_o;
+    float kp_o;
+    float ki_o;
+    float kd_o;
     float setpoint_o;
 };
 
@@ -50,6 +52,12 @@ public:
 
     static void setup();
     static void loop();
+
+    /**
+     * A temporary function to get a stabilized version of the robot moving
+     * (for testing purposes only).
+     */
+    static void stabilizedLoop();
 
     /**
      * The callback function to set the PID parameters.

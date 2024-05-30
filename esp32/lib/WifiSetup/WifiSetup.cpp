@@ -157,25 +157,25 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
     else if (strcmp(topic, "user/pid") == 0)
     {
         // Extract values from the JSON document
-        float Kp_i = doc["Kp_i"];
-        float Ki_i = doc["Ki_i"];
-        float Kd_i = doc["Kd_i"];
+        float kp_i = doc["kp_i"];
+        float ki_i = doc["ki_i"];
+        float kd_i = doc["kd_i"];
         float setpoint_i = doc["setpoint_i"];
-        float Kp_o = doc["Kp_o"];
-        float Ki_o = doc["Ki_o"];
-        float Kd_o = doc["Kd_o"];
+        float kp_o = doc["kp_o"];
+        float ki_o = doc["ki_o"];
+        float kd_o = doc["kd_o"];
         float setpoint_o = doc["setpoint_o"];
-        Serial.println("Kp_i: " + String(Kp_i) +
-                       ", Ki_i: " + String(Ki_i) +
-                       ", Kd_i: " + String(Kd_i) +
+        Serial.println("kp_i: " + String(kp_i) +
+                       ", ki_i: " + String(ki_i) +
+                       ", kd_i: " + String(kd_i) +
                        ", Setpoint_i: " + String(setpoint_i) +
-                       ", Kp_o: " + String(Kp_o) +
-                       ", Ki_o: " + String(Ki_o) +
-                       ", Kd_o: " + String(Kd_o) +
+                       ", kp_o: " + String(kp_o) +
+                       ", ki_o: " + String(ki_o) +
+                       ", kd_o: " + String(kd_o) +
                        ", Setpoint_o: " + String(setpoint_o));
 
         // Use the callback given in the static class
-        PidController::setParams(PidParams(Kp_i, Ki_i, Kd_i, setpoint_i, Kp_o, Ki_o, Kd_o, setpoint_o));
+        PidController::setParams(PidParams(kp_i, ki_i, kd_i, setpoint_i, kp_o, ki_o, kd_o, setpoint_o));
     }
     else
     {
