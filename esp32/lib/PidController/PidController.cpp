@@ -1,6 +1,7 @@
 #include "PidController.h"
 
 // Initialise static class variables
+IWifi *PidController::wifi = nullptr;
 MPU6050 PidController::mpu;
 ESP32Timer PidController::ITimer(PID_TIMER_NO);
 Step PidController::step1(STEPPER_INTERVAL_US, STEPPER1_STEP_PIN, STEPPER1_DIR_PIN);
@@ -12,21 +13,24 @@ SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
 PidParams PidController::params(3, 0.00, 0.12, -2.5, 0.00, 0.00, 0.00, 0.00);
 PidDirection PidController::direction(0, 0);
 
-void PidController::setup()
+void PidController::setup(IWifi &wifi)
 {
-    mpu.begin();
+    // Set the wifi interface
+    PidController::wifi = &wifi;
+
+    mpu.begin(ULONG_MAX, wifi);
     pinMode(TOGGLE_PIN, OUTPUT);
 
     // Attach motor update ISR to timer to run every STEPPER_INTERVAL_US μs
     if (!ITimer.attachInterruptInterval(STEPPER_INTERVAL_US, timerHandler))
     {
-        Serial.println("Failed to start stepper interrupt");
+        wifi.println("Failed to start stepper interrupt");
         while (1)
         {
             delay(10);
         }
     }
-    Serial.println("Initialised Interrupt for Stepper");
+    wifi.println("Initialised Interrupt for Stepper");
 
     // Set motor acceleration values
     step1.setAccelerationRad(MOTOR_ACCEL_RAD);

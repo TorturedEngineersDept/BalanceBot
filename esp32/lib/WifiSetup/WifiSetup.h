@@ -1,14 +1,15 @@
 #pragma once
 
 #include <WiFi.h>
-#include <MqttSetup.h>
-#include <PidController.h>
-#include <Passwords.h>
+#include "MqttSetup.h"
+#include "PidController.h"
+#include "Passwords.h"
+#include "IWifi.h"
 
 #define MQTT_SERVER "18.132.10.124"
 #define MQTT_PORT 1883
 
-class WifiSetup
+class WifiSetup : public IWifi
 {
 public:
     WifiSetup(
@@ -50,6 +51,18 @@ public:
     void loop();
 
     /**
+     * Sends a message to the MQTT server, to print debug information.
+     * Also prints the message to the serial monitor.
+     */
+    void print(const char *message) override;
+
+    /**
+     * Sends a message to the MQTT server, to print debug information.
+     * Also prints the message to the serial monitor.
+     */
+    void println(const char *message) override;
+
+    /**
      * Callback function for MQTT messages.
      * Public to be testable.
      */
@@ -62,4 +75,5 @@ private:
     const char *username;
     const char *password;
     MqttSetup mqtt;
+    bool connected = false;
 };

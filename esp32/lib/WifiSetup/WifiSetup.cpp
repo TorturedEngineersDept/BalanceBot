@@ -1,5 +1,4 @@
 #include "WifiSetup.h"
-#include "PidController.h"
 #include "ESP32Ping.h"
 
 WifiSetup::WifiSetup(
@@ -70,6 +69,9 @@ void WifiSetup::connect(unsigned long timeout)
     // Setup MQTT
     mqtt.setCallback(callback);
     mqtt.connect(timeout - start);
+
+    // Done
+    connected = true;
 }
 
 void WifiSetup::getStrength() const
@@ -118,6 +120,27 @@ bool WifiSetup::mqttConnected()
 void WifiSetup::loop()
 {
     mqtt.loop();
+}
+
+void WifiSetup::print(const char *message)
+{
+    if (connected)
+    {
+        DebugMessage debugMessage(message);
+        mqtt.publishMessage(debugMessage);
+    }
+    Serial.print(message);
+}
+
+void WifiSetup::println(const char *message)
+{
+    if (connected)
+    {
+        std::string msg = std::string(message) + "\n";
+        DebugMessage debugMessage(msg.c_str());
+        mqtt.publishMessage(debugMessage);
+    }
+    Serial.println(message);
 }
 
 void WifiSetup::callback(char *topic, byte *payload, unsigned int length)

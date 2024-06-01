@@ -1,11 +1,11 @@
 // ESP32 Guide: https://RandomNerdTutorials.com/esp32-mpu-6050-accelerometer-gyroscope-arduino/
 
 #include <Arduino.h>
-#include "PidController.h"
 #include "WifiSetup.h"
+#include "PidController.h"
 
-// WifiSetup wifi(g_ssid, g_password, MQTT_SERVER, MQTT_PORT);
-WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
+WifiSetup wifi(g_ssid, g_password, MQTT_SERVER, MQTT_PORT);
+// WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
 // PidController is a static class, so we don't need to create an instance of it
 
 void pidLoop(void *pvParameters);
@@ -16,7 +16,7 @@ void setup()
 
     // Setup modules
     wifi.connect();
-    // PidController::setup();
+    PidController::setup(wifi);
 
     // Setup the pidLoop
     // xTaskCreatePinnedToCore(

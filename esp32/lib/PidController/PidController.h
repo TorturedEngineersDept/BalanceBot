@@ -1,10 +1,11 @@
 #pragma once
 
 #include <Arduino.h>
-#include <TimerInterrupt_Generic.h>
 #include <freertos/semphr.h>
+#include <TimerInterrupt_Generic.h>
 #include "MPU6050.h"
 #include "Step.h"
+#include "IWifi.h"
 
 // The Stepper pins
 #define STEPPER1_DIR_PIN 16  // Arduino D9
@@ -50,7 +51,7 @@ class PidController
 public:
     PidController() = delete;
 
-    static void setup();
+    static void setup(IWifi &wifi);
     static void loop();
 
     /**
@@ -76,6 +77,7 @@ public:
 private:
     static bool timerHandler(void *args);
 
+    static IWifi *wifi;
     static MPU6050 mpu;
     static ESP32Timer ITimer;
     static Step step1;
