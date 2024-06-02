@@ -1,4 +1,5 @@
 #include "MPU6050.h"
+#include "WifiSetup.h"
 #include <Arduino.h>
 #include <Wire.h>
 #include <unity.h>
@@ -9,7 +10,8 @@ void setUp(void)
 {
     // This will be run before each test
     Wire.begin();
-    TEST_ASSERT_TRUE_MESSAGE(mpu.begin(100), "Failed to initialize MPU6050");
+    WifiSetup wifi("ssid", "password", "mqtt_server", 1883);
+    TEST_ASSERT_TRUE_MESSAGE(mpu.begin(100, wifi), "Failed to initialize MPU6050");
 }
 
 void tearDown(void)
