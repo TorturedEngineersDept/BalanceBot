@@ -1,0 +1,49 @@
+.home-container {
+    background-image: url('/public/landing_page.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100vh;
+    /* Full viewport height */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.home-content {
+    max-width: 400px;
+    text-align: right;
+    color: black;
+    /* Set text color to black */
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Light background for readability */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.home-title {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.home-paragraph {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.home-button {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.home-button:hover {
+    background-color: darkblue;
+}

@@ -1,0 +1,89 @@
+.control-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    /* Full viewport height */
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.control-left,
+.control-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.control-left {
+    padding-right: 10px;
+    /* Space between the two halves */
+}
+
+.control-right {
+    padding-left: 10px;
+    /* Space between the two halves */
+}
+
+.camera-feed,
+.map {
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 10px;
+    flex: 1;
+    min-height: 200px;
+    /* Adjust height as needed */
+    position: relative;
+    /* Add relative positioning for the top bar */
+    overflow: hidden;
+    /* Ensure content doesn't overflow */
+}
+
+.joystick,
+.cli {
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.joystick {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 150px;
+}
+
+.joystick-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 80%;
+}
+
+.cli {
+    display: flex;
+    align-items: center;
+}
+
+.cli input {
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.cli button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cli button:hover {
+    background-color: darkblue;
+}
