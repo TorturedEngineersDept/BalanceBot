@@ -51,7 +51,11 @@ class PidController
 public:
     PidController() = delete;
 
-    static void setup(IWifi &wifi);
+    /**
+     * Setup the PID controller.
+     * @return true if the setup was successful, false otherwise.
+     */
+    static bool setup(IWifi &wifi, unsigned long timeout = ULONG_MAX);
     static void loop();
 
     /**
@@ -88,7 +92,6 @@ private:
     static SemaphoreHandle_t directionMutex;
 
     // Class constants
-    static constexpr int PRINT_INTERVAL = 50;
     static constexpr double LOOP_INTERVAL = 5;
     static constexpr int STEPPER_INTERVAL_US = 10;
     static constexpr float MOTOR_ACCEL_RAD = 30.0;

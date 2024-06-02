@@ -69,9 +69,6 @@ void WifiSetup::connect(unsigned long timeout)
     // Setup MQTT
     mqtt.setCallback(callback);
     mqtt.connect(timeout - start);
-
-    // Done
-    connected = true;
 }
 
 void WifiSetup::getStrength() const
@@ -124,7 +121,7 @@ void WifiSetup::loop()
 
 void WifiSetup::print(const char *message)
 {
-    if (connected)
+    if (mqttConnected())
     {
         DebugMessage debugMessage(message);
         mqtt.publishMessage(debugMessage);
@@ -134,7 +131,7 @@ void WifiSetup::print(const char *message)
 
 void WifiSetup::println(const char *message)
 {
-    if (connected)
+    if (mqttConnected())
     {
         std::string msg = std::string(message) + "\n";
         DebugMessage debugMessage(msg.c_str());

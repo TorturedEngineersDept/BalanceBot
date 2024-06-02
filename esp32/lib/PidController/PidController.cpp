@@ -13,23 +13,36 @@ SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
 PidParams PidController::params(3, 0.00, 0.12, -2.5, 0.00, 0.00, 0.00, 0.00);
 PidDirection PidController::direction(0, 0);
 
-void PidController::setup(IWifi &wifi)
+bool PidController::setup(IWifi &wifi, unsigned long timeout)
 {
     // Set the wifi interface
     PidController::wifi = &wifi;
+    unsigned long start = 0;
 
-    mpu.begin(ULONG_MAX, wifi);
+    // Timeout not entirely accurate, but good enough
+    if (!mpu.begin(timeout, wifi))
+    {
+        return false;
+    }
+
     pinMode(TOGGLE_PIN, OUTPUT);
 
     // Attach motor update ISR to timer to run every STEPPER_INTERVAL_US μs
     if (!ITimer.attachInterruptInterval(STEPPER_INTERVAL_US, timerHandler))
     {
         wifi.println("Failed to start stepper interrupt");
-        while (1)
+        while (start < timeout)
         {
             delay(10);
+            start += 10;
         }
     }
+
+    if (start >= timeout)
+    {
+        return false;
+    }
+
     wifi.println("Initialised Interrupt for Stepper");
 
     // Set motor acceleration values
@@ -39,6 +52,8 @@ void PidController::setup(IWifi &wifi)
     // Enable the stepper motor drivers
     pinMode(STEPPER_EN, OUTPUT);
     digitalWrite(STEPPER_EN, false);
+
+    return true;
 }
 
 void PidController::loop()
@@ -118,28 +133,31 @@ void PidController::stabilizedLoop()
     float speed = direction.speed;
     float angle = direction.angle;
 
-    const float SPEED = 10;
+    float realSpeed = speed / 10;
 
-    // Snap to forwards if angle is close to 0
-    if (angle < 45 || angle > 315)
+    if (angle < PI / 4 && angle > -PI / 4)
     {
-        step1.setTargetSpeedRad(SPEED);
-        step2.setTargetSpeedRad(SPEED);
+        // Right
+        step1.setTargetSpeedRad(realSpeed);
+        step2.setTargetSpeedRad(realSpeed);
     }
-    else if (angle > 45 && angle < 135)
+    else if (angle > PI / 4 && angle < 3 * PI / 4)
     {
-        step1.setTargetSpeedRad(-SPEED);
-        step2.setTargetSpeedRad(SPEED);
+        // Forwards
+        step1.setTargetSpeedRad(-realSpeed);
+        step2.setTargetSpeedRad(realSpeed);
     }
-    else if (angle > 135 && angle < 225)
+    else if (angle > 3 * PI / 4 || angle < -3 * PI / 4)
     {
-        step1.setTargetSpeedRad(-SPEED);
-        step2.setTargetSpeedRad(-SPEED);
+        // Left
+        step1.setTargetSpeedRad(-realSpeed);
+        step2.setTargetSpeedRad(-realSpeed);
     }
     else
     {
-        step1.setTargetSpeedRad(SPEED);
-        step2.setTargetSpeedRad(-SPEED);
+        // Backwards
+        step1.setTargetSpeedRad(realSpeed);
+        step2.setTargetSpeedRad(-realSpeed);
     }
 }
 
