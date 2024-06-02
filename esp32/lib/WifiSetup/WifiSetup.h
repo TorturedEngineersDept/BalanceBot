@@ -75,5 +75,4 @@ private:
     const char *username;
     const char *password;
     MqttSetup mqtt;
-    bool connected = false;
 };
