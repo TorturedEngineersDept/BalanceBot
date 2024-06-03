@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import CanvasJSReact from '@canvasjs/react-charts';
+import { fetchData, initializeMQTT } from '../components/BatteryGraph';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -14,19 +15,33 @@ const Dashboard = () => {
         setSelectedSection(event.target.value);
     };
 
-    // simulate data arriving.
     // TODO: interface this with real data in the backend.
     useEffect(() => {
-        const interval = setInterval(() => {
-            setTime(prevTime => prevTime + 1000);
-            const newBatteryData = { x: new Date(time), y: Math.random() * 100 };
-            const newPowerData = { x: new Date(time), y: Math.random() * 100 };
 
-            setBatteryData(prevData => [...prevData, newBatteryData].slice(-20));
-            setPowerData(prevData => [...prevData, newPowerData].slice(-20));
-        }, 1000);
+        // Fetch battery readings from DynamoDB database
+        const runId = '2';
+        fetchData(runId)
+            .then(initialData => {
+                console.log('Fetched initial data:', initialData);
+                setBatteryData(initialData);
+            })
+            .catch(error => {
+                console.error('Error fetching initial data:', error);
+            });
 
-        return () => clearInterval(interval);
+        // MQTT Client setup
+        initializeMQTT(setBatteryData);
+
+        // const interval = setInterval(() => {
+        //     setTime(prevTime => prevTime + 1000);
+        //     const newPowerData = { x: new Date(time), y: Math.random() * 100 };
+        //     setPowerData(prevData => [...prevData, newPowerData].slice(-20));
+        // }, 1000);
+
+
+        return () => {
+            // clearInterval(interval);
+        };
     }, [time]);
 
     const batteryOptions = {
