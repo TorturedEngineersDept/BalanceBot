@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "BalanceBotSymbolLibrary")(type "KiCad")(uri "${KIPRJMOD}/lib/BalanceBotSymbolLibrary.kicad_sym")(options "")(descr ""))
+  (lib (name "usini_sensors")(type "Legacy")(uri "${KIPRJMOD}/lib/usini_kicad_sensors/usini_sensors.lib")(options "")(descr ""))
+)
