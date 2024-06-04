@@ -25,3 +25,19 @@
     margin: 4px 2px;
     cursor: pointer;
 }
+
+.wasd-control button:active {
+    /* Add your active button styles here. For example: */
+    background-color: #3e8e41;
+    /* Darker green */
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
+.wasd-control .active {
+    /* Add your active button styles here. For example: */
+    background-color: #3e8e41;
+    /* Darker green */
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
