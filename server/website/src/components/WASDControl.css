@@ -1,0 +1,27 @@
+/* WASDControl.css */
+.wasd-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.wasd-control .button-side {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.wasd-control button {
+    /* Add your button styles here. For example: */
+    background-color: #4CAF50;
+    /* Green */
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
