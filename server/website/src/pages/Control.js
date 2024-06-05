@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Control.css';
 import Joystick from '../components/Joystick'; // Adjust the import path as needed
 import TopBar from '../components/TopBar'; // Adjust the import path as needed
+import WASDControl from '../components/WASDControl';
 
 const Control = () => {
     const [batteryPercentage, setBatteryPercentage] = useState(0);
@@ -23,8 +24,8 @@ const Control = () => {
                     {/* Empty frame for Camera Feed */}
                 </div>
                 <div className="joystick">
-                    <h2>Joystick</h2>
-                    <Joystick />
+                    <h2>WASD</h2>
+                    <WASDControl />
                 </div>
                 <div className="cli">
                     <input type="text" placeholder="Text field area" />
