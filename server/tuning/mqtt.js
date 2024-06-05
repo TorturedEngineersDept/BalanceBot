@@ -18,16 +18,45 @@ client.on('connect', function () {
             console.log('Subscribed to user/pid');
         }
     });
+    client.subscribe('tuning/graphing', function (err) {
+        if (!err) {
+            console.log('Subscribed to tuning/graphing');
+        }
+    });
 });
 
 client.on('message', function (topic, message) {
     console.log('Received message:', message.toString());
 
-    // Parse the message
     const data = JSON.parse(message.toString());
 
-    // Add the new data to the table
-    addRowToTables(data);
+    if (topic === "user/pid") {
+        addRowToTables(data);
+    }
+
+    if (topic === 'tuning/graphing') {
+        const timestamp = data.timestamp;
+        const tilt = data.tilt;
+        const velocity = data.velocity;
+
+        // Inner loop chart
+        innerLoopChart.data.labels.push(timestamp);
+        innerLoopChart.data.datasets[0].data.push(tilt);
+        if (innerLoopChart.data.labels.length > 30) {
+            innerLoopChart.data.labels.shift();
+            innerLoopChart.data.datasets[0].data.shift();
+        }
+        innerLoopChart.update('none');
+
+        // Outer loop chart
+        outerLoopChart.data.labels.push(timestamp);
+        outerLoopChart.data.datasets[0].data.push(velocity);
+        if (outerLoopChart.data.labels.length > 30) {
+            outerLoopChart.data.labels.shift();
+            outerLoopChart.data.datasets[0].data.shift();
+        }
+        outerLoopChart.update('none');
+    }
 });
 
 // Handle connection events
@@ -173,3 +202,76 @@ function addRowToTables(data) {
     ki_oCell.textContent = data.ki_o;
     setpoint_oCell.textContent = data.setpoint_o;
 }
+
+
+const innerLoopCtx = document.getElementById('innerLoopGraph').getContext('2d');
+const outerLoopCtx = document.getElementById('outerLoopGraph').getContext('2d');
+
+const innerLoopChart = new Chart(innerLoopCtx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Tilt',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'linear',
+                position: 'bottom',
+                title: {
+                    display: true,
+                    text: 'Timestamp'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Tilt'
+                },
+                suggestedMin: -1,
+                suggestedMax: 1
+            }
+        }
+    }
+});
+
+const outerLoopChart = new Chart(outerLoopCtx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Velocity',
+            data: [],
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'linear',
+                position: 'bottom',
+                title: {
+                    display: true,
+                    text: 'Timestamp'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Velocity'
+                },
+                // TODO: Change this for axis
+                // suggestedMin: -,
+                // suggestedMax: 10
+            }
+        }
+    }
+});

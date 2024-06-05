@@ -2,6 +2,8 @@
 <html>
     <header>
         <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
         <style>
             .tuning {
                 display: flex;
@@ -12,6 +14,11 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
+                width: 45%;
+            }
+            canvas {
+                width: 100% !important;
+                height: 500px !important;
             }
         </style>
     </header>
@@ -25,13 +32,13 @@
                 <h2>Inner Loop</h2>
                 <form onsubmit="handleSubmitInner(event)">
                     <label for="kp_i">Proportional Gain</label>
-                    <input type="number" id="kp_i" name="KP_i" min="0" step="0.000001"><br><br>
+                    <input type="number" id="kp_i" name="KP_i" step="0.000001"><br><br>
                     <label for="kd_i">Derivative Gain</label>
-                    <input type="number" id="kd_i" name="KD_i" min="0" step="0.000001"><br><br>
+                    <input type="number" id="kd_i" name="KD_i" step="0.000001"><br><br>
                     <label for="ki_i">Integral Gain</label>
-                    <input type="number" id="ki_i" name="KI_i" min="0" step="0.000001"><br><br>
+                    <input type="number" id="ki_i" name="KI_i" step="0.000001"><br><br>
                     <label for="setpoint_i">Setpoint</label>
-                    <input type="number" id="setpoint_i" name="SETPOINT_i" min="0" step="0.000001"><br><br>
+                    <input type="number" id="setpoint_i" name="SETPOINT_i" step="0.000001"><br><br>
                     <input type="submit" value="Submit">
                 </form>
 
@@ -55,18 +62,20 @@
                         <!-- Rows will be added here dynamically -->
                     </tbody>
                 </table>
+                <h2>Inner Loop Graph</h2>
+                <canvas id="innerLoopGraph"></canvas>
             </div>
             <div id="outer-loop" class="outer-loop">
                 <h2>Outer Loop</h2>
                 <form onsubmit="handleSubmitOuter(event)">
                     <label for="kp_o">Proportional Gain</label>
-                    <input type="number" id="kp_o" name="KP_o" min="0" step="0.000001"><br><br>
+                    <input type="number" id="kp_o" name="KP_o" step="0.000001"><br><br>
                     <label for="kd_o">Derivative Gain</label>
-                    <input type="number" id="kd_o" name="KD_o" min="0" step="0.000001"><br><br>
+                    <input type="number" id="kd_o" name="KD_o" step="0.000001"><br><br>
                     <label for="ki_o">Integral Gain</label>
-                    <input type="number" id="ki_o" name="KI_o" min="0" step="0.000001"><br><br>
+                    <input type="number" id="ki_o" name="KI_o" step="0.000001"><br><br>
                     <label for="setpoint_o">Setpoint</label>
-                    <input type="number" id="setpoint_o" name="SETPOINT_o" min="0" step="0.000001"><br><br>
+                    <input type="number" id="setpoint_o" name="SETPOINT_o" step="0.000001"><br><br>
                     <input type="submit" value="Submit">
                 </form>
                 <h2>Received PID Tuning Values</h2>
@@ -89,6 +98,8 @@
                         <!-- Rows will be added here dynamically -->
                     </tbody>
                 </table>
+                <h2>Outer Loop Graph</h2>
+                <canvas id="outerLoopGraph"></canvas>
             </div>
         </div>
         <script src="mqtt.js"></script>
