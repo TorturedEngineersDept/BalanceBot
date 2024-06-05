@@ -4,19 +4,22 @@ import Home from './pages/Home';
 import Control from './pages/Control';
 import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
+import { GlobalProvider } from './context/GlobalState';
 
 function App() {
   return (
-    <Router>
-      <div>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/control" element={<Control />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </div>
-    </Router>
+    <GlobalProvider>
+      <Router>
+        <div>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/control" element={<Control />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </div>
+      </Router>
+    </GlobalProvider>
   );
 }
 

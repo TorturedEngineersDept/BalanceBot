@@ -1,48 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Dashboard.css';
 import CanvasJSReact from '@canvasjs/react-charts';
-import { fetchData, initializeMQTT } from '../components/BatteryGraph';
+import { fetchData } from '../utils/dataService';
+import { initializeMQTT } from '../utils/mqttServiceDashboard';
+import { GlobalContext } from '../context/GlobalState';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const Dashboard = () => {
+    const { runId, setBatteryPercentage } = useContext(GlobalContext);
     const [selectedSection, setSelectedSection] = useState('Inner Loop PID');
     const [batteryData, setBatteryData] = useState([]);
     const [powerData, setPowerData] = useState([]);
-    const [time, setTime] = useState(new Date().getTime());
 
     const handleSectionChange = (event) => {
         setSelectedSection(event.target.value);
     };
 
-    // TODO: interface this with real data in the backend.
     useEffect(() => {
+        if (runId) {
+            fetchData(runId)
+                .then(initialData => {
+                    console.log('Fetched initial data:', initialData);
+                    setBatteryData(initialData);
+                })
+                .catch(error => {
+                    console.error('Error fetching initial data:', error);
+                });
 
-        // Fetch battery readings from DynamoDB database
-        const runId = '2';
-        fetchData(runId)
-            .then(initialData => {
-                console.log('Fetched initial data:', initialData);
-                setBatteryData(initialData);
-            })
-            .catch(error => {
-                console.error('Error fetching initial data:', error);
-            });
+            initializeMQTT(setBatteryPercentage, setBatteryData, runId, 'esp32/battery/dashboard');
+        }
+    }, [runId, setBatteryPercentage]);
 
-        // MQTT Client setup
-        initializeMQTT(setBatteryData);
-
-        // const interval = setInterval(() => {
-        //     setTime(prevTime => prevTime + 1000);
-        //     const newPowerData = { x: new Date(time), y: Math.random() * 100 };
-        //     setPowerData(prevData => [...prevData, newPowerData].slice(-20));
-        // }, 1000);
-
-
-        return () => {
-            // clearInterval(interval);
-        };
-    }, [time]);
+    useEffect(() => {
+        console.log('Battery data updated:', batteryData);
+    }, [batteryData]);
 
     const batteryOptions = {
         title: {
@@ -118,10 +110,20 @@ const Dashboard = () => {
                     )}
 
                     {selectedSection === 'Miscellaneous' && (
-                        <div className="input-group">
-                            <label>Setpoint</label>
-                            <input type="text" placeholder="Placeholder" />
-                        </div>
+                        <>
+                            <div className="input-group">
+                                <label>Angle Setpoint</label>
+                                <input type="text" placeholder="Placeholder" />
+                            </div>
+                            <div className="input-group">
+                                <label>Velocity Setpoint</label>
+                                <input type="text" placeholder="Placeholder" />
+                            </div>
+                            <div className="input-group">
+                                <label>Complementary Filter Coefficient</label>
+                                <input type="text" placeholder="Placeholder" />
+                            </div>
+                        </>
                     )}
 
                     <button className="button">Submit</button>

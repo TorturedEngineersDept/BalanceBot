@@ -1,13 +1,18 @@
+# This script should be run as DAEMON on EC2 instance
+
 import boto3
 import paho.mqtt.client as mqtt
 import json
 from concurrent.futures import ThreadPoolExecutor
 from botocore.exceptions import ClientError
+import os
+import signal
+import sys
 
-# MQTT settings
-broker = '18.132.10.124'
-port = 1883
-topics = ["esp32/battery"]
+# MQTT settings from environment variables or defaults
+broker = os.getenv('MQTT_BROKER', '18.132.10.124')
+port = int(os.getenv('MQTT_PORT', 1883))
+topics = os.getenv('MQTT_TOPICS', "esp32/battery").split(',')
 
 # DynamoDB settings
 dynamodb = boto3.resource('dynamodb', region_name='eu-west-2')
@@ -20,40 +25,40 @@ executor = ThreadPoolExecutor(max_workers=10)
 
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
+    print(f"Connected with result code {rc}")
     for topic in topics:
         client.subscribe(topic)
 
 
 def on_message(client, userdata, msg):
+    print(f"Received message on topic {msg.topic}")
     if msg.topic == "esp32/battery":
         process_battery(msg)
     else:
         print(f"Unknown topic: {msg.topic}")
 
-# ====== HANDLE BATTERY MESSAGE =========
+# Handle battery message
 
 
 def process_battery(msg):
     try:
-        print("Received battery message:", msg.payload.decode())
+        print("Processing battery message")
         data = json.loads(msg.payload.decode())
-        run_id = data['RunID']
+        run_id = data['run_id']
         timestamp = data['timestamp']
         battery = data['battery']
 
         # Submit the database operation to the ThreadPoolExecutor
-        future = executor.submit(create_battery_entry,
-                                 run_id, timestamp, battery)
+        executor.submit(create_battery_entry, run_id, timestamp, battery)
     except Exception as e:
-        print("Error processing battery message:", str(e))
+        print(f"Error processing battery message: {str(e)}")
 
 
 def create_battery_entry(run_id, timestamp, battery):
     try:
         runs.put_item(
             Item={
-                'RunID': f'{run_id}',
+                'RunId': run_id,
                 'DataType-Timestamp': f'Battery-{timestamp}',
                 'Timestamp': timestamp,
                 'Battery': battery
@@ -64,34 +69,23 @@ def create_battery_entry(run_id, timestamp, battery):
         print(
             f'Error creating battery entry for timestamp: {timestamp}, error: {e}')
 
-
-# Initialize the counter table
-def initialize_counters():
-    try:
-        counter_table.put_item(
-            Item={'CounterName': 'BotID', 'LastBotID': 0},
-            ConditionExpression='attribute_not_exists(CounterName)'
-        )
-        print("BotID counter initialized.")
-    except ClientError as e:
-        if e.response['Error']['Code'] != 'ConditionalCheckFailedException':
-            print(
-                f"Unexpected error occurred during BotID initialization: {e}")
-
-    try:
-        counter_table.put_item(
-            Item={'CounterName': 'RunID', 'LastRunID': 0},
-            ConditionExpression='attribute_not_exists(CounterName)'
-        )
-        print("RunID counter initialized.")
-    except ClientError as e:
-        if e.response['Error']['Code'] != 'ConditionalCheckFailedException':
-            print(
-                f"Unexpected error occurred during RunID initialization: {e}")
+# Handle graceful shutdown
 
 
-initialize_counters()
+def signal_handler(sig, frame):
+    print("Shutting down gracefully...")
+    client.disconnect()
+    client.loop_stop()
+    executor.shutdown(wait=True)
+    print("Shutdown complete")
+    sys.exit(0)
 
+
+# Register signal handlers for graceful shutdown
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+
+# Main
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message

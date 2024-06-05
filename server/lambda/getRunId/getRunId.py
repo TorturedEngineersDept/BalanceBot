@@ -22,6 +22,11 @@ def lambda_handler(event, context):
     if not mac_address:
         return {
             'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET'
+            },
             'body': json.dumps({
                 'error': 'MAC address is required'
             })
@@ -72,6 +77,11 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET'
+            },
             'body': json.dumps({
                 'BotId': bot_id,
                 'RunId': run_id
@@ -82,6 +92,11 @@ def lambda_handler(event, context):
         print(f"ClientError: {str(e)}")
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET'
+            },
             'body': json.dumps({
                 'error': str(e)
             })
@@ -91,6 +106,11 @@ def lambda_handler(event, context):
         print(f"Exception: {str(e)}")
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET'
+            },
             'body': json.dumps({
                 'error': str(e)
             })
