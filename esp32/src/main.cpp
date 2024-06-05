@@ -8,6 +8,9 @@ WifiSetup wifi(g_ssid, g_password, MQTT_SERVER, MQTT_PORT);
 // WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
 // PidController is a static class, so we don't need to create an instance of it
 
+// Declare variables for RunID and BotID
+int BotID, RunID;
+
 void pidLoop(void *pvParameters);
 
 void setup()
@@ -16,17 +19,17 @@ void setup()
 
     // Setup modules
     wifi.connect();
-    PidController::setup(wifi);
+    // PidController::setup(wifi);
 
-    // Setup the pidLoop
-    xTaskCreatePinnedToCore(
-        pidLoop,   /* Task function. */
-        "pidLoop", /* name of task. */
-        10000,     /* Stack size of task = 40 KB */
-        NULL,      /* parameter of the task */
-        1,         /* priority of the task */
-        NULL,      /* Task handle to keep track of created task */
-        1);        /* pin task to core 1 */
+    // // Setup the pidLoop
+    // xTaskCreatePinnedToCore(
+    //     pidLoop,   /* Task function. */
+    //     "pidLoop", /* name of task. */
+    //     10000,     /* Stack size of task = 40 KB */
+    //     NULL,      /* parameter of the task */
+    //     1,         /* priority of the task */
+    //     NULL,      /* Task handle to keep track of created task */
+    //     1);        /* pin task to core 1 */
 }
 
 void loop()
@@ -38,6 +41,6 @@ void pidLoop(void *pvParameters)
 {
     while (true)
     {
-        PidController::loop();
+        // PidController::loop();
     }
 }

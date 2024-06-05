@@ -2,6 +2,11 @@
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    /* Ensures space between nav-links and login form */
+    align-items: center;
+    /* Aligns items vertically */
 }
 
 .nav-links {
@@ -30,4 +35,37 @@
 
 .nav-links a:hover {
     color: black;
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+}
+
+.login-form {
+    display: flex;
+    align-items: center;
+}
+
+.login-form input {
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-form button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #c3c2c2;
+    color: #fff;
+    cursor: pointer;
+    color: black;
+    font-size: 13px;
+}
+
+.login-form button:hover {
+    background-color: rgb(120, 120, 120);
+    color: white;
 }

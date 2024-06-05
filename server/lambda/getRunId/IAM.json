@@ -1,0 +1,19 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:Query",
+                "dynamodb:PutItem"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:eu-west-2:590183976402:table/RunID",
+                "arn:aws:dynamodb:eu-west-2:590183976402:table/Counter",
+                "arn:aws:dynamodb:eu-west-2:590183976402:table/BotID"
+            ]
+        }
+    ]
+}
