@@ -4,6 +4,8 @@
 #include <WiFiClient.h>
 #include "MqttMessage.h"
 
+extern int RunID;
+extern int BotID;
 class MqttSetup
 {
 public:
