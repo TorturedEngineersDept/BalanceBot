@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import './Control.css';
-import Joystick from '../components/Joystick'; // Adjust the import path as needed
-import TopBar from '../components/TopBar'; // Adjust the import path as needed
+import TopBar from '../components/TopBar';
 import WASDControl from '../components/WASDControl';
+import { initializeMQTT } from '../utils/mqttServiceControl';
+import { GlobalContext } from '../context/GlobalState';
 
 const Control = () => {
-    const [batteryPercentage, setBatteryPercentage] = useState(0);
+    const { runId, batteryPercentage, setBatteryPercentage } = useContext(GlobalContext);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setBatteryPercentage(prev => (prev >= 100 ? 0 : prev + 1));
-        }, 50); // Update every 50ms to animate faster
-
-        return () => clearInterval(interval);
-    }, []);
+        if (runId) {
+            initializeMQTT(setBatteryPercentage, runId, 'esp32/battery');
+        }
+    }, [runId, setBatteryPercentage]);
 
     return (
         <div className="control-container">

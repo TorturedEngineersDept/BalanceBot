@@ -22,6 +22,11 @@ def lambda_handler(event, context):
         if not bot_id:
             return {
                 'statusCode': 400,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'POST'
+                },
                 'body': json.dumps({
                     'error': 'BotID is required'
                 })
@@ -35,6 +40,11 @@ def lambda_handler(event, context):
         else:
             return {
                 'statusCode': 404,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'POST'
+                },
                 'body': json.dumps({
                     'error': 'BotID not found'
                 })
@@ -42,6 +52,11 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'POST'
+            },
             'body': json.dumps({
                 'RunId': run_id
             }, default=decimal_default)
@@ -50,6 +65,11 @@ def lambda_handler(event, context):
         print(f"ClientError: {str(e)}")
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'POST'
+            },
             'body': json.dumps({
                 'error': str(e)
             })
@@ -58,6 +78,11 @@ def lambda_handler(event, context):
         print(f"Exception: {str(e)}")
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'POST'
+            },
             'body': json.dumps({
                 'error': str(e)
             })

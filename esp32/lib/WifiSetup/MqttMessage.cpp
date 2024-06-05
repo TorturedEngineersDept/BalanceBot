@@ -7,6 +7,7 @@ void BatteryMessage::toJson(char *buffer, size_t bufferSize)
 {
     doc.clear();
     doc["run_id"] = RunID;
+    doc["timestamp"] = millis();
     doc["battery"] = batteryLevel;
     serializeJson(doc, buffer, bufferSize);
 }
