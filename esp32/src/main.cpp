@@ -4,8 +4,8 @@
 #include "WifiSetup.h"
 #include "PidController.h"
 
-WifiSetup wifi(g_ssid, g_password, MQTT_SERVER, MQTT_PORT);
-// WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
+// WifiSetup wifi(g_ssid, g_password, MQTT_SERVER, MQTT_PORT);
+WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
 // PidController is a static class, so we don't need to create an instance of it
 
 // The loop interval in milliseconds (should be ULONG_MAX for normal operation)
@@ -43,6 +43,7 @@ void pidLoop(void *pvParameters)
 {
     while (true)
     {
-        PidController::loop();
+        // PidController::loop();
+        PidController::stabilizedLoop();
     }
 }

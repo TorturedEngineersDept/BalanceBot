@@ -133,28 +133,31 @@ void PidController::stabilizedLoop()
     float speed = direction.speed;
     float angle = direction.angle;
 
-    const float SPEED = 10;
+    float realSpeed = speed / 10;
 
-    // Snap to forwards if angle is close to 0
-    if (angle < 45 || angle > 315)
+    if (angle < PI / 4 && angle > -PI / 4)
     {
-        step1.setTargetSpeedRad(SPEED);
-        step2.setTargetSpeedRad(SPEED);
+        // Right
+        step1.setTargetSpeedRad(realSpeed);
+        step2.setTargetSpeedRad(realSpeed);
     }
-    else if (angle > 45 && angle < 135)
+    else if (angle > PI / 4 && angle < 3 * PI / 4)
     {
-        step1.setTargetSpeedRad(-SPEED);
-        step2.setTargetSpeedRad(SPEED);
+        // Forwards
+        step1.setTargetSpeedRad(-realSpeed);
+        step2.setTargetSpeedRad(realSpeed);
     }
-    else if (angle > 135 && angle < 225)
+    else if (angle > 3 * PI / 4 || angle < -3 * PI / 4)
     {
-        step1.setTargetSpeedRad(-SPEED);
-        step2.setTargetSpeedRad(-SPEED);
+        // Left
+        step1.setTargetSpeedRad(-realSpeed);
+        step2.setTargetSpeedRad(-realSpeed);
     }
     else
     {
-        step1.setTargetSpeedRad(SPEED);
-        step2.setTargetSpeedRad(-SPEED);
+        // Backwards
+        step1.setTargetSpeedRad(realSpeed);
+        step2.setTargetSpeedRad(-realSpeed);
     }
 }
 

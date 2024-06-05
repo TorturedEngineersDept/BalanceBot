@@ -23,6 +23,8 @@ client.on('connect', function () {
     });
     client.subscribe('esp32/battery');
     client.subscribe('esp32/mapping');
+    client.subscribe('rpi/connection');
+
 });
 
 client.on('message', function (topic, message) {
