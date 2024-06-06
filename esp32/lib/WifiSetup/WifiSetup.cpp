@@ -123,6 +123,7 @@ bool WifiSetup::mqttConnected()
 void WifiSetup::loop()
 {
     mqtt.loop();
+    delay(100); // <- fixes some issues with WiFi stability
 }
 
 void WifiSetup::print(const char *message)
@@ -176,11 +177,31 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
         if (strcmp(topic, "user/joystick") == 0)
         {
             // Extract values from the JSON document
-            float speed = doc["speed"];
-            float angle = doc["angle"];
-            Serial.println("Speed: " + String(speed) + ", Angle: " + String(angle));
+            float speed = 100; // Being overwritten in PidController:StabilisedLoop for some reason
+            const char *speedStr = doc["direction"];
 
-            PidController::setDirection(PidDirection(speed, angle));
+            KeyDirection key_dir;
+            switch (speedStr[0])
+            {
+            case 'A':
+                key_dir = KeyDirection::LEFT;
+                break;
+            case 'D':
+                key_dir = KeyDirection::RIGHT;
+                break;
+            case 'W':
+                key_dir = KeyDirection::FORWARD;
+                break;
+            case 'S':
+                key_dir = KeyDirection::BACKWARD;
+                break;
+            default:
+                key_dir = KeyDirection::STOP;
+            }
+
+            Serial.println("Speed: " + String(speed) + ", key_dir: " + String(key_dir));
+
+            PidController::setDirection(PidDirection(speed, key_dir));
         }
         else if (strcmp(topic, "user/pid") == 0)
         {

@@ -1,10 +1,12 @@
 import mqtt from 'mqtt';
 
+let client;
+
 export const initializeMQTT = (setBatteryPercentage, globalRunId, topic) => {
     const MQTT_BROKER = "18.132.10.124";
     const MQTT_PORT = 8000;
 
-    const client = mqtt.connect(`ws://${MQTT_BROKER}:${MQTT_PORT}`, {
+    client = mqtt.connect(`ws://${MQTT_BROKER}:${MQTT_PORT}`, {
         reconnectPeriod: 1000,
         connectTimeout: 30 * 1000,
         keepalive: 60
@@ -47,4 +49,16 @@ export const initializeMQTT = (setBatteryPercentage, globalRunId, topic) => {
     client.on('offline', () => {
         console.log('MQTT client offline');
     });
+};
+
+export const SendDirections = (key, globalRunId) => {
+    if (!client) {
+        console.error('MQTT client is not initialized');
+        return;
+    }
+    const message = JSON.stringify({
+        run_id: globalRunId,
+        direction: key
+    });
+    client.publish('user/joystick', message);
 };
