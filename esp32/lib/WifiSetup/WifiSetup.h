@@ -8,7 +8,7 @@
 #include "Passwords.h"
 #include "IWifi.h"
 
-#define MQTT_SERVER "18.132.10.124"
+#define MQTT_SERVER "52.56.230.245"
 #define MQTT_PORT 1883
 
 extern int RunID;

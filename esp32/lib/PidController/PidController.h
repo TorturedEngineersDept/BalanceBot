@@ -20,6 +20,15 @@
 // Diagnostic pin for oscilloscope
 #define TOGGLE_PIN 32 // Arduino A4
 
+enum KeyDirection
+{
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT,
+    STOP = -1
+};
+
 struct PidParams
 {
     PidParams(float ki_i, float kp_i, float kd_i, float setpoint_i,
@@ -39,11 +48,11 @@ struct PidParams
 
 struct PidDirection
 {
-    PidDirection(float speed, float angle)
-        : speed(speed), angle(angle) {}
+    PidDirection(float speed, KeyDirection key_dir)
+        : speed(speed), key_dir(key_dir) {}
 
     float speed;
-    float angle;
+    KeyDirection key_dir;
 };
 
 class PidController

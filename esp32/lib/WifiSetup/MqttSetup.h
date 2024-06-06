@@ -37,6 +37,4 @@ private:
     int lastMsgSent = 0;
     int delayMsgSent = 2000;
     int batteryLevel = 100;
-    float speed;
-    float angle;
 };

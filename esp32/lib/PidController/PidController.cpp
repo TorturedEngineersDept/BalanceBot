@@ -11,7 +11,7 @@ SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
 
 // Initialise PID parameters using known values
 PidParams PidController::params(3, 0.00, 0.12, -2.5, 0.00, 0.00, 0.00, 0.00);
-PidDirection PidController::direction(0, 0);
+PidDirection PidController::direction(0, KeyDirection::STOP);
 
 void PidController::setup(IWifi &wifi)
 {
@@ -111,35 +111,53 @@ void PidController::loop()
 void PidController::stabilizedLoop()
 {
     // We don't care about PID stability here.
-    // Just get the robot movin
+    // Just get the robot moving
     // Maybe someone can be bothered to research the maths here
 
-    PidDirection direction = getDirection();
-    float speed = direction.speed;
-    float angle = direction.angle;
+    // Static variable to store the last direction
+    static PidDirection lastDirection = PidController::getDirection();
+
+    // Get the current direction
+    PidDirection currentDirection = PidController::getDirection();
+
+    // Update last direction only if current direction is different
+    if (currentDirection.key_dir != lastDirection.key_dir)
+    {
+        lastDirection = currentDirection;
+    }
+
+    float speed = lastDirection.speed;
+    KeyDirection key_dir = lastDirection.key_dir;
 
     const float SPEED = 10;
 
-    // Snap to forwards if angle is close to 0
-    if (angle < 45 || angle > 315)
+    switch (key_dir)
     {
+    case KeyDirection::RIGHT:
         step1.setTargetSpeedRad(SPEED);
         step2.setTargetSpeedRad(SPEED);
-    }
-    else if (angle > 45 && angle < 135)
-    {
+        Serial.println("RIGHT");
+        break;
+    case KeyDirection::FORWARD:
         step1.setTargetSpeedRad(-SPEED);
         step2.setTargetSpeedRad(SPEED);
-    }
-    else if (angle > 135 && angle < 225)
-    {
+        Serial.println("FORWARD");
+        break;
+    case KeyDirection::LEFT:
         step1.setTargetSpeedRad(-SPEED);
         step2.setTargetSpeedRad(-SPEED);
-    }
-    else
-    {
+        Serial.println("LEFT");
+        break;
+    case KeyDirection::BACKWARD:
         step1.setTargetSpeedRad(SPEED);
         step2.setTargetSpeedRad(-SPEED);
+        Serial.println("BACKWARDS");
+        break;
+    case KeyDirection::STOP:
+    default:
+        step1.setTargetSpeedRad(0);
+        step2.setTargetSpeedRad(0);
+        Serial.println("STOP");
     }
 }
 
