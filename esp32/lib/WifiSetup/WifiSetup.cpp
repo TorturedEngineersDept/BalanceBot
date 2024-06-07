@@ -205,26 +205,32 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
         }
         else if (strcmp(topic, "user/pid") == 0)
         {
+            // Get previous coefficients
+            PidParams params = PidController::getParams();
+
             // Extract values from the JSON document
-            float kp_i = doc["kp_i"];
-            float ki_i = doc["ki_i"];
-            float kd_i = doc["kd_i"];
-            float setpoint_i = doc["setpoint_i"];
-            float kp_o = doc["kp_o"];
-            float ki_o = doc["ki_o"];
-            float kd_o = doc["kd_o"];
-            float setpoint_o = doc["setpoint_o"];
+            float kp_i = doc["kp_i"] | params.kp_i;
+            float ki_i = doc["ki_i"] | params.ki_i;
+            float kd_i = doc["kd_i"] | params.kd_i;
+            float setpoint_i = doc["setpoint_i"] | params.tilt_setpoint;
+            float kp_o = doc["kp_o"] | params.kp_o;
+            float ki_o = doc["ki_o"] | params.ki_o;
+            float kd_o = doc["kd_o"] | params.kd_o;
+            float tilt_setpoint = doc["tilt_setpoint"] | params.tilt_setpoint;
+            float velocity_setpoint = doc["velocity_setpoint"] | params.velocity_setpoint;
+            float comp_coeff = doc["comp_coeff"] | params.comp_coeff;
             Serial.println("kp_i: " + String(kp_i) +
                            ", ki_i: " + String(ki_i) +
                            ", kd_i: " + String(kd_i) +
-                           ", Setpoint_i: " + String(setpoint_i) +
+                           ", tilt_setpoint: " + String(tilt_setpoint) +
                            ", kp_o: " + String(kp_o) +
                            ", ki_o: " + String(ki_o) +
                            ", kd_o: " + String(kd_o) +
-                           ", Setpoint_o: " + String(setpoint_o));
+                           ", velocity_setpoint: " + String(velocity_setpoint) +
+                           ", comp_coeff: " + String(comp_coeff));
 
             // Use the callback given in the static class
-            PidController::setParams(PidParams(kp_i, ki_i, kd_i, setpoint_i, kp_o, ki_o, kd_o, setpoint_o));
+            PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, comp_coeff));
         }
         else
         {

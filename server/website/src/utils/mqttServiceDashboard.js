@@ -1,11 +1,13 @@
 // src/utils/mqttServiceDashboard.js
 import mqtt from 'mqtt';
 
+let client;
+
 export const initializeMQTT = (setBatteryPercentage, setBatteryData, globalRunId) => {
-    const MQTT_BROKER = "18.132.10.124";
+    const MQTT_BROKER = "18.130.87.186";
     const MQTT_PORT = 8000;
 
-    const client = mqtt.connect(`ws://${MQTT_BROKER}:${MQTT_PORT}`, {
+    client = mqtt.connect(`ws://${MQTT_BROKER}:${MQTT_PORT}`, {
         reconnectPeriod: 1000,
         connectTimeout: 30 * 1000,
         keepalive: 60
@@ -50,5 +52,34 @@ export const initializeMQTT = (setBatteryPercentage, setBatteryData, globalRunId
 
     client.on('offline', () => {
         console.log('MQTT client offline');
+    });
+};
+
+
+export const sendTuning = (runId, innerKp, innerKi, innerKd, outerKp, outerKi, outerKd, compCoeff, velocitySetpoint, tiltSetpoint) => {
+    if (!client || !client.connected) {
+        console.error('MQTT client is not initialized or connected');
+        return;
+    }
+    const message = JSON.stringify({
+        run_id: runId,
+        kp_i: parseFloat(innerKp),
+        ki_i: parseFloat(innerKi),
+        kd_i: parseFloat(innerKd),
+        kp_o: parseFloat(outerKp),
+        ki_o: parseFloat(outerKi),
+        kd_o: parseFloat(outerKd),
+        comp_coeff: parseFloat(compCoeff),
+        velocity_setpoint: parseFloat(velocitySetpoint),
+        tilt_setpoint: parseFloat(tiltSetpoint)
+    });
+
+    console.log('Publishing message:', message);
+    client.publish('user/pid', message, (err) => {
+        if (err) {
+            console.error('Publish error:', err);
+        } else {
+            console.log('Message published successfully');
+        }
     });
 };

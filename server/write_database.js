@@ -6,7 +6,7 @@ AWS.config.update({ region: 'eu-west-2' });
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 // Configure MQTT client
-const client = mqtt.connect('mqtt://18.132.10.124'); // Use your broker IP address
+const client = mqtt.connect('mqtt://18.130.87.186'); // Use your broker IP address
 
 // Global variable to store the updated NB value
 let globalNB = 0;

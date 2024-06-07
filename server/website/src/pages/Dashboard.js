@@ -2,13 +2,25 @@ import React, { useState, useEffect, useContext } from 'react';
 import './Dashboard.css';
 import CanvasJSReact from '@canvasjs/react-charts';
 import { fetchData } from '../utils/dataService';
-import { initializeMQTT } from '../utils/mqttServiceDashboard';
+import { initializeMQTT, sendTuning } from '../utils/mqttServiceDashboard';
 import { GlobalContext } from '../context/GlobalState';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const Dashboard = () => {
-    const { runId, setBatteryPercentage } = useContext(GlobalContext);
+    const {
+        runId,
+        setBatteryPercentage,
+        innerKp, setInnerKp,
+        innerKd, setInnerKd,
+        innerKi, setInnerKi,
+        outerKp, setOuterKp,
+        outerKd, setOuterKd,
+        outerKi, setOuterKi,
+        compCoeff, setCompCoeff,
+        velocitySetpoint, setVelocitySetpoint,
+        tiltSetpoint, setTiltSetpoint
+    } = useContext(GlobalContext);
     const [selectedSection, setSelectedSection] = useState('Inner Loop PID');
     const [batteryData, setBatteryData] = useState([]);
     const [powerData, setPowerData] = useState([]);
@@ -28,7 +40,7 @@ const Dashboard = () => {
                     console.error('Error fetching initial data:', error);
                 });
 
-            initializeMQTT(setBatteryPercentage, setBatteryData, runId, 'esp32/battery/dashboard');
+            initializeMQTT(setBatteryPercentage, setBatteryData, runId, 'esp32/battery');
         }
     }, [runId, setBatteryPercentage]);
 
@@ -46,6 +58,50 @@ const Dashboard = () => {
         }]
     };
 
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        switch (name) {
+            case 'innerKp':
+                setInnerKp(value === '' ? innerKp : value);
+                break;
+            case 'innerKi':
+                setInnerKi(value === '' ? innerKi : value);
+                break;
+            case 'innerKd':
+                setInnerKd(value === '' ? innerKd : value);
+                break;
+            case 'outerKp':
+                setOuterKp(value === '' ? outerKp : value);
+                break;
+            case 'outerKi':
+                setOuterKi(value === '' ? outerKi : value);
+                break;
+            case 'outerKd':
+                setOuterKd(value === '' ? outerKd : value);
+                break;
+            case 'compCoeff':
+                setCompCoeff(value === '' ? compCoeff : value);
+                break;
+            case 'velocitySetpoint':
+                setVelocitySetpoint(value === '' ? velocitySetpoint : value);
+                break;
+            case 'tiltSetpoint':
+                setTiltSetpoint(value === '' ? tiltSetpoint : value);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        sendTuning(
+            runId,
+            parseFloat(innerKp), parseFloat(innerKi), parseFloat(innerKd),
+            parseFloat(outerKp), parseFloat(outerKi), parseFloat(outerKd),
+            parseFloat(compCoeff), parseFloat(velocitySetpoint), parseFloat(tiltSetpoint)
+        );
+    };
     const powerOptions = {
         title: {
             text: "Power Consumption"
@@ -75,58 +131,70 @@ const Dashboard = () => {
                         <option value="Miscellaneous">Miscellaneous</option>
                     </select>
 
-                    {selectedSection === 'Inner Loop PID' && (
-                        <>
-                            <div className="input-group">
-                                <label>Proportional Gain</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                            <div className="input-group">
-                                <label>Integral Gain</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                            <div className="input-group">
-                                <label>Derivative Gain</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                        </>
-                    )}
+                    <form onSubmit={handleSubmit}>
 
-                    {selectedSection === 'Outer Loop PID' && (
-                        <>
-                            <div className="input-group">
-                                <label>Proportional Gain</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                            <div className="input-group">
-                                <label>Integral Gain</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                            <div className="input-group">
-                                <label>Derivative Gain</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                        </>
-                    )}
+                        {selectedSection === 'Inner Loop PID' && (
+                            <>
+                                <div className="input-group">
+                                    <label>Proportional Gain</label>
+                                    <input type="number" step="0.0001" name="innerKp" value={innerKp}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                                <div className="input-group">
+                                    <label>Integral Gain</label>
+                                    <input type="number" step="0.0001" name="innerKi" value={innerKi}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                                <div className="input-group">
+                                    <label>Derivative Gain</label>
+                                    <input type="number" step="0.0001" name="innerKd" value={innerKd}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                            </>
+                        )}
 
-                    {selectedSection === 'Miscellaneous' && (
-                        <>
-                            <div className="input-group">
-                                <label>Angle Setpoint</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                            <div className="input-group">
-                                <label>Velocity Setpoint</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                            <div className="input-group">
-                                <label>Complementary Filter Coefficient</label>
-                                <input type="text" placeholder="Placeholder" />
-                            </div>
-                        </>
-                    )}
+                        {selectedSection === 'Outer Loop PID' && (
+                            <>
+                                <div className="input-group">
+                                    <label>Proportional Gain</label>
+                                    <input type="number" step="0.0001" name="outerKd" value={outerKp}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                                <div className="input-group">
+                                    <label>Integral Gain</label>
+                                    <input type="number" step="0.0001" name="outerKi" value={outerKi}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                                <div className="input-group">
+                                    <label>Derivative Gain</label>
+                                    <input type="number" step="0.0001" name="outerKd" value={outerKd}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                            </>
+                        )}
 
-                    <button className="button">Submit</button>
+                        {selectedSection === 'Miscellaneous' && (
+                            <>
+                                <div className="input-group">
+                                    <label>Angle Setpoint</label>
+                                    <input type="number" step="0.0001" name="tiltSetpoint" value={tiltSetpoint}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                                <div className="input-group">
+                                    <label>Velocity Setpoint</label>
+                                    <input type="number" step="0.0001" name="velocitySetpoint" value={velocitySetpoint}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                                <div className="input-group">
+                                    <label>Complementary Filter Coefficient</label>
+                                    <input type="number" step="0.0001" name="compCoeff" value={compCoeff}
+                                        onChange={handleInputChange} placeholder="Placeholder" />
+                                </div>
+                            </>
+                        )}
+
+                        <button type="submit" className="button">Submit</button>
+                    </form>
                 </div>
                 <div className="section-right">
                     <h2>Server Connection</h2>
