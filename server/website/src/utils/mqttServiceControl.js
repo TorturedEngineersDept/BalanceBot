@@ -3,7 +3,7 @@ import mqtt from 'mqtt';
 let client;
 
 export const initializeMQTT = (setBatteryPercentage, globalRunId, topic) => {
-    const MQTT_BROKER = "18.132.10.124";
+    const MQTT_BROKER = "18.130.87.186";
     const MQTT_PORT = 8000;
 
     client = mqtt.connect(`ws://${MQTT_BROKER}:${MQTT_PORT}`, {

@@ -10,7 +10,7 @@ SemaphoreHandle_t PidController::paramsMutex = xSemaphoreCreateMutex();
 SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
 
 // Initialise PID parameters using known values
-PidParams PidController::params(3, 0.00, 0.12, -2.5, 0.00, 0.00, 0.00, 0.00);
+PidParams PidController::params(1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00);
 PidDirection PidController::direction(0, KeyDirection::STOP);
 
 void PidController::setup(IWifi &wifi)
@@ -56,7 +56,7 @@ void PidController::loop()
     float kp_i = params.kp_i;
     float ki_i = params.ki_i;
     float kd_i = params.kd_i;
-    float setpoint_i = params.setpoint_i;
+    float tilt_setpoint = params.tilt_setpoint;
     xSemaphoreGive(paramsMutex);
 
     double error;
@@ -88,7 +88,7 @@ void PidController::loop()
         theta_n = (1 - COMP_FILTER_COEFF) * (tiltx * 100) + COMP_FILTER_COEFF * ((gyrox * LOOP_INTERVAL) / 10 + theta_n);
 
         // PIDeez Nuts
-        error = setpoint_i - theta_n;
+        error = tilt_setpoint - theta_n;
         Pout = kp_i * error;
 
         integral = integral + error * (LOOP_INTERVAL / 1000);

@@ -10,7 +10,7 @@ import signal
 import sys
 
 # MQTT settings from environment variables or defaults
-broker = os.getenv('MQTT_BROKER', '18.132.10.124')
+broker = os.getenv('MQTT_BROKER', '18.130.87.186')
 port = int(os.getenv('MQTT_PORT', 1883))
 topics = os.getenv('MQTT_TOPICS', "esp32/battery").split(',')
 
