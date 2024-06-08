@@ -103,6 +103,7 @@ void test_remote_pid()
 
 void setup()
 {
+    delay(2000);   // delay to allow opening of Serial Monitor
     UNITY_BEGIN(); // IMPORTANT LINE!
     RUN_TEST(test_wifi_connect);
     RUN_TEST(test_mqtt_connect);

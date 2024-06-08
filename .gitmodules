@@ -1,0 +1,3 @@
+[submodule "schematic/lib/usini_kicad_sensors"]
+	path = schematic/lib/usini_kicad_sensors
+	url = https://github.com/usini/usini_kicad_sensors.git

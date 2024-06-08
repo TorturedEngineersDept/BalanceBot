@@ -13,23 +13,36 @@ SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
 PidParams PidController::params(1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00);
 PidDirection PidController::direction(0, KeyDirection::STOP);
 
-void PidController::setup(IWifi &wifi)
+bool PidController::setup(IWifi &wifi, unsigned long timeout)
 {
     // Set the wifi interface
     PidController::wifi = &wifi;
+    unsigned long start = 0;
 
-    mpu.begin(ULONG_MAX, wifi);
+    // Timeout not entirely accurate, but good enough
+    if (!mpu.begin(timeout, wifi))
+    {
+        return false;
+    }
+
     pinMode(TOGGLE_PIN, OUTPUT);
 
     // Attach motor update ISR to timer to run every STEPPER_INTERVAL_US μs
     if (!ITimer.attachInterruptInterval(STEPPER_INTERVAL_US, timerHandler))
     {
         wifi.println("Failed to start stepper interrupt");
-        while (1)
+        while (start < timeout)
         {
             delay(10);
+            start += 10;
         }
     }
+
+    if (start >= timeout)
+    {
+        return false;
+    }
+
     wifi.println("Initialised Interrupt for Stepper");
 
     // Set motor acceleration values
@@ -39,6 +52,8 @@ void PidController::setup(IWifi &wifi)
     // Enable the stepper motor drivers
     pinMode(STEPPER_EN, OUTPUT);
     digitalWrite(STEPPER_EN, false);
+
+    return true;
 }
 
 void PidController::loop()
