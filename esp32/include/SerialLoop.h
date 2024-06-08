@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 enum class Direction
 {
     RIGHT = 0,
@@ -7,6 +9,8 @@ enum class Direction
     LEFT = 2,
     BACKWARD = 3
 };
+
+#ifndef NATIVE
 
 #include <Arduino.h>
 
@@ -27,7 +31,7 @@ void serialLoop()
         char message = Serial.read();
 
         Direction direction;
-        float speed;
+        uint8_t speed;
         decode(message, direction, speed);
 
         switch (direction)
@@ -44,12 +48,14 @@ void serialLoop()
     }
 }
 
+#endif
+
 /**
  * Takes an 8-bit message and decodes to direction and speed
  * The first 2 bits are the direction
  * The last 6 bits are the speed
  */
-void decode(char message, Direction &direction, float &speed)
+void decode(uint8_t message, Direction &direction, uint8_t &speed)
 {
     direction = static_cast<Direction>(message >> 6);
     speed = message & 0b00111111;

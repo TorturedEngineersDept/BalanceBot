@@ -2,7 +2,7 @@ let INTERVAL_STEERING_UPDATE = 200;
 let currentSpeed = 0;
 let currentAngle = 0;
 
-const MQTT_BROKER = "18.132.10.124";
+const MQTT_BROKER = "35.176.179.237";
 const MQTT_PORT = 8000;
 
 // Connect to the MQTT broker via WebSockets
