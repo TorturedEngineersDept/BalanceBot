@@ -1,14 +1,18 @@
 #pragma once
 
 #include <WiFi.h>
+#include <ArduinoJson.h>
+#include <HTTPClient.h>
 #include "MqttSetup.h"
 #include "PidController.h"
 #include "Passwords.h"
 #include "IWifi.h"
 
-#define MQTT_SERVER "18.132.10.124"
+#define MQTT_SERVER "18.130.87.186"
 #define MQTT_PORT 1883
 
+extern int RunID;
+extern int BotID;
 class WifiSetup : public IWifi
 {
 public:
@@ -68,6 +72,11 @@ public:
      */
     static void callback(char *topic, byte *payload, unsigned int length);
 
+    /**
+     * Get unique BotId and RunId
+     */
+    void resolveId();
+
 private:
     void getStrength() const;
 
@@ -75,4 +84,5 @@ private:
     const char *username;
     const char *password;
     MqttSetup mqtt;
+    bool runIdResolved = false;
 };

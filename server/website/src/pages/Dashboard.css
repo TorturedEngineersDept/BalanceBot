@@ -1,0 +1,97 @@
+.dashboard-container {
+    padding: 20px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.chart {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 0;
+    /* Remove padding to ensure the chart fits perfectly */
+    margin: 10px;
+    width: 45%;
+    height: 300px;
+    position: relative;
+}
+
+.chart h2 {
+    padding: 10px;
+    margin: 0;
+}
+
+.section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.section-left,
+.section-right {
+    width: 45%;
+}
+
+.section-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.button {
+    padding: 10px;
+    background-color: gray;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: darkgray;
+}
+
+.test-button {
+    padding: 10px 20px;
+    background-color: lightgray;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.test-button:hover {
+    background-color: gray;
+    color: white;
+}
+
+.dropdown {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.chart-container {
+    height: calc(100% - 40px);
+    /* Adjust the height to fit the chart container */
+}

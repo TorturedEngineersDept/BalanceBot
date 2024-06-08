@@ -2,11 +2,16 @@
 
 #include <ArduinoJson.h>
 
+extern int RunID;
+extern int BotID;
 class MqttMessage
 {
 public:
     virtual void toJson(char *buffer, size_t bufferSize) = 0;
     virtual const char *getTopic() = 0;
+
+protected:
+    int runId = RunID;
 };
 
 class BatteryMessage : public MqttMessage

@@ -17,6 +17,7 @@ void MqttSetup::connect(unsigned long timeout)
         Serial.print("Attempting MQTT connection...");
         if (client.connect("ESP32Client"))
         {
+            client.setKeepAlive(60); // Set keep-alive to 60 seconds
             Serial.println("connected");
             client.subscribe("user/joystick");
             client.subscribe("user/pid");
@@ -59,14 +60,9 @@ void MqttSetup::loop()
         BatteryMessage batteryMessage(batteryLevel);
         publishMessage(batteryMessage);
 
-        // Update mapping status and publish message
-        int speed = random(0, 101);
-        int angle = random(0, 361);
-        int orientation = random(0, 361);
-        x += speed * cos(angle * PI / 180);
-        y += speed * sin(angle * PI / 180);
-        MappingMessage mappingMessage(x, y, orientation * PI / 180);
-        publishMessage(mappingMessage);
+        // TODO: Update mapping status and publish message
+        // MappingMessage mappingMessage(x, y, orientation * PI / 180);
+        // publishMessage(mappingMessage);
     }
 
     client.loop();

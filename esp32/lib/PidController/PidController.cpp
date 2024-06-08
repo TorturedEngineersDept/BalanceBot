@@ -10,8 +10,8 @@ SemaphoreHandle_t PidController::paramsMutex = xSemaphoreCreateMutex();
 SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
 
 // Initialise PID parameters using known values
-PidParams PidController::params(3, 0.00, 0.12, -2.5, 0.00, 0.00, 0.00, 0.00);
-PidDirection PidController::direction(0, 0);
+PidParams PidController::params(1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00);
+PidDirection PidController::direction(0, KeyDirection::STOP);
 
 bool PidController::setup(IWifi &wifi, unsigned long timeout)
 {
@@ -71,7 +71,7 @@ void PidController::loop()
     float kp_i = params.kp_i;
     float ki_i = params.ki_i;
     float kd_i = params.kd_i;
-    float setpoint_i = params.setpoint_i;
+    float tilt_setpoint = params.tilt_setpoint;
     xSemaphoreGive(paramsMutex);
 
     double error;
@@ -103,7 +103,7 @@ void PidController::loop()
         theta_n = (1 - COMP_FILTER_COEFF) * (tiltx * 100) + COMP_FILTER_COEFF * ((gyrox * LOOP_INTERVAL) / 10 + theta_n);
 
         // PIDeez Nuts
-        error = setpoint_i - theta_n;
+        error = tilt_setpoint - theta_n;
         Pout = kp_i * error;
 
         integral = integral + error * (LOOP_INTERVAL / 1000);
@@ -126,38 +126,53 @@ void PidController::loop()
 void PidController::stabilizedLoop()
 {
     // We don't care about PID stability here.
-    // Just get the robot movin
+    // Just get the robot moving
     // Maybe someone can be bothered to research the maths here
 
-    PidDirection direction = getDirection();
-    float speed = direction.speed;
-    float angle = direction.angle;
+    // Static variable to store the last direction
+    static PidDirection lastDirection = PidController::getDirection();
 
-    float realSpeed = speed / 10;
+    // Get the current direction
+    PidDirection currentDirection = PidController::getDirection();
 
-    if (angle < PI / 4 && angle > -PI / 4)
+    // Update last direction only if current direction is different
+    if (currentDirection.key_dir != lastDirection.key_dir)
     {
-        // Right
-        step1.setTargetSpeedRad(realSpeed);
-        step2.setTargetSpeedRad(realSpeed);
+        lastDirection = currentDirection;
     }
-    else if (angle > PI / 4 && angle < 3 * PI / 4)
+
+    float speed = lastDirection.speed;
+    KeyDirection key_dir = lastDirection.key_dir;
+
+    const float SPEED = 10;
+
+    switch (key_dir)
     {
-        // Forwards
-        step1.setTargetSpeedRad(-realSpeed);
-        step2.setTargetSpeedRad(realSpeed);
-    }
-    else if (angle > 3 * PI / 4 || angle < -3 * PI / 4)
-    {
-        // Left
-        step1.setTargetSpeedRad(-realSpeed);
-        step2.setTargetSpeedRad(-realSpeed);
-    }
-    else
-    {
-        // Backwards
-        step1.setTargetSpeedRad(realSpeed);
-        step2.setTargetSpeedRad(-realSpeed);
+    case KeyDirection::RIGHT:
+        step1.setTargetSpeedRad(SPEED);
+        step2.setTargetSpeedRad(SPEED);
+        Serial.println("RIGHT");
+        break;
+    case KeyDirection::FORWARD:
+        step1.setTargetSpeedRad(-SPEED);
+        step2.setTargetSpeedRad(SPEED);
+        Serial.println("FORWARD");
+        break;
+    case KeyDirection::LEFT:
+        step1.setTargetSpeedRad(-SPEED);
+        step2.setTargetSpeedRad(-SPEED);
+        Serial.println("LEFT");
+        break;
+    case KeyDirection::BACKWARD:
+        step1.setTargetSpeedRad(SPEED);
+        step2.setTargetSpeedRad(-SPEED);
+        Serial.println("BACKWARDS");
+        break;
+    case KeyDirection::STOP:
+    default:
+        step1.setTargetSpeedRad(0);
+        step2.setTargetSpeedRad(0);
+        Serial.println("STOP");
     }
 }
 

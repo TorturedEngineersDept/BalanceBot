@@ -69,6 +69,12 @@ void WifiSetup::connect(unsigned long timeout)
     // Setup MQTT
     mqtt.setCallback(callback);
     mqtt.connect(timeout - start);
+
+    if (!runIdResolved)
+    {
+        resolveId();
+        runIdResolved = true;
+    }
 }
 
 void WifiSetup::getStrength() const
@@ -117,6 +123,7 @@ bool WifiSetup::mqttConnected()
 void WifiSetup::loop()
 {
     mqtt.loop();
+    delay(100); // <- fixes some issues with WiFi stability
 }
 
 void WifiSetup::print(const char *message)
@@ -164,41 +171,104 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
         return;
     }
 
-    // Check the topic and process accordingly
-    if (strcmp(topic, "user/joystick") == 0)
+    if (doc["run_id"] == RunID)
     {
-        // Extract values from the JSON document
-        float speed = doc["speed"];
-        float angle = doc["angle"];
-        Serial.println("Speed: " + String(speed) + ", Angle: " + String(angle));
+        // Check the topic and process accordingly
+        if (strcmp(topic, "user/joystick") == 0)
+        {
+            // Extract values from the JSON document
+            float speed = 100; // Being overwritten in PidController:StabilisedLoop for some reason
+            const char *speedStr = doc["direction"];
 
-        PidController::setDirection(PidDirection(speed, angle));
-    }
-    else if (strcmp(topic, "user/pid") == 0)
-    {
-        // Extract values from the JSON document
-        float kp_i = doc["kp_i"];
-        float ki_i = doc["ki_i"];
-        float kd_i = doc["kd_i"];
-        float setpoint_i = doc["setpoint_i"];
-        float kp_o = doc["kp_o"];
-        float ki_o = doc["ki_o"];
-        float kd_o = doc["kd_o"];
-        float setpoint_o = doc["setpoint_o"];
-        Serial.println("kp_i: " + String(kp_i) +
-                       ", ki_i: " + String(ki_i) +
-                       ", kd_i: " + String(kd_i) +
-                       ", Setpoint_i: " + String(setpoint_i) +
-                       ", kp_o: " + String(kp_o) +
-                       ", ki_o: " + String(ki_o) +
-                       ", kd_o: " + String(kd_o) +
-                       ", Setpoint_o: " + String(setpoint_o));
+            KeyDirection key_dir;
+            switch (speedStr[0])
+            {
+            case 'A':
+                key_dir = KeyDirection::LEFT;
+                break;
+            case 'D':
+                key_dir = KeyDirection::RIGHT;
+                break;
+            case 'W':
+                key_dir = KeyDirection::FORWARD;
+                break;
+            case 'S':
+                key_dir = KeyDirection::BACKWARD;
+                break;
+            default:
+                key_dir = KeyDirection::STOP;
+            }
 
-        // Use the callback given in the static class
-        PidController::setParams(PidParams(kp_i, ki_i, kd_i, setpoint_i, kp_o, ki_o, kd_o, setpoint_o));
+            Serial.println("Speed: " + String(speed) + ", key_dir: " + String(key_dir));
+
+            PidController::setDirection(PidDirection(speed, key_dir));
+        }
+        else if (strcmp(topic, "user/pid") == 0)
+        {
+            // Get previous coefficients
+            PidParams params = PidController::getParams();
+
+            // Extract values from the JSON document
+            float kp_i = doc["kp_i"] | params.kp_i;
+            float ki_i = doc["ki_i"] | params.ki_i;
+            float kd_i = doc["kd_i"] | params.kd_i;
+            float setpoint_i = doc["setpoint_i"] | params.tilt_setpoint;
+            float kp_o = doc["kp_o"] | params.kp_o;
+            float ki_o = doc["ki_o"] | params.ki_o;
+            float kd_o = doc["kd_o"] | params.kd_o;
+            float tilt_setpoint = doc["tilt_setpoint"] | params.tilt_setpoint;
+            float velocity_setpoint = doc["velocity_setpoint"] | params.velocity_setpoint;
+            float comp_coeff = doc["comp_coeff"] | params.comp_coeff;
+            Serial.println("kp_i: " + String(kp_i) +
+                           ", ki_i: " + String(ki_i) +
+                           ", kd_i: " + String(kd_i) +
+                           ", tilt_setpoint: " + String(tilt_setpoint) +
+                           ", kp_o: " + String(kp_o) +
+                           ", ki_o: " + String(ki_o) +
+                           ", kd_o: " + String(kd_o) +
+                           ", velocity_setpoint: " + String(velocity_setpoint) +
+                           ", comp_coeff: " + String(comp_coeff));
+
+            // Use the callback given in the static class
+            PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, comp_coeff));
+        }
+        else
+        {
+            Serial.println("Unsupported topic");
+        }
     }
-    else
+}
+
+void WifiSetup::resolveId()
+{
+    HTTPClient http;
+    String baseApiEndpoint = "https://rts358y5pk.execute-api.eu-west-2.amazonaws.com/prod/get-runid-esp32?mac=";
+
+    // Construct the full API endpoint URL with the MAC address
+    String macAddress = WiFi.macAddress();
+    String apiEndpoint = String(baseApiEndpoint) + macAddress;
+
+    http.begin(apiEndpoint);
+
+    // Trigger Lambda function
+    int httpResponseCode = http.GET();
+
+    while (httpResponseCode != 200)
     {
-        Serial.println("Unsupported topic");
+        httpResponseCode = http.GET();
     }
+
+    String response = http.getString();
+    http.end();
+
+    // Parse the JSON response
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc, response);
+    BotID = doc["BotId"];
+    RunID = doc["RunId"];
+
+    Serial.print("BotId: ");
+    Serial.println(BotID);
+    Serial.print("RunId: ");
+    Serial.println(RunID);
 }

@@ -11,6 +11,9 @@ WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
 // The loop interval in milliseconds (should be ULONG_MAX for normal operation)
 unsigned long timeout = 1000;
 
+// Declare variables for RunID and BotID
+int BotID, RunID;
+
 void pidLoop(void *pvParameters);
 
 void setup()

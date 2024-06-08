@@ -4,6 +4,8 @@
 #include <WiFiClient.h>
 #include "MqttMessage.h"
 
+extern int RunID;
+extern int BotID;
 class MqttSetup
 {
 public:
@@ -35,6 +37,4 @@ private:
     int lastMsgSent = 0;
     int delayMsgSent = 2000;
     int batteryLevel = 100;
-    float speed;
-    float angle;
 };

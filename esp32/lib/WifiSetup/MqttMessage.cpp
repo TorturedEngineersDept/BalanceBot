@@ -6,6 +6,8 @@ BatteryMessage::BatteryMessage(float batteryLevel)
 void BatteryMessage::toJson(char *buffer, size_t bufferSize)
 {
     doc.clear();
+    doc["run_id"] = RunID;
+    doc["timestamp"] = millis();
     doc["battery"] = batteryLevel;
     serializeJson(doc, buffer, bufferSize);
 }
@@ -25,6 +27,7 @@ MappingMessage::MappingMessage(float x, float y, float theta)
 void MappingMessage::toJson(char *buffer, size_t bufferSize)
 {
     doc.clear();
+    doc["run_id"] = RunID;
     doc["timestamp"] = millis();
     doc["x"] = x_coordinate;
     doc["y"] = y_coordinate;
@@ -41,6 +44,7 @@ StatusMessage::StatusMessage() {}
 
 void StatusMessage::toJson(char *buffer, size_t bufferSize)
 {
+    doc["run_id"] = RunID;
     doc["connection"] = 400;
     serializeJson(doc, buffer, bufferSize);
 }
@@ -56,6 +60,7 @@ DebugMessage::DebugMessage(const char *message)
 void DebugMessage::toJson(char *buffer, size_t bufferSize)
 {
     doc.clear();
+    doc["run_id"] = RunID;
     doc["message"] = message;
     serializeJson(doc, buffer, bufferSize);
 }
