@@ -7,6 +7,10 @@ export const initializeMQTT = (setBatteryPercentage, setBatteryData, globalRunId
     const MQTT_BROKER = "18.130.87.186";
     const MQTT_PORT = 8000;
 
+    if (client) {
+        client.end();
+    }
+
     client = mqtt.connect(`ws://${MQTT_BROKER}:${MQTT_PORT}`, {
         reconnectPeriod: 1000,
         connectTimeout: 30 * 1000,

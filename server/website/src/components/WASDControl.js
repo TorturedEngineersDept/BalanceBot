@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { SendDirections } from '../utils/mqttServiceControl'
 import './WASDControl.css';
 import { GlobalContext } from '../context/GlobalState';
@@ -50,7 +50,7 @@ const WASDControl = () => {
             else if (keysPressed['Shift'] && keysPressed['D']) {
                 if (lastKeyPressed !== 'D') {
                     setLastKeyPressed('D');
-                    SendDirections('S', runId);
+                    SendDirections('D', runId);
                 }
             } else {
                 if (lastKeyPressed !== '') {
@@ -61,20 +61,11 @@ const WASDControl = () => {
         };
 
         performAction();
-    }, [keysPressed]);
+    }, [keysPressed, lastKeyPressed, runId]);
 
 
 
-    return (
-        <div className="wasd-control">
-            <button className={`button-w ${(keysPressed['W'] && keysPressed['Shift']) ? 'active' : ''}`}>W</button>
-            <div className="button-side">
-                <button className={`button-a ${(keysPressed['A'] && keysPressed['Shift']) ? 'active' : ''}`}>A</button>
-                <button className={`button-d ${(keysPressed['D'] && keysPressed['Shift']) ? 'active' : ''}`}>D</button>
-            </div>
-            <button className={`button-s ${(keysPressed['S'] && keysPressed['Shift']) ? 'active' : ''}`}>S</button>
-        </div>
-    );
+    return null;
 };
 
 export default WASDControl;
