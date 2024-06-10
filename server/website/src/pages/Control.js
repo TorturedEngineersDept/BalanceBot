@@ -4,6 +4,7 @@ import TopBar from '../components/TopBar';
 import WASDControl from '../components/WASDControl';
 import { initializeMQTT, sendCLICommand } from '../utils/mqttServiceControl';
 import { GlobalContext } from '../context/GlobalState';
+import { fetchData } from '../utils/fetchTerminalCommands';
 
 const Control = () => {
     const { runId, batteryPercentage, setBatteryPercentage } = useContext(GlobalContext);
@@ -13,25 +14,37 @@ const Control = () => {
     const terminalEndRef = useRef(null);
     const [isManualScroll, setIsManualScroll] = useState(false);
 
+    // Handler for incoming debug messages
     const handleDebugMessage = (message) => {
         setTerminalMessages(prevMessages => {
             const messages = [...prevMessages, { ...message, type: 'received' }];
-            return messages.length > 10 ? messages.slice(messages.length - 10) : messages;
+            return messages.length > 20 ? messages.slice(messages.length - 20) : messages;
         });
     };
 
+    // Fetch initial data and initialize MQTT on component mount or runId change
     useEffect(() => {
         if (runId) {
+            fetchData(runId)
+                .then(initialData => {
+                    console.log('Fetched initial data:', initialData);
+                    setTerminalMessages(initialData);
+                })
+                .catch(error => {
+                    console.error('Error fetching initial data:', error);
+                });
             initializeMQTT(setBatteryPercentage, handleDebugMessage, runId);
         }
     }, [runId, setBatteryPercentage]);
 
+    // Scroll terminal to the latest message if not in manual scroll mode
     useEffect(() => {
         if (!isManualScroll && terminalEndRef.current) {
             terminalEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [terminalMessages, isManualScroll]);
 
+    // Handle scroll to determine if the user has manually scrolled
     const handleScroll = () => {
         if (terminalRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = terminalRef.current;
@@ -40,12 +53,18 @@ const Control = () => {
         }
     };
 
+    // Handle touch move to set manual scroll mode
+    const handleTouchMove = () => {
+        setIsManualScroll(true);
+    };
+
+    // Send CLI command and add the message to the terminal
     const handleSendCLICommand = () => {
         if (cliInput.trim() !== '') {
             const message = { timestamp: new Date().toLocaleTimeString(), text: cliInput, type: 'sent' };
             setTerminalMessages(prevMessages => {
                 const messages = [...prevMessages, message];
-                return messages.length > 10 ? messages.slice(messages.length - 10) : messages;
+                return messages.length > 20 ? messages.slice(messages.length - 20) : messages;
             });
             sendCLICommand(cliInput, runId);
             setCliInput('');
@@ -53,6 +72,7 @@ const Control = () => {
         }
     };
 
+    // Handle Enter key press to send CLI command
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -70,7 +90,13 @@ const Control = () => {
                 </div>
                 <div className="terminal-container">
                     <h2 className="terminal-title">TERMINAL</h2>
-                    <div className="terminal" ref={terminalRef} onScroll={handleScroll} onWheel={() => setIsManualScroll(true)}>
+                    <div
+                        className="terminal"
+                        ref={terminalRef}
+                        onScroll={handleScroll}
+                        onWheel={() => setIsManualScroll(true)}
+                        onTouchMove={handleTouchMove}
+                    >
                         <div className="terminal-messages">
                             {terminalMessages.map((msg, index) => (
                                 <div key={index} className={`terminal-message ${msg.type}`}>
@@ -102,5 +128,6 @@ const Control = () => {
         </div>
     );
 };
+
 
 export default Control;
