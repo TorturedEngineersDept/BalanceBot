@@ -61,6 +61,7 @@
     border-radius: 5px;
     flex: 1;
     overflow-y: auto;
+    /* Ensure the terminal is scrollable */
     display: flex;
     flex-direction: column;
 }

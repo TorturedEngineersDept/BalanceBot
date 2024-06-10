@@ -86,7 +86,7 @@ export const sendCLICommand = (command, globalRunId) => {
     }
     const message = JSON.stringify({
         run_id: globalRunId,
-        command: command
+        message: command
     });
     client.publish('esp32/cli', message);
 };

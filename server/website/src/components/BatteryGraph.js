@@ -1,7 +1,7 @@
 // src/components/BatteryGraph.js
 import React, { useEffect, useState, useContext } from 'react';
 import { GlobalContext } from '../context/GlobalState';
-import { fetchData } from '../utils/dataService';
+import { fetchData } from '../utils/fetchBatteryData';
 import { initializeMQTT } from '../utils/mqttServiceControl';
 
 const BatteryGraph = () => {
