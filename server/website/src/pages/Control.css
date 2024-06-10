@@ -1,10 +1,10 @@
 .control-container {
     display: flex;
+    flex: 1;
     width: 100%;
-    height: 100vh;
-    /* Full viewport height */
     box-sizing: border-box;
     padding: 20px;
+    overflow: hidden;
 }
 
 .control-left,
@@ -13,16 +13,15 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .control-left {
     padding-right: 10px;
-    /* Space between the two halves */
 }
 
 .control-right {
     padding-left: 10px;
-    /* Space between the two halves */
 }
 
 .camera-feed,
@@ -31,59 +30,93 @@
     padding: 10px;
     margin-bottom: 10px;
     flex: 1;
-    min-height: 200px;
-    /* Adjust height as needed */
+    min-height: 0;
     position: relative;
-    /* Add relative positioning for the top bar */
     overflow: hidden;
-    /* Ensure content doesn't overflow */
+    display: flex;
+    flex-direction: column;
 }
 
-.joystick,
-.cli {
-    border: 1px solid black;
+.terminal-container {
+    background-color: #1e1e1e;
+    border-radius: 5px;
     padding: 10px;
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
-.joystick {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 150px;
+.terminal-title {
+    color: #00ff00;
+    margin: 0;
+    padding: 5px;
+    font-family: monospace;
 }
 
-.joystick-container {
+.terminal {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1;
+    overflow-y: auto;
+    /* Ensure the terminal is scrollable */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 80%;
+    flex-direction: column;
+}
+
+.terminal-messages {
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-message {
+    margin-bottom: 5px;
+    font-family: monospace;
+}
+
+.terminal-message.received .timestamp {
+    color: #888888;
+}
+
+.terminal-message.received .message-text {
+    color: #00ff00;
+}
+
+.terminal-message.sent .timestamp {
+    color: #888888;
+}
+
+.terminal-message.sent .message-text {
+    color: #00ffff;
 }
 
 .cli {
     display: flex;
-    align-items: center;
+    margin-top: 10px;
 }
 
 .cli input {
     flex: 1;
     padding: 10px;
     margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #00ff00;
+    font-family: monospace;
 }
 
 .cli button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
+    padding: 10px;
+    background-color: #1e1e1e;
+    color: #00ff00;
+    border: 1px solid #00ff00;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-family: monospace;
 }
 
 .cli button:hover {
-    background-color: darkblue;
+    background-color: #00ff00;
+    color: #1e1e1e;
 }

@@ -89,7 +89,7 @@ bool MPU6050::begin(unsigned long timeout, IWifi &wifi)
         break;
     }
 
-    wifi.println("");
+    // wifi.println("");
     return true;
 }
 

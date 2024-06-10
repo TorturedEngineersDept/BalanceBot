@@ -1,18 +1,18 @@
 .navbar {
     background-color: #fff;
     border-bottom: 1px solid #ddd;
-    padding: 10px 20px;
+    padding: 5px 15px;
     display: flex;
     justify-content: space-between;
-    /* Ensures space between nav-links and login form */
     align-items: center;
-    /* Aligns items vertically */
+    height: 50px;
+    box-sizing: border-box;
 }
 
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 15px;
     margin: 0;
     padding: 0;
 }

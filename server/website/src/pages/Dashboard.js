@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Dashboard.css';
 import CanvasJSReact from '@canvasjs/react-charts';
-import { fetchData } from '../utils/dataService';
+import { fetchData } from '../utils/fetchBatteryData';
 import { initializeMQTT, sendTuning } from '../utils/mqttServiceDashboard';
 import { GlobalContext } from '../context/GlobalState';
 

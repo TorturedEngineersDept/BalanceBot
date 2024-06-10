@@ -132,6 +132,7 @@ void WifiSetup::print(const char *message)
     {
         DebugMessage debugMessage(message);
         mqtt.publishMessage(debugMessage);
+        delay(100);
     }
     Serial.print(message);
 }
@@ -143,6 +144,7 @@ void WifiSetup::println(const char *message)
         std::string msg = std::string(message) + "\n";
         DebugMessage debugMessage(msg.c_str());
         mqtt.publishMessage(debugMessage);
+        delay(100);
     }
     Serial.println(message);
 }

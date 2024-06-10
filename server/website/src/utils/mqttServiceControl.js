@@ -2,9 +2,13 @@ import mqtt from 'mqtt';
 
 let client;
 
-export const initializeMQTT = (setBatteryPercentage, globalRunId, topic) => {
+export const initializeMQTT = (setBatteryPercentage, handleDebugMessage, globalRunId) => {
     const MQTT_BROKER = "18.130.87.186";
     const MQTT_PORT = 8000;
+
+    if (client) {
+        client.end();
+    }
 
     client = mqtt.connect(`ws://${MQTT_BROKER}:${MQTT_PORT}`, {
         reconnectPeriod: 1000,
@@ -15,21 +19,32 @@ export const initializeMQTT = (setBatteryPercentage, globalRunId, topic) => {
     client.on('connect', () => {
         console.log('Connected to MQTT broker');
 
-        client.subscribe(topic, (err) => {
+        client.subscribe("esp32/battery", (err) => {
             if (!err) {
-                console.log(`Subscribed to topic: ${topic}`);
+                console.log(`Subscribed to topic esp32/battery`);
+            }
+        });
+        client.subscribe("esp32/debug", (err) => {
+            if (!err) {
+                console.log(`Subscribed to topic esp32/debug`);
             }
         });
     });
 
     client.on('message', (receivedTopic, message) => {
-        if (receivedTopic === topic) {
-            const data = JSON.parse(message.toString());
-            if (data.run_id === globalRunId) {
+        const data = JSON.parse(message.toString());
+        if (data.run_id === globalRunId) {
+            if (receivedTopic === "esp32/battery") {
                 console.log('Received data:', data);
                 setBatteryPercentage(data.battery);
             }
+            else if (receivedTopic === "esp32/debug") {
+                console.log('Received data:', data);
+                const timestamp = new Date().toLocaleTimeString();
+                handleDebugMessage({ timestamp, text: data.message });
+            }
         }
+
         const msgString = message.toString();
         console.log(`Received message: ${msgString} on topic: ${receivedTopic}`);
     });
@@ -61,4 +76,17 @@ export const SendDirections = (key, globalRunId) => {
         direction: key
     });
     client.publish('user/joystick', message);
+};
+
+
+export const sendCLICommand = (command, globalRunId) => {
+    if (!client) {
+        console.error('MQTT client is not initialized');
+        return;
+    }
+    const message = JSON.stringify({
+        run_id: globalRunId,
+        message: command
+    });
+    client.publish('esp32/cli', message);
 };

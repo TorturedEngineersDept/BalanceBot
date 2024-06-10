@@ -151,28 +151,28 @@ void PidController::stabilizedLoop()
     case KeyDirection::RIGHT:
         step1.setTargetSpeedRad(SPEED);
         step2.setTargetSpeedRad(SPEED);
-        Serial.println("RIGHT");
+        // Serial.println("RIGHT");
         break;
     case KeyDirection::FORWARD:
         step1.setTargetSpeedRad(-SPEED);
         step2.setTargetSpeedRad(SPEED);
-        Serial.println("FORWARD");
+        // Serial.println("FORWARD");
         break;
     case KeyDirection::LEFT:
         step1.setTargetSpeedRad(-SPEED);
         step2.setTargetSpeedRad(-SPEED);
-        Serial.println("LEFT");
+        // Serial.println("LEFT");
         break;
     case KeyDirection::BACKWARD:
         step1.setTargetSpeedRad(SPEED);
         step2.setTargetSpeedRad(-SPEED);
-        Serial.println("BACKWARDS");
+        // Serial.println("BACKWARDS");
         break;
     case KeyDirection::STOP:
     default:
         step1.setTargetSpeedRad(0);
         step2.setTargetSpeedRad(0);
-        Serial.println("STOP");
+        // Serial.println("STOP");
     }
 }
 
