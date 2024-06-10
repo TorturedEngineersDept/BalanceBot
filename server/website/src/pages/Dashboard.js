@@ -4,6 +4,9 @@ import CanvasJSReact from '@canvasjs/react-charts';
 import { fetchData } from '../utils/fetchBatteryData';
 import { initializeMQTT, sendTuning } from '../utils/mqttServiceDashboard';
 import { GlobalContext } from '../context/GlobalState';
+import BatteryGraph from '../components/BatteryGraph';
+import PowerGraph from '../components/PowerGraph';
+
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -47,16 +50,6 @@ const Dashboard = () => {
     useEffect(() => {
         console.log('Battery data updated:', batteryData);
     }, [batteryData]);
-
-    const batteryOptions = {
-        title: {
-            text: "Battery Usage"
-        },
-        data: [{
-            type: "line",
-            dataPoints: batteryData
-        }]
-    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -102,24 +95,15 @@ const Dashboard = () => {
             parseFloat(compCoeff), parseFloat(velocitySetpoint), parseFloat(tiltSetpoint)
         );
     };
-    const powerOptions = {
-        title: {
-            text: "Power Consumption"
-        },
-        data: [{
-            type: "line",
-            dataPoints: powerData
-        }]
-    };
 
     return (
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <div className="chart">
-                    <CanvasJSChart options={batteryOptions} />
+                    <BatteryGraph />
                 </div>
                 <div className="chart">
-                    <CanvasJSChart options={powerOptions} />
+                    <PowerGraph />
                 </div>
             </div>
             <div className="section">

@@ -7,44 +7,43 @@ import './graph.css';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-const BatteryGraph = () => {
+const PowerGraph = () => {
     const { runId } = useContext(GlobalContext);
-    const [batteryData, setBatteryData] = useState([]);
+    const [powerData, setPowerData] = useState([]);
 
     useEffect(() => {
         if (runId) {
             fetchData(runId).then(initialData => {
-                setBatteryData(initialData);
+                setPowerData(initialData);
             }).catch(error => {
                 console.error('Error fetching initial data:', error);
             });
 
-            initializeMQTT(setBatteryData);
+            initializeMQTT(setPowerData);
         }
     }, [runId]);
 
-    const batteryOptions = {
+    const powerOptions = {
         title: {
-            text: "Battery Usage"
+            text: "Power Consumption"
         },
         axisX: {
             title: "Time"
         },
         axisY: {
-            title: "Battery",
-            maximum: 100 // Set your maximum y-axis value here
+            title: "Power"
         },
         data: [{
             type: "line",
-            dataPoints: batteryData
+            dataPoints: powerData
         }]
     };
 
     return (
         <div className="graph-container">
-            <CanvasJSChart options={batteryOptions} containerProps={{ height: "100%", width: "100%" }} />
+            <CanvasJSChart options={powerOptions} containerProps={{ height: "100%", width: "100%" }} />
         </div>
     );
 };
 
-export default BatteryGraph;
+export default PowerGraph;
