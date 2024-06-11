@@ -1,0 +1,6 @@
+Invoking command in '/home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/kev/ldlidar_ros2_ws/src/rf2o_laser_odometry -DCMAKE_INSTALL_PREFIX=/home/kev/ldlidar_ros2_ws/install/rf2o_laser_odometry
+Invoked command in '/home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/kev/ldlidar_ros2_ws/src/rf2o_laser_odometry -DCMAKE_INSTALL_PREFIX=/home/kev/ldlidar_ros2_ws/install/rf2o_laser_odometry
+Invoking command in '/home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry -- -j8 -l8
+Invoked command in '/home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry -- -j8 -l8
+Invoking command in '/home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry
+Invoked command in '/home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry

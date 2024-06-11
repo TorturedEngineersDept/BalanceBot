@@ -1,0 +1,24 @@
+[0.212s] Invoking command in '/home/kev/ldlidar_ros2_ws/build/lidar_cartographer': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kev/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/lidar_cartographer -- -j8 -l8
+[0.252s] Invoked command in '/home/kev/ldlidar_ros2_ws/build/lidar_cartographer' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kev/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/lidar_cartographer -- -j8 -l8
+[0.295s] Invoking command in '/home/kev/ldlidar_ros2_ws/build/lidar_cartographer': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kev/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --install /home/kev/ldlidar_ros2_ws/build/lidar_cartographer
+[0.302s] -- Install configuration: ""
+[0.304s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/config
+[0.304s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/config/cartographer_2d.lua
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/launch
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/launch/cartographer.launch.py
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/ament_index/resource_index/package_run_dependencies/lidar_cartographer
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/ament_index/resource_index/parent_prefix_path/lidar_cartographer
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/environment/ament_prefix_path.sh
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/environment/ament_prefix_path.dsv
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/environment/path.sh
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/environment/path.dsv
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/local_setup.bash
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/local_setup.sh
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/local_setup.zsh
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/local_setup.dsv
+[0.305s] -- Installing: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/package.dsv
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/ament_index/resource_index/packages/lidar_cartographer
+[0.305s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/cmake/lidar_cartographerConfig.cmake
+[0.307s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/cmake/lidar_cartographerConfig-version.cmake
+[0.307s] -- Up-to-date: /home/kev/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/package.xml
+[0.323s] Invoked command in '/home/kev/ldlidar_ros2_ws/build/lidar_cartographer' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kev/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --install /home/kev/ldlidar_ros2_ws/build/lidar_cartographer

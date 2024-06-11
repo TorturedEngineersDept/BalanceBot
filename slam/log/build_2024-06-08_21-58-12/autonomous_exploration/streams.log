@@ -1,0 +1,22 @@
+[0.463s] Invoking command in '/home/kev/ldlidar_ros2_ws/src/autonomous_exploration': PYTHONPATH=/home/kev/ldlidar_ros2_ws/build/autonomous_exploration/prefix_override:/home/kev/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/autonomous_exploration build --build-base /home/kev/ldlidar_ros2_ws/build/autonomous_exploration/build install --record /home/kev/ldlidar_ros2_ws/build/autonomous_exploration/install.log --single-version-externally-managed install_data
+[0.633s] running egg_info
+[0.634s] writing ../../build/autonomous_exploration/autonomous_exploration.egg-info/PKG-INFO
+[0.634s] writing dependency_links to ../../build/autonomous_exploration/autonomous_exploration.egg-info/dependency_links.txt
+[0.634s] writing entry points to ../../build/autonomous_exploration/autonomous_exploration.egg-info/entry_points.txt
+[0.634s] writing requirements to ../../build/autonomous_exploration/autonomous_exploration.egg-info/requires.txt
+[0.634s] writing top-level names to ../../build/autonomous_exploration/autonomous_exploration.egg-info/top_level.txt
+[0.635s] reading manifest file '../../build/autonomous_exploration/autonomous_exploration.egg-info/SOURCES.txt'
+[0.636s] writing manifest file '../../build/autonomous_exploration/autonomous_exploration.egg-info/SOURCES.txt'
+[0.636s] running build
+[0.636s] running build_py
+[0.636s] running install
+[0.636s] running install_lib
+[0.637s] running install_data
+[0.637s] copying launch/exploration_launch.py -> /home/kev/ldlidar_ros2_ws/install/autonomous_exploration/share/autonomous_exploration/launch
+[0.637s] running install_egg_info
+[0.638s] removing '/home/kev/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration-0.0.0-py3.10.egg-info' (and everything under it)
+[0.639s] Copying ../../build/autonomous_exploration/autonomous_exploration.egg-info to /home/kev/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration-0.0.0-py3.10.egg-info
+[0.639s] running install_scripts
+[0.652s] Installing control script to /home/kev/ldlidar_ros2_ws/install/autonomous_exploration/lib/autonomous_exploration
+[0.652s] writing list of installed files to '/home/kev/ldlidar_ros2_ws/build/autonomous_exploration/install.log'
+[0.668s] Invoked command in '/home/kev/ldlidar_ros2_ws/src/autonomous_exploration' returned '0': PYTHONPATH=/home/kev/ldlidar_ros2_ws/build/autonomous_exploration/prefix_override:/home/kev/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/autonomous_exploration build --build-base /home/kev/ldlidar_ros2_ws/build/autonomous_exploration/build install --record /home/kev/ldlidar_ros2_ws/build/autonomous_exploration/install.log --single-version-externally-managed install_data

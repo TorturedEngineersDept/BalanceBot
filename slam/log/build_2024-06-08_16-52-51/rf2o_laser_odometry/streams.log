@@ -1,0 +1,4 @@
+[0.096s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/rf2o_laser_odometry': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --build /home/kevin/ldlidar_ros2_ws/build/rf2o_laser_odometry -- -j4 -l4
+[0.412s] [ 20%] [32mBuilding CXX object CMakeFiles/rf2o_laser_odometry.dir/src/CLaserOdometry2D.cpp.o[0m
+[0.457s] [ 60%] [32mBuilding CXX object CMakeFiles/rf2o_laser_odometry_node.dir/src/CLaserOdometry2DNode.cpp.o[0m
+[0.463s] [ 60%] [32mBuilding CXX object CMakeFiles/rf2o_laser_odometry_node.dir/src/CLaserOdometry2D.cpp.o[0m

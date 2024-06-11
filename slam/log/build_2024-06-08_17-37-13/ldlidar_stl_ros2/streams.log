@@ -1,0 +1,6 @@
+[0.172s] Invoking command in '/home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2 -- -j8 -l8
+[0.188s] [0mCMake Error: The current CMakeCache.txt directory /home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2/CMakeCache.txt is different than the directory /home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2 where CMakeCache.txt was created. This may result in binaries being created in the wrong place. If you are not sure, reedit the CMakeCache.txt[0m
+[0.199s] [0mCMake Error: The source directory "/home/kevin/ldlidar_ros2_ws/src/ldlidar_stl_ros2" does not exist.
+[0.199s] Specify --help for usage, or press the help button on the CMake GUI.[0m
+[0.200s] gmake: *** [Makefile:429: cmake_check_build_system] Error 1
+[0.204s] Invoked command in '/home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2' returned '2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2 -- -j8 -l8

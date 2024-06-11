@@ -1,0 +1,35 @@
+running egg_info
+creating ../../build/autonomous_exploration/autonomous_exploration.egg-info
+writing ../../build/autonomous_exploration/autonomous_exploration.egg-info/PKG-INFO
+writing dependency_links to ../../build/autonomous_exploration/autonomous_exploration.egg-info/dependency_links.txt
+writing entry points to ../../build/autonomous_exploration/autonomous_exploration.egg-info/entry_points.txt
+writing requirements to ../../build/autonomous_exploration/autonomous_exploration.egg-info/requires.txt
+writing top-level names to ../../build/autonomous_exploration/autonomous_exploration.egg-info/top_level.txt
+writing manifest file '../../build/autonomous_exploration/autonomous_exploration.egg-info/SOURCES.txt'
+reading manifest file '../../build/autonomous_exploration/autonomous_exploration.egg-info/SOURCES.txt'
+writing manifest file '../../build/autonomous_exploration/autonomous_exploration.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/build
+creating /home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/build/lib
+creating /home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/build/lib/autonomous_exploration
+copying autonomous_exploration/control.py -> /home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/build/lib/autonomous_exploration
+copying autonomous_exploration/__init__.py -> /home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/build/lib/autonomous_exploration
+running install
+running install_lib
+creating /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration
+copying /home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/build/lib/autonomous_exploration/control.py -> /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration
+copying /home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/build/lib/autonomous_exploration/__init__.py -> /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration
+byte-compiling /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration/control.py to control.cpython-310.pyc
+byte-compiling /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration/__init__.py to __init__.cpython-310.pyc
+running install_data
+creating /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/share/ament_index
+creating /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/share/ament_index/resource_index
+creating /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/share/ament_index/resource_index/packages
+copying resource/autonomous_exploration -> /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/share/ament_index/resource_index/packages
+copying package.xml -> /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/share/autonomous_exploration
+running install_egg_info
+Copying ../../build/autonomous_exploration/autonomous_exploration.egg-info to /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration-0.0.0-py3.10.egg-info
+running install_scripts
+Installing control script to /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/autonomous_exploration
+writing list of installed files to '/home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/install.log'

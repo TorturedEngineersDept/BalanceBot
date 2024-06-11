@@ -1,0 +1,30 @@
+[1.468s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --build /home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2 -- -j4 -l4
+[2.356s] [100%] Built target ldlidar_stl_ros2_node
+[2.437s] Invoked command in '/home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --build /home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2 -- -j4 -l4
+[2.758s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --install /home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2
+[2.793s] -- Install configuration: ""
+[2.797s] -- Execute custom install script
+[2.810s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/lib/ldlidar_stl_ros2/ldlidar_stl_ros2_node
+[2.817s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2//launch/ld06.launch.py
+[2.824s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2//launch/ld19.launch.py
+[2.827s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2//launch/stl27l.launch.py
+[2.830s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2//launch/viewer_ld06.launch.py
+[2.832s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2//launch/viewer_ld19.launch.py
+[2.835s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2//launch/viewer_stl27l.launch.py
+[2.838s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2//rviz2/ldlidar.rviz
+[2.841s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ament_index/resource_index/package_run_dependencies/ldlidar_stl_ros2
+[2.844s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ament_index/resource_index/parent_prefix_path/ldlidar_stl_ros2
+[2.847s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/environment/ament_prefix_path.sh
+[2.851s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/environment/ament_prefix_path.dsv
+[2.853s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/environment/path.sh
+[2.855s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/environment/path.dsv
+[2.856s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/local_setup.bash
+[2.856s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/local_setup.sh
+[2.857s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/local_setup.zsh
+[2.858s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/local_setup.dsv
+[2.859s] -- Symlinking: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/package.dsv
+[2.864s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ament_index/resource_index/packages/ldlidar_stl_ros2
+[2.866s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/cmake/ldlidar_stl_ros2Config.cmake
+[2.868s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/cmake/ldlidar_stl_ros2Config-version.cmake
+[2.868s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2/share/ldlidar_stl_ros2/package.xml
+[2.877s] Invoked command in '/home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --install /home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2

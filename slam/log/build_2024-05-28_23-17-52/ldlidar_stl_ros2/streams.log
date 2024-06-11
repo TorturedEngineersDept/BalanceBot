@@ -1,0 +1,33 @@
+[0.065s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2': /usr/bin/cmake /home/kevin/ldlidar_ros2_ws/src/ldlidar_stl_ros2 -DCMAKE_INSTALL_PREFIX=/home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2
+[1.264s] -- The C compiler identification is GNU 11.4.0
+[2.223s] -- The CXX compiler identification is GNU 11.4.0
+[2.285s] -- Detecting C compiler ABI info
+[2.693s] -- Detecting C compiler ABI info - done
+[2.721s] -- Check for working C compiler: /usr/bin/cc - skipped
+[2.724s] -- Detecting C compile features
+[2.730s] -- Detecting C compile features - done
+[2.746s] -- Detecting CXX compiler ABI info
+[3.141s] -- Detecting CXX compiler ABI info - done
+[3.168s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[3.169s] -- Detecting CXX compile features
+[3.172s] -- Detecting CXX compile features - done
+[3.330s] [31mCMake Error at CMakeLists.txt:19 (find_package):
+[3.331s]   By not providing "Findament_cmake.cmake" in CMAKE_MODULE_PATH this project
+[3.331s]   has asked CMake to find a package configuration file provided by
+[3.332s]   "ament_cmake", but CMake did not find one.
+[3.332s] 
+[3.332s]   Could not find a package configuration file provided by "ament_cmake" with
+[3.333s]   any of the following names:
+[3.333s] 
+[3.334s]     ament_cmakeConfig.cmake
+[3.335s]     ament_cmake-config.cmake
+[3.336s] 
+[3.337s]   Add the installation prefix of "ament_cmake" to CMAKE_PREFIX_PATH or set
+[3.338s]   "ament_cmake_DIR" to a directory containing one of the above files.  If
+[3.340s]   "ament_cmake" provides a separate development package or SDK, be sure it
+[3.341s]   has been installed.
+[3.341s] 
+[3.342s] [0m
+[3.342s] -- Configuring incomplete, errors occurred!
+[3.342s] See also "/home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2/CMakeFiles/CMakeOutput.log".
+[3.348s] Invoked command in '/home/kevin/ldlidar_ros2_ws/build/ldlidar_stl_ros2' returned '1': /usr/bin/cmake /home/kevin/ldlidar_ros2_ws/src/ldlidar_stl_ros2 -DCMAKE_INSTALL_PREFIX=/home/kevin/ldlidar_ros2_ws/install/ldlidar_stl_ros2
