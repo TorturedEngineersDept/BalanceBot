@@ -3,6 +3,8 @@
 #include <WiFi.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 #include "MqttSetup.h"
 #include "PidController.h"
 #include "Passwords.h"
@@ -77,12 +79,19 @@ public:
      */
     void resolveId();
 
+    NTPClient &getNTPClient();
+
 private:
     void getStrength() const;
 
     const char *ssid;
     const char *username;
     const char *password;
+
     MqttSetup mqtt;
+
+    WiFiUDP ntpUDP;
+    NTPClient timeClient;
+
     bool runIdResolved = false;
 };

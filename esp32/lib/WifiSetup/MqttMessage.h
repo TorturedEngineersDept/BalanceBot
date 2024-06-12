@@ -4,20 +4,23 @@
 
 extern int RunID;
 extern int BotID;
+
 class MqttMessage
 {
 public:
+    MqttMessage(unsigned long timestamp) : timestamp(timestamp) {}
     virtual void toJson(char *buffer, size_t bufferSize) = 0;
     virtual const char *getTopic() = 0;
 
 protected:
     int runId = RunID;
+    unsigned long timestamp;
 };
 
 class BatteryMessage : public MqttMessage
 {
 public:
-    BatteryMessage(float batteryLevel);
+    BatteryMessage(float batteryLevel, unsigned long timestamp);
     void toJson(char *buffer, size_t bufferSize) override;
     const char *getTopic() override;
 
@@ -29,7 +32,7 @@ private:
 class MappingMessage : public MqttMessage
 {
 public:
-    MappingMessage(float x, float y, float orientation);
+    MappingMessage(float x, float y, float theta, unsigned long timestamp);
     void toJson(char *buffer, size_t bufferSize) override;
     const char *getTopic() override;
 
@@ -43,7 +46,7 @@ private:
 class StatusMessage : public MqttMessage
 {
 public:
-    StatusMessage();
+    StatusMessage(unsigned long timestamp);
     void toJson(char *buffer, size_t bufferSize) override;
     const char *getTopic() override;
 
@@ -54,7 +57,7 @@ private:
 class DebugMessage : public MqttMessage
 {
 public:
-    DebugMessage(const char *message);
+    DebugMessage(const char *message, unsigned long timestamp);
     void toJson(char *buffer, size_t bufferSize) override;
     const char *getTopic() override;
 

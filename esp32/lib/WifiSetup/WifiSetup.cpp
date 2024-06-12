@@ -9,7 +9,8 @@ WifiSetup::WifiSetup(
     : ssid(ssid),
       username(nullptr),
       password(password),
-      mqtt(mqtt_server, mqtt_port)
+      timeClient(ntpUDP, "pool.ntp.org", 0, 60000),
+      mqtt(mqtt_server, mqtt_port, timeClient)
 {
 }
 
@@ -22,7 +23,8 @@ WifiSetup::WifiSetup(
     : ssid(ssid),
       username(username),
       password(password),
-      mqtt(mqtt_server, mqtt_port)
+      timeClient(ntpUDP, "pool.ntp.org", 0, 60000),
+      mqtt(mqtt_server, mqtt_port, timeClient)
 {
 }
 
@@ -75,6 +77,9 @@ void WifiSetup::connect(unsigned long timeout)
         resolveId();
         runIdResolved = true;
     }
+
+    // Setup NTP
+    timeClient.begin();
 }
 
 void WifiSetup::getStrength() const
@@ -130,7 +135,7 @@ void WifiSetup::print(const char *message)
 {
     if (mqttConnected())
     {
-        DebugMessage debugMessage(message);
+        DebugMessage debugMessage(message, mqtt.getEpochTime());
         mqtt.publishMessage(debugMessage);
         delay(100);
     }
@@ -142,7 +147,7 @@ void WifiSetup::println(const char *message)
     if (mqttConnected())
     {
         std::string msg = std::string(message) + "\n";
-        DebugMessage debugMessage(msg.c_str());
+        DebugMessage debugMessage(msg.c_str(), mqtt.getEpochTime());
         mqtt.publishMessage(debugMessage);
         delay(100);
     }
@@ -176,6 +181,7 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
     if (doc["run_id"] == RunID)
     {
         // Check the topic and process accordingly
+        Serial.println("Processing message...");
         if (strcmp(topic, "user/joystick") == 0)
         {
             // Extract values from the JSON document
@@ -273,4 +279,9 @@ void WifiSetup::resolveId()
     Serial.println(BotID);
     Serial.print("RunId: ");
     Serial.println(RunID);
+}
+
+NTPClient &WifiSetup::getNTPClient()
+{
+    return timeClient;
 }

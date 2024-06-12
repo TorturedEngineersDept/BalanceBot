@@ -3,10 +3,13 @@
 float x = 0;
 float y = 0;
 
-MqttSetup::MqttSetup(const char *server, int port)
-    : server(server), port(port), client(espClient)
+MqttSetup::MqttSetup(const char *server, int port, NTPClient &timeClient)
+    : server(server), port(port), client(espClient), timeClient(timeClient)
 {
     client.setServer(server, port);
+    String tmp_id = "Bot-" + String(BotID);
+    client_id = new char[tmp_id.length() + 1];
+    strcpy(client_id, tmp_id.c_str());
 }
 
 void MqttSetup::connect(unsigned long timeout)
@@ -15,7 +18,7 @@ void MqttSetup::connect(unsigned long timeout)
     while (!client.connected() && start < timeout)
     {
         Serial.print("Attempting MQTT connection...");
-        if (client.connect("ESP32Client"))
+        if (client.connect(client_id))
         {
             client.setKeepAlive(60); // Set keep-alive to 60 seconds
             Serial.println("connected");
@@ -32,7 +35,7 @@ void MqttSetup::connect(unsigned long timeout)
     }
 
     // Send a status message to update run number on server
-    StatusMessage statusMessage;
+    StatusMessage statusMessage(getEpochTime());
     publishMessage(statusMessage);
 }
 
@@ -57,7 +60,7 @@ void MqttSetup::loop()
         {
             batteryLevel = 100;
         }
-        BatteryMessage batteryMessage(batteryLevel);
+        BatteryMessage batteryMessage(batteryLevel, getEpochTime());
         publishMessage(batteryMessage);
 
         // TODO: Update mapping status and publish message
@@ -66,6 +69,7 @@ void MqttSetup::loop()
     }
 
     client.loop();
+    timeClient.update();
 }
 
 void MqttSetup::setCallback(MQTT_CALLBACK_SIGNATURE)
@@ -88,4 +92,11 @@ bool MqttSetup::isConnected()
 const char *MqttSetup::getServer() const
 {
     return server;
+}
+
+unsigned long MqttSetup::getEpochTime()
+{
+    timeClient.update();
+    unsigned long epochTime = timeClient.getEpochTime();
+    return epochTime;
 }
