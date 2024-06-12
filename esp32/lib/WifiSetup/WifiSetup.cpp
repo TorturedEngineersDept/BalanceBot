@@ -11,7 +11,8 @@ WifiSetup::WifiSetup(
     : ssid(ssid),
       username(nullptr),
       password(password),
-      mqtt(mqtt_server, mqtt_port)
+      timeClient(ntpUDP, "pool.ntp.org", 0, 60000),
+      mqtt(mqtt_server, mqtt_port, timeClient)
 {
 }
 
@@ -24,7 +25,8 @@ WifiSetup::WifiSetup(
     : ssid(ssid),
       username(username),
       password(password),
-      mqtt(mqtt_server, mqtt_port)
+      timeClient(ntpUDP, "pool.ntp.org", 0, 60000),
+      mqtt(mqtt_server, mqtt_port, timeClient)
 {
 }
 
@@ -77,6 +79,9 @@ void WifiSetup::connect(unsigned long timeout)
         resolveId();
         runIdResolved = true;
     }
+
+    // Setup NTP
+    timeClient.begin();
 }
 
 void WifiSetup::getStrength() const
@@ -132,7 +137,7 @@ void WifiSetup::print(const char *message)
 {
     if (mqttConnected())
     {
-        DebugMessage debugMessage(message);
+        DebugMessage debugMessage(message, mqtt.getEpochTime());
         mqtt.publishMessage(debugMessage);
         delay(100);
     }
@@ -144,7 +149,7 @@ void WifiSetup::println(const char *message)
     if (mqttConnected())
     {
         std::string msg = std::string(message) + "\n";
-        DebugMessage debugMessage(msg.c_str());
+        DebugMessage debugMessage(msg.c_str(), mqtt.getEpochTime());
         mqtt.publishMessage(debugMessage);
         delay(100);
     }
@@ -178,6 +183,7 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
     if (doc["run_id"] == RunID)
     {
         // Check the topic and process accordingly
+        Serial.println("Processing message...");
         if (strcmp(topic, "user/joystick") == 0)
         {
             // Extract values from the JSON document
@@ -222,7 +228,7 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
             float kd_o = doc["kd_o"] | params.kd_o;
             float tilt_setpoint = doc["tilt_setpoint"] | params.tilt_setpoint;
             float velocity_setpoint = doc["velocity_setpoint"] | params.velocity_setpoint;
-            float comp_coeff = doc["comp_coeff"] | params.comp_coeff;
+            float rotation_setpoint = doc["rotation_setpoint"] | params.rotation_setpoint;
             Serial.println("kp_i: " + String(kp_i) +
                            ", ki_i: " + String(ki_i) +
                            ", kd_i: " + String(kd_i) +
@@ -231,10 +237,10 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
                            ", ki_o: " + String(ki_o) +
                            ", kd_o: " + String(kd_o) +
                            ", velocity_setpoint: " + String(velocity_setpoint) +
-                           ", comp_coeff: " + String(comp_coeff));
+                           ", rotation_setpoint: " + String(rotation_setpoint));
 
             // Use the callback given in the static class
-            PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, comp_coeff));
+            PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, rotation_setpoint));
         }
         else
         {
@@ -273,4 +279,9 @@ void WifiSetup::resolveId()
 
     println(("BotId:" + std::to_string(BotID)).c_str());
     println(("RunId:" + std::to_string(RunID)).c_str());
+}
+
+NTPClient &WifiSetup::getNTPClient()
+{
+    return timeClient;
 }

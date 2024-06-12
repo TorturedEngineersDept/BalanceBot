@@ -24,10 +24,10 @@
 struct PidParams
 {
     PidParams(float ki_i, float kp_i, float kd_i, float tilt_setpoint,
-              float ki_o, float kp_o, float kd_o, float velocity_setpoint, float comp_coeff)
+              float ki_o, float kp_o, float kd_o, float velocity_setpoint, float rotation_setpoint)
         : kp_i(kp_i), ki_i(ki_i), kd_i(kd_i), tilt_setpoint(tilt_setpoint),
           kp_o(kp_o), ki_o(ki_o), kd_o(kd_o), velocity_setpoint(velocity_setpoint),
-          comp_coeff(comp_coeff) {}
+          rotation_setpoint(rotation_setpoint) {}
 
     float kp_i;
     float ki_i;
@@ -37,7 +37,7 @@ struct PidParams
     float ki_o;
     float kd_o;
     float velocity_setpoint;
-    float comp_coeff;
+    float rotation_setpoint;
 };
 
 struct PidDirection

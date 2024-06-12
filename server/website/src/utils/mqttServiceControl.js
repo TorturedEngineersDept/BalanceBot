@@ -1,6 +1,13 @@
 import mqtt from 'mqtt';
 
 let client;
+let timestamp;
+
+// Utility function to convert Unix timestamp to HH:MM:SS
+const formatTimestamp = (unixTimestamp) => {
+    const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+    return date.toISOString().substr(11, 8); // Extract HH:MM:SS
+};
 
 export const initializeMQTT = (setBatteryPercentage, handleDebugMessage, globalRunId) => {
     const MQTT_BROKER = "18.130.87.186";
@@ -40,7 +47,7 @@ export const initializeMQTT = (setBatteryPercentage, handleDebugMessage, globalR
             }
             else if (receivedTopic === "esp32/debug") {
                 console.log('Received data:', data);
-                const timestamp = new Date().toLocaleTimeString();
+                timestamp = formatTimestamp(data.timestamp);
                 handleDebugMessage({ timestamp, text: data.message });
             }
         }

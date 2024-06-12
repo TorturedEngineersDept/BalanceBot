@@ -1,10 +1,9 @@
-// src/context/GlobalState.js
 import React, { createContext, useState } from 'react';
 
 export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-    const [runId, setRunId] = useState('');
+    const [runId, setRunId] = useState(null);
     const [batteryPercentage, setBatteryPercentage] = useState(0);
     const [innerKp, setInnerKp] = useState('');
     const [innerKi, setInnerKi] = useState('');
@@ -12,7 +11,7 @@ export const GlobalProvider = ({ children }) => {
     const [outerKp, setOuterKp] = useState('');
     const [outerKi, setOuterKi] = useState('');
     const [outerKd, setOuterKd] = useState('');
-    const [compCoeff, setCompCoeff] = useState('');
+    const [rotationSetpoint, setRotationSetpoint,] = useState('');
     const [velocitySetpoint, setVelocitySetpoint] = useState('');
     const [tiltSetpoint, setTiltSetpoint] = useState('');
 
@@ -26,7 +25,7 @@ export const GlobalProvider = ({ children }) => {
             outerKp, setOuterKp,
             outerKi, setOuterKi,
             outerKd, setOuterKd,
-            compCoeff, setCompCoeff,
+            rotationSetpoint, setRotationSetpoint,
             velocitySetpoint, setVelocitySetpoint,
             tiltSetpoint, setTiltSetpoint
         }}>

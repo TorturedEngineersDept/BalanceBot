@@ -17,7 +17,7 @@ export const handleLoginSubmit = async (botId) => {
         const result = await response.json();
         if (result.RunId) {
             console.log('RunID:', result.RunId);
-            return result.RunId;
+            return Number(result.RunId);
         } else {
             console.error('RunID not found in response');
             return null;

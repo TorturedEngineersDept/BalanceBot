@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Dashboard.css';
 import CanvasJSReact from '@canvasjs/react-charts';
-import { fetchData } from '../utils/fetchBatteryData';
-import { initializeMQTT, sendTuning } from '../utils/mqttServiceDashboard';
+import { fetchBatteryData } from '../utils/fetchBatteryData';
+import { fetchPowerData } from '../utils/fetchPowerData';
+import { initializeMQTT, sendTuning, sendPingMessage } from '../utils/mqttServiceDashboard';
 import { GlobalContext } from '../context/GlobalState';
+import BatteryGraph from '../components/BatteryGraph';
+import PowerGraph from '../components/PowerGraph';
+import logo from '../images/logo.png';
+
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -17,21 +22,19 @@ const Dashboard = () => {
         outerKp, setOuterKp,
         outerKd, setOuterKd,
         outerKi, setOuterKi,
-        compCoeff, setCompCoeff,
+        rotationSetpoint, setRotationSetpoint,
         velocitySetpoint, setVelocitySetpoint,
         tiltSetpoint, setTiltSetpoint
     } = useContext(GlobalContext);
+
     const [selectedSection, setSelectedSection] = useState('Inner Loop PID');
     const [batteryData, setBatteryData] = useState([]);
     const [powerData, setPowerData] = useState([]);
-
-    const handleSectionChange = (event) => {
-        setSelectedSection(event.target.value);
-    };
+    const [rtt, setRTT] = useState(null);
 
     useEffect(() => {
         if (runId) {
-            fetchData(runId)
+            fetchBatteryData(runId)
                 .then(initialData => {
                     console.log('Fetched initial data:', initialData);
                     setBatteryData(initialData);
@@ -39,23 +42,20 @@ const Dashboard = () => {
                 .catch(error => {
                     console.error('Error fetching initial data:', error);
                 });
-
-            initializeMQTT(setBatteryPercentage, setBatteryData, runId, 'esp32/battery');
+            fetchPowerData(runId)
+                .then(initialData => {
+                    console.log('Fetched initial data:', initialData);
+                    setPowerData(initialData);
+                })
+                .catch(error => {
+                    console.error('Error fetching initial data:', error);
+                });
+            initializeMQTT(setBatteryData, setPowerData, runId, setRTT);
         }
     }, [runId, setBatteryPercentage]);
 
-    useEffect(() => {
-        console.log('Battery data updated:', batteryData);
-    }, [batteryData]);
-
-    const batteryOptions = {
-        title: {
-            text: "Battery Usage"
-        },
-        data: [{
-            type: "line",
-            dataPoints: batteryData
-        }]
+    const handleSectionChange = (event) => {
+        setSelectedSection(event.target.value);
     };
 
     const handleInputChange = (event) => {
@@ -79,8 +79,8 @@ const Dashboard = () => {
             case 'outerKd':
                 setOuterKd(value === '' ? outerKd : value);
                 break;
-            case 'compCoeff':
-                setCompCoeff(value === '' ? compCoeff : value);
+            case 'rotationSetpoint':
+                setRotationSetpoint(value === '' ? rotationSetpoint : value);
                 break;
             case 'velocitySetpoint':
                 setVelocitySetpoint(value === '' ? velocitySetpoint : value);
@@ -99,27 +99,23 @@ const Dashboard = () => {
             runId,
             parseFloat(innerKp), parseFloat(innerKi), parseFloat(innerKd),
             parseFloat(outerKp), parseFloat(outerKi), parseFloat(outerKd),
-            parseFloat(compCoeff), parseFloat(velocitySetpoint), parseFloat(tiltSetpoint)
+            parseFloat(rotationSetpoint), parseFloat(velocitySetpoint), parseFloat(tiltSetpoint)
         );
     };
-    const powerOptions = {
-        title: {
-            text: "Power Consumption"
-        },
-        data: [{
-            type: "line",
-            dataPoints: powerData
-        }]
+
+    const handlePingTest = () => {
+        const startTime = Date.now();
+        sendPingMessage();
     };
 
     return (
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <div className="chart">
-                    <CanvasJSChart options={batteryOptions} />
+                    <BatteryGraph batteryData={batteryData} setBatteryData={setBatteryData} />
                 </div>
                 <div className="chart">
-                    <CanvasJSChart options={powerOptions} />
+                    <PowerGraph powerData={powerData} setPowerData={setPowerData} />
                 </div>
             </div>
             <div className="section">
@@ -132,7 +128,6 @@ const Dashboard = () => {
                     </select>
 
                     <form onSubmit={handleSubmit}>
-
                         {selectedSection === 'Inner Loop PID' && (
                             <>
                                 <div className="input-group">
@@ -157,7 +152,7 @@ const Dashboard = () => {
                             <>
                                 <div className="input-group">
                                     <label>Proportional Gain</label>
-                                    <input type="number" step="0.0001" name="outerKd" value={outerKp}
+                                    <input type="number" step="0.0001" name="outerKp" value={outerKp}
                                         onChange={handleInputChange} placeholder="Placeholder" />
                                 </div>
                                 <div className="input-group">
@@ -186,8 +181,8 @@ const Dashboard = () => {
                                         onChange={handleInputChange} placeholder="Placeholder" />
                                 </div>
                                 <div className="input-group">
-                                    <label>Complementary Filter Coefficient</label>
-                                    <input type="number" step="0.0001" name="compCoeff" value={compCoeff}
+                                    <label>Rotation Setpoint</label>
+                                    <input type="number" step="0.0001" name="rotationSetpoint" value={rotationSetpoint}
                                         onChange={handleInputChange} placeholder="Placeholder" />
                                 </div>
                             </>
@@ -198,9 +193,9 @@ const Dashboard = () => {
                 </div>
                 <div className="section-right">
                     <h2>Server Connection</h2>
-                    <button className="test-button">Test Server Connectivity</button>
-                    <p>Ping: -- ms</p>
-                    <p>RTT: -- ms</p>
+                    <button className="test-button" onClick={handlePingTest}>Test Server Connectivity</button>
+                    <p>RTT: {rtt !== null ? `${rtt} ms` : '-- ms'}</p>
+                    <img src={logo} alt='logo' className='logo' /> {/* Use the imported image */}
                 </div>
             </div>
         </div>

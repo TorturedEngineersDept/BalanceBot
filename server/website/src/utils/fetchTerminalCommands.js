@@ -1,3 +1,9 @@
+// Utility function to convert Unix timestamp to HH:MM:SS
+const formatTimestamp = (unixTimestamp) => {
+    const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+    return date.toISOString().substr(11, 8); // Extract HH:MM:SS
+};
+
 // Function to fetch initial data from API Gateway
 export const fetchData = async (runId) => {
     try {
@@ -7,7 +13,7 @@ export const fetchData = async (runId) => {
         }
         const data = await response.json();
         return data.map(item => ({
-            timestamp: item.Timestamp,
+            timestamp: formatTimestamp(item.Timestamp),
             text: item.Message,
             type: item.MessageType
         }));

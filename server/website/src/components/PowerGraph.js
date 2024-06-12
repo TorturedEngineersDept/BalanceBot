@@ -4,36 +4,35 @@ import './graph.css';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-const BatteryGraph = ({ batteryData, setBatteryData }) => {
+const PowerGraph = ({ powerData, setPowerData }) => {
     useEffect(() => {
-        console.log("Battery data updated:", batteryData);
-    }, [batteryData]);
+        console.log("Power data updated:", powerData);
+    }, [powerData]);
 
-    const batteryOptions = {
+    const powerOptions = {
         title: {
-            text: "Battery Usage"
+            text: "Power Usage"
         },
         axisX: {
             title: "Time",
             valueFormatString: "HH:mm:ss"
         },
         axisY: {
-            title: "Battery",
-            maximum: 100,
-            suffix: "%"
+            title: "Power",
+            suffix: "W"
         },
         data: [{
             type: "line",
             xValueType: "dateTime",
-            dataPoints: batteryData.slice(-20)
+            dataPoints: powerData.slice(-20)
         }]
     };
 
     return (
         <div className="graph-container">
-            <CanvasJSChart options={batteryOptions} containerProps={{ height: "100%", width: "100%" }} />
+            <CanvasJSChart options={powerOptions} containerProps={{ height: "100%", width: "100%" }} />
         </div>
     );
 };
 
-export default BatteryGraph;
+export default PowerGraph;
