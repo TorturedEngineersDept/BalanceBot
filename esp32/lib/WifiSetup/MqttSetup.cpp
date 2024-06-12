@@ -48,11 +48,12 @@ void MqttSetup::loop()
         connect();
     }
 
-    // Send a new message every 2 seconds
     int current_time = millis();
-    if (current_time - lastMsgSent > delayMsgSent)
+
+    // Update power status and publish message every 2 seconds
+    if (current_time - lastBatteryMessageSent > delayBatterySent)
     {
-        lastMsgSent = millis();
+        lastBatteryMessageSent = millis();
 
         // Update battery status and publish message
         batteryLevel -= 7;
@@ -62,10 +63,23 @@ void MqttSetup::loop()
         }
         BatteryMessage batteryMessage(batteryLevel, getEpochTime());
         publishMessage(batteryMessage);
+    }
 
-        // TODO: Update mapping status and publish message
-        // MappingMessage mappingMessage(x, y, orientation * PI / 180);
-        // publishMessage(mappingMessage);
+    // Update power status and publish message every second
+    if (current_time - lastPowerMessageSent > delayPowerSent)
+    {
+        lastPowerMessageSent = millis();
+
+        // Update battery status and publish message
+        powerLevel -= 123;
+        if (powerLevel < 0)
+        {
+            powerLevel = 1000;
+        }
+        PowerMessage powerMessage(powerLevel, getEpochTime());
+        publishMessage(powerMessage);
+
+        // Update power status and publish message every second
     }
 
     client.loop();

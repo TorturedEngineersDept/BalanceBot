@@ -99,3 +99,12 @@
 .chart-container {
     height: calc(100% - 40px);
 }
+
+.logo {
+    height: 15vh;
+    /* Set the height to 15% of the viewport height */
+    width: auto;
+    /* Maintain aspect ratio */
+    max-width: 100%;
+    /* Ensure it does not exceed the container's width */
+}

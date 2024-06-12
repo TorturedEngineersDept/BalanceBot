@@ -29,6 +29,18 @@ private:
     StaticJsonDocument<200> doc;
 };
 
+class PowerMessage : public MqttMessage
+{
+public:
+    PowerMessage(float powerLevel, unsigned long timestamp);
+    void toJson(char *buffer, size_t bufferSize) override;
+    const char *getTopic() override;
+
+private:
+    float powerLevel;
+    StaticJsonDocument<200> doc;
+};
+
 class MappingMessage : public MqttMessage
 {
 public:

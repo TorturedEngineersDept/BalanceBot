@@ -1,10 +1,10 @@
 import mqtt from 'mqtt';
 
 let client;
-// let runId = 0;
 let test = 0;
+let startTime = 0;
 
-export const initializeMQTT = (setBatteryData, globalRunId) => {
+export const initializeMQTT = (setBatteryData, setPowerData, globalRunId, setRTT) => {
     const MQTT_BROKER = "18.130.87.186";
     const MQTT_PORT = 8000;
 
@@ -12,7 +12,6 @@ export const initializeMQTT = (setBatteryData, globalRunId) => {
     if (client) {
         client.end();
     }
-
 
     client = mqtt.connect(`ws://${MQTT_BROKER}:${MQTT_PORT}`, {
         reconnectPeriod: 1000,
@@ -26,6 +25,11 @@ export const initializeMQTT = (setBatteryData, globalRunId) => {
         client.subscribe('esp32/battery', (err) => {
             if (!err) {
                 console.log('Subscribed to topic: esp32/battery');
+            }
+        });
+        client.subscribe('esp32/power', (err) => {
+            if (!err) {
+                console.log('Subscribed to topic: esp32/power');
             }
         });
     });
@@ -49,6 +53,30 @@ export const initializeMQTT = (setBatteryData, globalRunId) => {
             } catch (e) {
                 console.error('Error parsing message:', e);
             }
+        }
+        if (topic === 'esp32/power') {
+            try {
+                const data = JSON.parse(message.toString());
+                if (data.run_id === test) {
+                    console.log('Received data:', data);
+                    setPowerData(prevData => {
+                        const newData = Array.isArray(prevData)
+                            ? [...prevData, { x: new Date(data.timestamp * 1000), y: data.power }]
+                            : [{ x: new Date(data.timestamp * 1000), y: data.power }];
+                        console.log('New data array:', newData);
+                        return newData;
+                    });
+                } else {
+                    console.log(`Run ID mismatch: received ${data.run_id}, expected ${globalRunId}`);
+                }
+            } catch (e) {
+                console.error('Error parsing message:', e);
+            }
+        }
+        if (topic === 'user/RTT') {
+            const endTime = Date.now();
+            const rtt = endTime - startTime;
+            setRTT(rtt);
         }
     });
 
@@ -75,7 +103,7 @@ export const sendTuning = (runId, innerKp, innerKi, innerKd, outerKp, outerKi, o
         return;
     }
     const message = JSON.stringify({
-        run_id: runId.toString(), // Ensure run_id is sent as a string
+        run_id: runId.toString(),
         kp_i: parseFloat(innerKp),
         ki_i: parseFloat(innerKi),
         kd_i: parseFloat(innerKd),
@@ -93,6 +121,31 @@ export const sendTuning = (runId, innerKp, innerKi, innerKd, outerKp, outerKi, o
             console.error('Publish error:', err);
         } else {
             console.log('Message published successfully');
+        }
+    });
+};
+
+export const sendPingMessage = () => {
+    if (!client || !client.connected) {
+        console.error('MQTT client is not initialized or connected');
+        return;
+    }
+    client.subscribe('user/RTT', (err) => {
+        if (!err) {
+            console.log('Subscribed to topic: user/RTT');
+        }
+    });
+    startTime = Date.now();
+    client.publish('user/RTT', JSON.stringify({ message: 'ping' }), (err) => {
+        if (err) {
+            console.error('Publish error:', err);
+        } else {
+            console.log('Ping message sent successfully');
+        }
+    });
+    client.unsubscribe('user/RTT', (err) => {
+        if (!err) {
+            console.log('Unsubscribed from topic: user/RTT');
         }
     });
 };

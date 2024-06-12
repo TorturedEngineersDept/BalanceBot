@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Dashboard.css';
 import CanvasJSReact from '@canvasjs/react-charts';
-import { fetchData } from '../utils/fetchBatteryData';
-import { initializeMQTT, sendTuning } from '../utils/mqttServiceDashboard';
+import { fetchBatteryData } from '../utils/fetchBatteryData';
+import { fetchPowerData } from '../utils/fetchPowerData';
+import { initializeMQTT, sendTuning, sendPingMessage } from '../utils/mqttServiceDashboard';
 import { GlobalContext } from '../context/GlobalState';
 import BatteryGraph from '../components/BatteryGraph';
 import PowerGraph from '../components/PowerGraph';
+import logo from '../images/logo.png';
+
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -23,17 +26,15 @@ const Dashboard = () => {
         velocitySetpoint, setVelocitySetpoint,
         tiltSetpoint, setTiltSetpoint
     } = useContext(GlobalContext);
+
     const [selectedSection, setSelectedSection] = useState('Inner Loop PID');
     const [batteryData, setBatteryData] = useState([]);
     const [powerData, setPowerData] = useState([]);
-
-    const handleSectionChange = (event) => {
-        setSelectedSection(event.target.value);
-    };
+    const [rtt, setRTT] = useState(null);
 
     useEffect(() => {
         if (runId) {
-            fetchData(runId)
+            fetchBatteryData(runId)
                 .then(initialData => {
                     console.log('Fetched initial data:', initialData);
                     setBatteryData(initialData);
@@ -41,14 +42,21 @@ const Dashboard = () => {
                 .catch(error => {
                     console.error('Error fetching initial data:', error);
                 });
-
-            initializeMQTT(setBatteryData, runId);
+            fetchPowerData(runId)
+                .then(initialData => {
+                    console.log('Fetched initial data:', initialData);
+                    setPowerData(initialData);
+                })
+                .catch(error => {
+                    console.error('Error fetching initial data:', error);
+                });
+            initializeMQTT(setBatteryData, setPowerData, runId, setRTT);
         }
     }, [runId, setBatteryPercentage]);
 
-    useEffect(() => {
-        console.log('Battery data updated:', batteryData);
-    }, [batteryData]);
+    const handleSectionChange = (event) => {
+        setSelectedSection(event.target.value);
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -95,6 +103,11 @@ const Dashboard = () => {
         );
     };
 
+    const handlePingTest = () => {
+        const startTime = Date.now();
+        sendPingMessage();
+    };
+
     return (
         <div className="dashboard-container">
             <div className="dashboard-header">
@@ -102,7 +115,7 @@ const Dashboard = () => {
                     <BatteryGraph batteryData={batteryData} setBatteryData={setBatteryData} />
                 </div>
                 <div className="chart">
-                    <PowerGraph />
+                    <PowerGraph powerData={powerData} setPowerData={setPowerData} />
                 </div>
             </div>
             <div className="section">
@@ -115,7 +128,6 @@ const Dashboard = () => {
                     </select>
 
                     <form onSubmit={handleSubmit}>
-
                         {selectedSection === 'Inner Loop PID' && (
                             <>
                                 <div className="input-group">
@@ -181,9 +193,9 @@ const Dashboard = () => {
                 </div>
                 <div className="section-right">
                     <h2>Server Connection</h2>
-                    <button className="test-button">Test Server Connectivity</button>
-                    <p>Ping: -- ms</p>
-                    <p>RTT: -- ms</p>
+                    <button className="test-button" onClick={handlePingTest}>Test Server Connectivity</button>
+                    <p>RTT: {rtt !== null ? `${rtt} ms` : '-- ms'}</p>
+                    <img src={logo} alt='logo' className='logo' /> {/* Use the imported image */}
                 </div>
             </div>
         </div>

@@ -1,41 +1,30 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import CanvasJSReact from '@canvasjs/react-charts';
-import { GlobalContext } from '../context/GlobalState';
-import { fetchData } from '../utils/fetchBatteryData';
-import { initializeMQTT } from '../utils/mqttServiceControl';
 import './graph.css';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-const PowerGraph = () => {
-    const { runId } = useContext(GlobalContext);
-    const [powerData, setPowerData] = useState([]);
-
+const PowerGraph = ({ powerData, setPowerData }) => {
     useEffect(() => {
-        if (runId) {
-            fetchData(runId).then(initialData => {
-                setPowerData(initialData);
-            }).catch(error => {
-                console.error('Error fetching initial data:', error);
-            });
-
-            initializeMQTT(setPowerData);
-        }
-    }, [runId]);
+        console.log("Power data updated:", powerData);
+    }, [powerData]);
 
     const powerOptions = {
         title: {
-            text: "Power Consumption"
+            text: "Power Usage"
         },
         axisX: {
-            title: "Time"
+            title: "Time",
+            valueFormatString: "HH:mm:ss"
         },
         axisY: {
-            title: "Power"
+            title: "Power",
+            suffix: "W"
         },
         data: [{
             type: "line",
-            dataPoints: powerData
+            xValueType: "dateTime",
+            dataPoints: powerData.slice(-20)
         }]
     };
 

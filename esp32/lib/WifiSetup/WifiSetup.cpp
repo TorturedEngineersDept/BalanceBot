@@ -238,7 +238,7 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
                            ", rotation_setpoint: " + String(rotation_setpoint));
 
             // Use the callback given in the static class
-            PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, comp_coeff));
+            PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, rotation_setpoint));
         }
         else
         {

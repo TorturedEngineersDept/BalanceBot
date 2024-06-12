@@ -18,6 +18,24 @@ const char *BatteryMessage::getTopic()
     return "esp32/battery";
 }
 
+// PowerMessage Implementation
+PowerMessage::PowerMessage(float powerLevel, unsigned long timestamp)
+    : MqttMessage(timestamp), powerLevel(powerLevel) {}
+
+void PowerMessage::toJson(char *buffer, size_t bufferSize)
+{
+    doc.clear();
+    doc["run_id"] = runId;
+    doc["timestamp"] = timestamp;
+    doc["power"] = powerLevel;
+    serializeJson(doc, buffer, bufferSize);
+}
+
+const char *PowerMessage::getTopic()
+{
+    return "esp32/power";
+}
+
 // MappingMessage Implementation
 MappingMessage::MappingMessage(float x, float y, float theta, unsigned long timestamp)
     : MqttMessage(timestamp), x_coordinate(x), y_coordinate(y), orientation(theta) {}
