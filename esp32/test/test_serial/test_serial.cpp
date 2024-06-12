@@ -9,30 +9,39 @@ void tearDown(void)
 {
 }
 
-uint8_t encode(Direction direction, uint8_t speed)
+uint8_t encode(KeyDirection direction, uint8_t speed)
 {
-    return (static_cast<int>(direction) << 6) | speed;
+    TEST_ASSERT_TRUE(speed < 32);
+    return (static_cast<uint8_t>(direction) << 5) | speed;
 }
 
 void test_decode(void)
 {
-    Direction direction;
+    KeyDirection direction;
     uint8_t speed;
 
-    decode(encode(Direction::RIGHT, 0), direction, speed);
-    TEST_ASSERT_EQUAL_INT(Direction::RIGHT, direction);
+    char message = encode(KeyDirection::RIGHT, 0);
+    TEST_ASSERT_EQUAL_INT(0b01100000, message);
+
+    decode(encode(KeyDirection::RIGHT, 0), direction, speed);
+    TEST_ASSERT_EQUAL_INT(KeyDirection::RIGHT, direction);
     TEST_ASSERT_EQUAL_INT(0, speed);
 
-    decode(encode(Direction::FORWARD, 63), direction, speed);
-    TEST_ASSERT_EQUAL_INT(Direction::FORWARD, direction);
-    TEST_ASSERT_EQUAL_INT(63, speed);
+    decode(encode(KeyDirection::FORWARD, 31), direction, speed);
+    TEST_ASSERT_EQUAL_INT(KeyDirection::FORWARD, direction);
+    TEST_ASSERT_EQUAL_INT(31, speed);
 
-    decode(encode(Direction::LEFT, 32), direction, speed);
-    TEST_ASSERT_EQUAL_INT(Direction::LEFT, direction);
-    TEST_ASSERT_EQUAL_INT(32, speed);
+    decode(encode(KeyDirection::LEFT, 18), direction, speed);
+    TEST_ASSERT_EQUAL_INT(KeyDirection::LEFT, direction);
+    TEST_ASSERT_EQUAL_INT(18, speed);
 
-    decode(encode(Direction::BACKWARD, 1), direction, speed);
-    TEST_ASSERT_EQUAL_INT(Direction::BACKWARD, direction);
+    decode(encode(KeyDirection::BACKWARD, 1), direction, speed);
+    TEST_ASSERT_EQUAL_INT(KeyDirection::BACKWARD, direction);
+    TEST_ASSERT_EQUAL_INT(1, speed);
+
+    // Stop
+    decode(encode(KeyDirection::STOP, 1), direction, speed);
+    TEST_ASSERT_EQUAL_INT(KeyDirection::STOP, direction);
     TEST_ASSERT_EQUAL_INT(1, speed);
 }
 

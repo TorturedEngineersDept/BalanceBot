@@ -1,0 +1,13 @@
+[Unit]
+Description=myservice
+
+[Service]
+User=kevin
+WorkingDirectory=/home/kevin
+ExecStart=/usr/bin/python3 /home/kevin/main.py
+# optional items below
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

@@ -82,6 +82,7 @@ void DebugMessage::toJson(char *buffer, size_t bufferSize)
 {
     doc.clear();
     doc["run_id"] = runId;
+    doc["bot_id"] = BotID;
     doc["timestamp"] = timestamp;
     doc["message"] = message;
     serializeJson(doc, buffer, bufferSize);

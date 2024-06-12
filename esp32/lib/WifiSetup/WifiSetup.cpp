@@ -1,6 +1,8 @@
 #include "WifiSetup.h"
 #include "ESP32Ping.h"
 
+#include <string>
+
 WifiSetup::WifiSetup(
     const char *ssid,
     const char *password,
@@ -275,10 +277,8 @@ void WifiSetup::resolveId()
     BotID = doc["BotId"];
     RunID = doc["RunId"];
 
-    Serial.print("BotId: ");
-    Serial.println(BotID);
-    Serial.print("RunId: ");
-    Serial.println(RunID);
+    println(("BotId:" + std::to_string(BotID)).c_str());
+    println(("RunId:" + std::to_string(RunID)).c_str());
 }
 
 NTPClient &WifiSetup::getNTPClient()
