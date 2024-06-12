@@ -31,11 +31,6 @@ def get_inet_address():
 while True:
     client = mqtt.Client()
 
-    # Publish to AWS
-    client.connect("35.176.179.237", 1883, 60)
-    client.publish("rpi/connection", get_inet_address())
-    client.disconnect()
-
     # Publish to own server
     client.connect("51.182.207.41", 1883, 60)
     client.publish("rpi/connection", get_inet_address())

@@ -4,6 +4,7 @@
 #include <freertos/semphr.h>
 #include <TimerInterrupt_Generic.h>
 #include "MPU6050.h"
+#include "KeyDirection.h"
 #include "Step.h"
 #include "IWifi.h"
 
@@ -19,15 +20,6 @@
 
 // Diagnostic pin for oscilloscope
 #define TOGGLE_PIN 32 // Arduino A4
-
-enum KeyDirection
-{
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT,
-    STOP = -1
-};
 
 struct PidParams
 {

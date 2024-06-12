@@ -13,7 +13,7 @@ let globalNB = 0;
 
 client.on('connect', () => {
     console.log('Connected to MQTT broker');
-    client.subscribe(['esp32/mapping', 'esp32/status'], (err) => {
+    client.subscribe(['esp32/mapping', 'esp32/status', 'rpi/connection'], (err) => {
         if (err) {
             console.error('Failed to subscribe to topics', err);
         } else {
@@ -85,6 +85,9 @@ client.on('message', async (topic, message) => {
         } catch (error) {
             console.error('Error retrieving or updating NB value:', error);
         }
+    } else if (topic === 'rpi/connection') {
+        const data = JSON.parse(message.toString());
+        console.log('Received message on rpi/connection!', data);
     }
 });
 
