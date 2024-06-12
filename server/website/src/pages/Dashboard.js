@@ -7,7 +7,6 @@ import { GlobalContext } from '../context/GlobalState';
 import BatteryGraph from '../components/BatteryGraph';
 import PowerGraph from '../components/PowerGraph';
 
-
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const Dashboard = () => {
@@ -20,7 +19,7 @@ const Dashboard = () => {
         outerKp, setOuterKp,
         outerKd, setOuterKd,
         outerKi, setOuterKi,
-        compCoeff, setCompCoeff,
+        rotationSetpoint, setRotationSetpoint,
         velocitySetpoint, setVelocitySetpoint,
         tiltSetpoint, setTiltSetpoint
     } = useContext(GlobalContext);
@@ -43,7 +42,7 @@ const Dashboard = () => {
                     console.error('Error fetching initial data:', error);
                 });
 
-            initializeMQTT(setBatteryPercentage, setBatteryData, runId, 'esp32/battery');
+            initializeMQTT(setBatteryData, runId);
         }
     }, [runId, setBatteryPercentage]);
 
@@ -72,8 +71,8 @@ const Dashboard = () => {
             case 'outerKd':
                 setOuterKd(value === '' ? outerKd : value);
                 break;
-            case 'compCoeff':
-                setCompCoeff(value === '' ? compCoeff : value);
+            case 'rotationSetpoint':
+                setRotationSetpoint(value === '' ? rotationSetpoint : value);
                 break;
             case 'velocitySetpoint':
                 setVelocitySetpoint(value === '' ? velocitySetpoint : value);
@@ -92,7 +91,7 @@ const Dashboard = () => {
             runId,
             parseFloat(innerKp), parseFloat(innerKi), parseFloat(innerKd),
             parseFloat(outerKp), parseFloat(outerKi), parseFloat(outerKd),
-            parseFloat(compCoeff), parseFloat(velocitySetpoint), parseFloat(tiltSetpoint)
+            parseFloat(rotationSetpoint), parseFloat(velocitySetpoint), parseFloat(tiltSetpoint)
         );
     };
 
@@ -100,7 +99,7 @@ const Dashboard = () => {
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <div className="chart">
-                    <BatteryGraph />
+                    <BatteryGraph batteryData={batteryData} setBatteryData={setBatteryData} />
                 </div>
                 <div className="chart">
                     <PowerGraph />
@@ -141,7 +140,7 @@ const Dashboard = () => {
                             <>
                                 <div className="input-group">
                                     <label>Proportional Gain</label>
-                                    <input type="number" step="0.0001" name="outerKd" value={outerKp}
+                                    <input type="number" step="0.0001" name="outerKp" value={outerKp}
                                         onChange={handleInputChange} placeholder="Placeholder" />
                                 </div>
                                 <div className="input-group">
@@ -170,8 +169,8 @@ const Dashboard = () => {
                                         onChange={handleInputChange} placeholder="Placeholder" />
                                 </div>
                                 <div className="input-group">
-                                    <label>Complementary Filter Coefficient</label>
-                                    <input type="number" step="0.0001" name="compCoeff" value={compCoeff}
+                                    <label>Rotation Setpoint</label>
+                                    <input type="number" step="0.0001" name="rotationSetpoint" value={rotationSetpoint}
                                         onChange={handleInputChange} placeholder="Placeholder" />
                                 </div>
                             </>

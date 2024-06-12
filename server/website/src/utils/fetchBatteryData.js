@@ -1,4 +1,3 @@
-// Function to fetch initial data from API Gateway
 export const fetchData = async (runId) => {
     try {
         const response = await fetch(`https://rts358y5pk.execute-api.eu-west-2.amazonaws.com/prod/get-battery?RunId=${runId}`);
@@ -7,7 +6,7 @@ export const fetchData = async (runId) => {
         }
         const data = await response.json();
         return data.map(item => ({
-            x: item.Timestamp,  // Using the raw Timestamp value
+            x: new Date(item.Timestamp * 1000), // Convert epoch time to JavaScript Date object
             y: item.Battery
         }));
     } catch (error) {

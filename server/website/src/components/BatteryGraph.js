@@ -1,42 +1,31 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import CanvasJSReact from '@canvasjs/react-charts';
-import { GlobalContext } from '../context/GlobalState';
-import { fetchData } from '../utils/fetchBatteryData';
-import { initializeMQTT } from '../utils/mqttServiceControl';
 import './graph.css';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-const BatteryGraph = () => {
-    const { runId } = useContext(GlobalContext);
-    const [batteryData, setBatteryData] = useState([]);
-
+const BatteryGraph = ({ batteryData, setBatteryData }) => {
     useEffect(() => {
-        if (runId) {
-            fetchData(runId).then(initialData => {
-                setBatteryData(initialData);
-            }).catch(error => {
-                console.error('Error fetching initial data:', error);
-            });
-
-            initializeMQTT(setBatteryData);
-        }
-    }, [runId]);
+        console.log("Battery data updated:", batteryData);
+    }, [batteryData]);
 
     const batteryOptions = {
         title: {
             text: "Battery Usage"
         },
         axisX: {
-            title: "Time"
+            title: "Time",
+            valueFormatString: "HH:mm:ss"
         },
         axisY: {
             title: "Battery",
-            maximum: 100 // Set your maximum y-axis value here
+            maximum: 100,
+            suffix: "%"
         },
         data: [{
             type: "line",
-            dataPoints: batteryData
+            xValueType: "dateTime",
+            dataPoints: batteryData.slice(-20)
         }]
     };
 

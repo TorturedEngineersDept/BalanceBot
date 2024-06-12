@@ -226,7 +226,7 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
             float kd_o = doc["kd_o"] | params.kd_o;
             float tilt_setpoint = doc["tilt_setpoint"] | params.tilt_setpoint;
             float velocity_setpoint = doc["velocity_setpoint"] | params.velocity_setpoint;
-            float comp_coeff = doc["comp_coeff"] | params.comp_coeff;
+            float rotation_setpoint = doc["rotation_setpoint"] | params.rotation_setpoint;
             Serial.println("kp_i: " + String(kp_i) +
                            ", ki_i: " + String(ki_i) +
                            ", kd_i: " + String(kd_i) +
@@ -235,7 +235,7 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
                            ", ki_o: " + String(ki_o) +
                            ", kd_o: " + String(kd_o) +
                            ", velocity_setpoint: " + String(velocity_setpoint) +
-                           ", comp_coeff: " + String(comp_coeff));
+                           ", rotation_setpoint: " + String(rotation_setpoint));
 
             // Use the callback given in the static class
             PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, comp_coeff));
