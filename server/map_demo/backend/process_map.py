@@ -27,7 +27,7 @@ map_origin = map_data['origin']
 def read_pgm(filename):
     with filename.open('r') as file:
         assert file.readline() == 'P2\n'
-        next(file)  # Skip the comment line
+        # next(file)  # Skip the comment line
         width, height = [int(i) for i in file.readline().split()]
         max_val = int(file.readline())
         data = []
