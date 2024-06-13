@@ -122,8 +122,9 @@ private:
     // Class constants
     static constexpr int STEPPER_INTERVAL_US = 10;
     static constexpr float MOTOR_ACCEL_RAD = 30.0;
-    static constexpr double LOOP_INTERVAL = 10;
-    static constexpr double LOOP2_INTERVAL = 200;
+    static constexpr double LOOP1_INTERVAL = 10;  // inner
+    static constexpr double LOOP2_INTERVAL = 200; // outer
+    static constexpr double LOOP3_INTERVAL = 20;  // rotation
 
     // Class variables
     static double accXoffset;
