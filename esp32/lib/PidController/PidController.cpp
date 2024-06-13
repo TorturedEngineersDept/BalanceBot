@@ -20,7 +20,7 @@ double PidController::filtered_value = 0;
 double PidController::rotation_correction = 0;
 
 // Initialise PID parameters using known values
-PidParams PidController::params(1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00);
+PidParams PidController::params(0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00);
 PidDirection PidController::direction(0, KeyDirection::STOP);
 
 bool PidController::setup(IWifi &wifi, unsigned long timeout)
