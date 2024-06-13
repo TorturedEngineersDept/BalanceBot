@@ -81,9 +81,34 @@ public:
 
     static PidDirection getDirection();
 
+    // Public members
+    static SemaphoreHandle_t controlMutex;
+
 private:
     static bool timerHandler(void *args);
 
+    /**
+     * Controls tilt.
+     */
+    static void innerLoop();
+
+    /**
+     * Controls velocity.
+     */
+    static void outerLoop();
+
+    /**
+     * Controls rotation.
+     */
+    static void rotationLoop();
+
+    /**
+     * Calibrates the MPU6050.
+     * Outputs values into accXoffset etc.
+     */
+    static void calibrate();
+
+    // Class members
     static IWifi *wifi;
     static MPU6050 mpu;
     static ESP32Timer ITimer;
@@ -95,7 +120,18 @@ private:
     static SemaphoreHandle_t directionMutex;
 
     // Class constants
-    static constexpr double LOOP_INTERVAL = 5;
     static constexpr int STEPPER_INTERVAL_US = 10;
     static constexpr float MOTOR_ACCEL_RAD = 30.0;
+    static constexpr double LOOP_INTERVAL = 10;
+    static constexpr double LOOP2_INTERVAL = 200;
+
+    // Class variables
+    static double accXoffset;
+    static double accYoffset;
+    static double accZoffset;
+    static double gyroXoffset;
+    static double gyroYoffset;
+    static double angle_setpoint; // inner loop setpoint
+    static double filtered_value;
+    static double rotation_correction;
 };

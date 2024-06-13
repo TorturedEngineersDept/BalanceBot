@@ -59,6 +59,12 @@ void WifiSetup::connect(unsigned long timeout)
         start += d;
     }
 
+    if (WiFi.status() != WL_CONNECTED)
+    {
+        Serial.println("Failed to connect to WiFi");
+        return;
+    }
+
     Serial.println("");
     Serial.println("WiFi connected");
     Serial.println("IP address: ");
@@ -183,7 +189,6 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
     if (doc["run_id"] == RunID)
     {
         // Check the topic and process accordingly
-        Serial.println("Processing message...");
         if (strcmp(topic, "user/joystick") == 0)
         {
             // Extract values from the JSON document
@@ -241,6 +246,22 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
 
             // Use the callback given in the static class
             PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, rotation_setpoint));
+        }
+        else if (strcmp(topic, "esp32/cli") == 0)
+        {
+            String message = doc["message"];
+            if (message == "/auto" || message == "/a")
+            {
+                // Release the mutex so the Raspberry Pi can take control
+                xSemaphoreGive(PidController::controlMutex);
+            }
+            else if (message == "/manual" || message == "/m")
+            {
+                // Take the mutex so the Wifi can take control
+                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
+            }
+
+            Serial.println("Received command from CLI: " + message);
         }
         else
         {

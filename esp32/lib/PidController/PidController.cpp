@@ -8,6 +8,16 @@ Step PidController::step1(STEPPER_INTERVAL_US, STEPPER1_STEP_PIN, STEPPER1_DIR_P
 Step PidController::step2(STEPPER_INTERVAL_US, STEPPER2_STEP_PIN, STEPPER2_DIR_PIN);
 SemaphoreHandle_t PidController::paramsMutex = xSemaphoreCreateMutex();
 SemaphoreHandle_t PidController::directionMutex = xSemaphoreCreateMutex();
+SemaphoreHandle_t PidController::controlMutex = xSemaphoreCreateMutex();
+
+double PidController::accXoffset = 0;
+double PidController::accYoffset = 0;
+double PidController::accZoffset = 0;
+double PidController::gyroXoffset = 0;
+double PidController::gyroYoffset = 0;
+double PidController::angle_setpoint = 0;
+double PidController::filtered_value = 0;
+double PidController::rotation_correction = 0;
 
 // Initialise PID parameters using known values
 PidParams PidController::params(1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00);
@@ -43,6 +53,8 @@ bool PidController::setup(IWifi &wifi, unsigned long timeout)
         return false;
     }
 
+    calibrate();
+
     wifi.println("Initialised Interrupt for Stepper");
 
     // Set motor acceleration values
@@ -58,68 +70,22 @@ bool PidController::setup(IWifi &wifi, unsigned long timeout)
 
 void PidController::loop()
 {
-    // Static variables are initialised once and then the value is remembered
-    // betweeen subsequent calls to this function
-    static unsigned long printTimer = 0; // time of the next print
-    static unsigned long loopTimer = 0;  // time of the next control update
-    static double tiltx = 0.0;
-    static double gyrox = 0.0; // current tilt angle
-    static double theta_n = 0.0;
-
-    // Fetch PID parameters - take mutex and wait forever until it is available
-    xSemaphoreTake(paramsMutex, portMAX_DELAY);
-    float kp_i = params.kp_i;
-    float ki_i = params.ki_i;
-    float kd_i = params.kd_i;
-    float tilt_setpoint = params.tilt_setpoint;
-    xSemaphoreGive(paramsMutex);
-
-    double error;
-    double previous_error = 0;
-    double integral = 0;
-    double derivative = 0;
-    double previous_derivative = 0;
-    double Pout, Iout, Dout, motor_out;
+    // Time of the next control update
+    static unsigned long loop1Timer = 0; // inner
+    static unsigned long loop2Timer = 0; // outer
+    static unsigned long loop3Timer = 0; // rotation loop
 
     // Run the control loop every LOOP_INTERVAL ms
-    if (millis() > loopTimer)
+    if (millis() > loop1Timer)
     {
-        loopTimer += LOOP_INTERVAL;
+        innerLoop();
+        loop1Timer += LOOP_INTERVAL;
+    }
 
-        // Fetch data from MPU6050
-        sensors_event_t a, g, temp;
-        mpu.getEvent(&a, &g, &temp);
-
-        const float ACCELOREMETER_OFFSET = 0.03;
-        const float GYRO_OFFSET = -0.05;
-        const float COMP_FILTER_COEFF = 0.98;
-
-        // Calculate Tilt using accelerometer and sin x = x approximation for
-        // a small tilt angle
-        tiltx = a.acceleration.z / 9.81 - ACCELOREMETER_OFFSET;
-
-        gyrox = g.gyro.y - GYRO_OFFSET;
-
-        theta_n = (1 - COMP_FILTER_COEFF) * (tiltx * 100) + COMP_FILTER_COEFF * ((gyrox * LOOP_INTERVAL) / 10 + theta_n);
-
-        // PIDeez Nuts
-        error = tilt_setpoint - theta_n;
-        Pout = kp_i * error;
-
-        integral = integral + error * (LOOP_INTERVAL / 1000);
-        Iout = ki_i * integral;
-
-        derivative = ((error - previous_error) / LOOP_INTERVAL) * 1000;
-        derivative = previous_derivative * (derivative - previous_derivative);
-        previous_derivative = derivative;
-
-        Dout = kd_i * derivative;
-        motor_out = Pout + Iout + Dout;
-        previous_error = error;
-
-        // Set target motor speed
-        step1.setTargetSpeedRad(motor_out);
-        step2.setTargetSpeedRad(-motor_out);
+    if (millis() > loop2Timer)
+    {
+        outerLoop();
+        loop2Timer += LOOP2_INTERVAL;
     }
 }
 
@@ -129,20 +95,8 @@ void PidController::stabilizedLoop()
     // Just get the robot moving
     // Maybe someone can be bothered to research the maths here
 
-    // Static variable to store the last direction
-    static PidDirection lastDirection = PidController::getDirection();
-
-    // Get the current direction
     PidDirection currentDirection = PidController::getDirection();
-
-    // Update last direction only if current direction is different
-    if (currentDirection.key_dir != lastDirection.key_dir)
-    {
-        lastDirection = currentDirection;
-    }
-
-    float speed = lastDirection.speed;
-    KeyDirection key_dir = lastDirection.key_dir;
+    KeyDirection key_dir = currentDirection.key_dir;
 
     const float SPEED = 10;
 
@@ -222,4 +176,167 @@ bool PidController::timerHandler(void *args)
     digitalWrite(TOGGLE_PIN, toggle);
     toggle = !toggle;
     return true;
+}
+
+void PidController::innerLoop()
+{
+    // Static variables are initialised once and then the value is remembered
+    // betweeen subsequent calls to this function
+    static double previous_angle_error = 0;
+    static double robot_angle = 0.0;
+
+    const double COMP_FILTER = 0.98;  // complementary filter coefficient
+    const double LOOP1_INTERVAL = 10; // inner loop
+    const double ALPHA = 0.05;        // filter coefficient
+    const double MOTOR_SPEED = 17;
+
+    // Fetch PID parameters - take mutex and wait forever until it is available
+    xSemaphoreTake(paramsMutex, portMAX_DELAY);
+    float kp_i = params.kp_i;
+    float ki_i = params.ki_i;
+    float kd_i = params.kd_i;
+    float tilt_setpoint = params.tilt_setpoint;
+    xSemaphoreGive(paramsMutex);
+
+    // Fetch data from MPU6050
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
+
+    double accX = a.acceleration.x - accXoffset;
+    double accY = a.acceleration.y - accYoffset;
+    double accZ = a.acceleration.z - accZoffset;
+
+    // Calculate Tilt using accelerometer and sin x = x approximation for a
+    // small tilt angle - tiltx = (accZ) / (9.67);
+    double tiltx = (accZ) / sqrt(pow(accY, 2) + pow(accX, 2));
+
+    double gyro_angle = g.gyro.y - gyroYoffset;
+
+    robot_angle = (1 - COMP_FILTER) * (tiltx) + COMP_FILTER;
+    robot_angle *= ((gyro_angle * (LOOP1_INTERVAL / 1000)) + robot_angle);
+
+    // PIDeez Nuts
+    double angle_error = angle_setpoint - robot_angle * 57.32;
+    double Pout_a = kp_i * angle_error;
+    double integral_angle = integral_angle + ((angle_error * LOOP1_INTERVAL) / 1000);
+    double Iout_a = ki_i * integral_angle;
+    double Dout_a = kd_i * ((angle_error - previous_angle_error) / LOOP1_INTERVAL) * 1000;
+    double motor_out = Pout_a + Iout_a + Dout_a;
+
+    previous_angle_error = angle_error;
+
+    if (motor_out >= 0)
+    {
+        step1.setTargetSpeedRad(MOTOR_SPEED);
+        step2.setTargetSpeedRad(-MOTOR_SPEED);
+    }
+    else
+    {
+        step1.setTargetSpeedRad(-MOTOR_SPEED);
+        step2.setTargetSpeedRad(MOTOR_SPEED);
+    }
+
+    // uses absolute values
+    step1.setAccelerationRad(motor_out + rotation_correction);
+    step2.setAccelerationRad(motor_out - rotation_correction);
+
+    double avgSpeed = (step1.getSpeedRad() - step2.getSpeedRad()) / 2;
+    filtered_value = ALPHA * avgSpeed + (1 - ALPHA) * filtered_value;
+}
+
+void PidController::outerLoop()
+{
+    static double avgspeed = 0, avg_temp = 0, speed_error = 0, previous_speed_error = 0, integral_speed = 0, derivative_speed = 0, Pout_s = 0, Iout_s = 0, Dout_s = 0, ramp_rate = 0;
+    static double current_speed_setpoint = 0;
+    static double speed_setpoint = 0; // outer loop setpoint
+    static int speed_size = 0;
+
+    double max_ramp_rate = 0.5;
+    double time_constant = 2000;
+    double beta = 1 - exp(-LOOP2_INTERVAL / time_constant);
+
+    // Fetch PID parameters - take mutex and wait forever until it is available
+    xSemaphoreTake(paramsMutex, portMAX_DELAY);
+    float kp_o = params.kp_o;
+    float ki_o = params.ki_o;
+    float kd_o = params.kd_o;
+    float balancing_setpoint = params.velocity_setpoint;
+
+    current_speed_setpoint += beta * (speed_setpoint - current_speed_setpoint);
+
+    // filtered_value = (step1.getSpeedRad()-step2.getSpeedRad())/2;
+    speed_error = -(current_speed_setpoint - filtered_value);
+
+    Pout_s = kp_o * speed_error;
+
+    integral_speed = integral_speed + speed_error * (LOOP2_INTERVAL / 1000);
+
+    if (ki_o == 0)
+    {
+        integral_speed = 0;
+    }
+
+    Iout_s = ki_o * integral_speed;
+
+    derivative_speed = ((speed_error - previous_speed_error) / LOOP2_INTERVAL) * 1000;
+
+    Dout_s = kd_o * derivative_speed;
+
+    angle_setpoint = Pout_s + Iout_s + Dout_s + balancing_setpoint;
+
+    if (speed_setpoint > 0)
+    {
+        if (angle_setpoint > balancing_setpoint + 1)
+        {
+            angle_setpoint = balancing_setpoint + 1;
+        }
+        else if (angle_setpoint < balancing_setpoint - 5)
+        {
+            angle_setpoint = balancing_setpoint - 5;
+        }
+    }
+
+    else if (speed_setpoint < 0)
+    {
+        if (angle_setpoint < balancing_setpoint - 1)
+        {
+            angle_setpoint = balancing_setpoint - 1;
+        }
+        else if (angle_setpoint > balancing_setpoint + 5)
+        {
+            angle_setpoint = balancing_setpoint + 5;
+        }
+    }
+
+    previous_speed_error = speed_error;
+}
+
+void PidController::rotationLoop()
+{
+}
+
+void PidController::calibrate()
+{
+    sensors_event_t a, g, temp;
+    double accXoffset_sum = 0;
+    double accYoffset_sum = 0;
+    double accZoffset_sum = 0;
+    double gyroXoffset_sum = 0;
+    double gyroYoffset_sum = 0;
+
+    for (int i = 0; i < 200; i++)
+    {
+        mpu.getEvent(&a, &g, &temp);
+        accXoffset_sum += a.acceleration.x;
+        accYoffset_sum += a.acceleration.y;
+        accZoffset_sum += a.acceleration.z;
+        gyroXoffset_sum += g.gyro.x;
+        gyroYoffset_sum += g.gyro.y;
+    }
+
+    accXoffset = accXoffset_sum / 200 - 9.81;
+    accYoffset = accYoffset_sum / 200;
+    accZoffset = accZoffset_sum / 200;
+    gyroXoffset = gyroXoffset_sum / 200;
+    gyroYoffset = gyroYoffset_sum / 200;
 }

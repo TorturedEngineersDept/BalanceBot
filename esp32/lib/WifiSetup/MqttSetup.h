@@ -43,11 +43,9 @@ private:
 
     int lastBatteryMessageSent = 0;
     int delayBatterySent = 2000;
-    int batteryLevel = 100;
 
     int lastPowerMessageSent = 0;
     int delayPowerSent = 1000;
-    int powerLevel = 1000;
 
     char *client_id;
 };

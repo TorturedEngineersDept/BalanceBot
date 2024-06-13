@@ -1,12 +1,14 @@
 // ESP32 Guide: https://RandomNerdTutorials.com/esp32-mpu-6050-accelerometer-gyroscope-arduino/
 
 #include <Arduino.h>
+#include "BatteryModule.h"
 #include "WifiSetup.h"
+#include "BatteryModule.h"
 #include "SerialLoop.h"
 #include "PidController.h"
 
-WifiSetup wifi(g_ssid, g_password, MQTT_SERVER, MQTT_PORT);
-// WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
+// WifiSetup wifi(g_ssid, g_password, MQTT_SERVER, MQTT_PORT);
+WifiSetup wifi(i_ssid, i_email, i_password, MQTT_SERVER, MQTT_PORT);
 // PidController is a static class, so we don't need to create an instance of it
 
 // The loop interval in milliseconds (should be ULONG_MAX for normal operation)
@@ -17,6 +19,7 @@ int BotID, RunID;
 
 void pidLoop(void *pvParameters);
 void serialLoop(void *pvParameters);
+void batteryLoop(void *pvParameters);
 
 void setup()
 {
@@ -24,6 +27,7 @@ void setup()
 
     // Setup modules
     wifi.connect(timeout);
+    BatteryModule::setup();
 
     if (PidController::setup(wifi, timeout))
     {
@@ -31,14 +35,14 @@ void setup()
         xTaskCreatePinnedToCore(
             pidLoop,   /* Task function. */
             "pidLoop", /* name of task. */
-            10000,     /* Stack size of task = 40 KB */
+            15000,     /* Stack size of task = 60 KB */
             NULL,      /* parameter of the task */
             1,         /* priority of the task */
             NULL,      /* Task handle to keep track of created task */
             1);        /* pin task to core 1 */
     }
 
-    // Setup the serialLoop0
+    // Setup the serialLoop
     xTaskCreatePinnedToCore(
         serialLoop,   /* Task function. */
         "serialLoop", /* name of task. */
@@ -47,6 +51,16 @@ void setup()
         1,            /* priority of the task */
         NULL,         /* Task handle to keep track of created task */
         1);           /* pin task to core 1 */
+
+    // Setup the batteryLoop
+    // xTaskCreatePinnedToCore(
+    //     batteryLoop,   /* Task function. */
+    //     "batteryLoop", /* name of task. */
+    //     15000,          /* Stack size of task = 60 KB */
+    //     NULL,          /* parameter of the task */
+    //     1,             /* priority of the task */
+    //     NULL,          /* Task handle to keep track of created task */
+    //     1);            /* pin task to core 1 */
 }
 
 void loop()
@@ -67,6 +81,14 @@ void serialLoop(void *pvParameters)
 {
     while (true)
     {
-        serialLoop();
+        SerialLoop::loop();
+    }
+}
+
+void batteryLoop(void *pvParameters)
+{
+    while (true)
+    {
+        BatteryModule::loop();
     }
 }
