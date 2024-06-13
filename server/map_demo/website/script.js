@@ -1,5 +1,5 @@
 // Fetch map information from JSON file
-fetch('map_info.json')
+fetch('/data/map_processed/map.json')
     .then(response => response.json())
     .then(mapInfo => {
         const mapImage = document.getElementById('map');
