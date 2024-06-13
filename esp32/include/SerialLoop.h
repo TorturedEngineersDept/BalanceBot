@@ -19,44 +19,51 @@ void decode(uint8_t message, KeyDirection &direction, uint8_t &speed)
 #include <Arduino.h>
 #include "PidController.h"
 
-/**
- * Allows the Raspberry Pi to communicate with the ESP32 over serial.
- * Decodes as a 8-bit ASCII
- */
-void serialLoop()
+namespace SerialLoop
 {
-    // Discard all buffer data
-    while (Serial.available() > 1)
+    /**
+     * Allows the Raspberry Pi to communicate with the ESP32 over serial.
+     * Decodes as a 8-bit ASCII
+     */
+    void loop()
     {
-        Serial.read();
+        // Discard all buffer data
+        while (Serial.available() > 1)
+        {
+            Serial.read();
+        }
+
+        char message = Serial.read();
+
+        KeyDirection direction;
+        uint8_t speed;
+        decode(message, direction, speed);
+
+        switch (direction)
+        {
+        case KeyDirection::FORWARD:
+            Serial.println("[rpi] FORWARD");
+            break;
+        case KeyDirection::BACKWARD:
+            Serial.println("[rpi] BACKWARD");
+            break;
+        case KeyDirection::LEFT:
+            Serial.println("[rpi] LEFT");
+            break;
+        case KeyDirection::RIGHT:
+            Serial.println("[rpi] RIGHT");
+            break;
+        case KeyDirection::STOP:
+            Serial.println("[rpi] STOP");
+            break;
+        }
+
+        if (xSemaphoreTake(PidController::controlMutex, (TickType_t)0) == pdTRUE)
+        {
+            PidController::setDirection(PidDirection(speed, direction));
+            xSemaphoreGive(PidController::controlMutex);
+        }
     }
-
-    char message = Serial.read();
-
-    KeyDirection direction;
-    uint8_t speed;
-    decode(message, direction, speed);
-
-    switch (direction)
-    {
-    case KeyDirection::FORWARD:
-        Serial.println("[rpi] FORWARD");
-        break;
-    case KeyDirection::BACKWARD:
-        Serial.println("[rpi] BACKWARD");
-        break;
-    case KeyDirection::LEFT:
-        Serial.println("[rpi] LEFT");
-        break;
-    case KeyDirection::RIGHT:
-        Serial.println("[rpi] RIGHT");
-        break;
-    case KeyDirection::STOP:
-        Serial.println("[rpi] STOP");
-        break;
-    }
-
-    PidController::setDirection(PidDirection(speed, direction));
 }
 
 #endif

@@ -1,4 +1,5 @@
 #include "MqttSetup.h"
+#include "BatteryModule.h"
 
 float x = 0;
 float y = 0;
@@ -24,6 +25,7 @@ void MqttSetup::connect(unsigned long timeout)
             Serial.println("connected");
             client.subscribe("user/joystick");
             client.subscribe("user/pid");
+            client.subscribe("esp32/cli");
         }
         else
         {
@@ -56,11 +58,7 @@ void MqttSetup::loop()
         lastBatteryMessageSent = millis();
 
         // Update battery status and publish message
-        batteryLevel -= 7;
-        if (batteryLevel < 0)
-        {
-            batteryLevel = 100;
-        }
+        int batteryLevel = BatteryModule::getBatteryPercentage();
         BatteryMessage batteryMessage(batteryLevel, getEpochTime());
         publishMessage(batteryMessage);
     }
@@ -71,11 +69,7 @@ void MqttSetup::loop()
         lastPowerMessageSent = millis();
 
         // Update battery status and publish message
-        powerLevel -= 123;
-        if (powerLevel < 0)
-        {
-            powerLevel = 1000;
-        }
+        float powerLevel = BatteryModule::getPowerConsumption();
         PowerMessage powerMessage(powerLevel, getEpochTime());
         publishMessage(powerMessage);
 
