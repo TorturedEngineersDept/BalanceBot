@@ -1,0 +1,1 @@
+[1.382s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/lidar_bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --build /home/kevin/ldlidar_ros2_ws/build/lidar_bringup -- -j4 -l4

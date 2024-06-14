@@ -1,0 +1,21 @@
+running egg_info
+writing ../../build/autonomous_exploration/autonomous_exploration.egg-info/PKG-INFO
+writing dependency_links to ../../build/autonomous_exploration/autonomous_exploration.egg-info/dependency_links.txt
+writing entry points to ../../build/autonomous_exploration/autonomous_exploration.egg-info/entry_points.txt
+writing requirements to ../../build/autonomous_exploration/autonomous_exploration.egg-info/requires.txt
+writing top-level names to ../../build/autonomous_exploration/autonomous_exploration.egg-info/top_level.txt
+reading manifest file '../../build/autonomous_exploration/autonomous_exploration.egg-info/SOURCES.txt'
+writing manifest file '../../build/autonomous_exploration/autonomous_exploration.egg-info/SOURCES.txt'
+running build
+running build_py
+running install
+running install_lib
+running install_data
+copying launch/exploration_launch.py -> /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/share/autonomous_exploration/launch
+running install_egg_info
+removing '/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration-0.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/autonomous_exploration/autonomous_exploration.egg-info to /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/python3.10/site-packages/autonomous_exploration-0.0.0-py3.10.egg-info
+running install_scripts
+Installing control script to /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/autonomous_exploration
+Installing exploration_node script to /home/kevin/ldlidar_ros2_ws/install/autonomous_exploration/lib/autonomous_exploration
+writing list of installed files to '/home/kevin/ldlidar_ros2_ws/build/autonomous_exploration/install.log'

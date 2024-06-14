@@ -1,0 +1,23 @@
+[1.433s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/lidar_bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --build /home/kevin/ldlidar_ros2_ws/build/lidar_bringup -- -j4 -l4
+[1.705s] Invoked command in '/home/kevin/ldlidar_ros2_ws/build/lidar_bringup' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --build /home/kevin/ldlidar_ros2_ws/build/lidar_bringup -- -j4 -l4
+[1.920s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/lidar_bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --install /home/kevin/ldlidar_ros2_ws/build/lidar_bringup
+[2.005s] -- Install configuration: ""
+[2.014s] -- Execute custom install script
+[2.019s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/launch/slam_and_nav_bringup_launch.py
+[2.024s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/params/slam_and_nav.yaml
+[2.028s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/ament_index/resource_index/package_run_dependencies/lidar_bringup
+[2.032s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/ament_index/resource_index/parent_prefix_path/lidar_bringup
+[2.035s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/environment/ament_prefix_path.sh
+[2.038s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/environment/ament_prefix_path.dsv
+[2.050s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/environment/path.sh
+[2.051s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/environment/path.dsv
+[2.054s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/local_setup.bash
+[2.063s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/local_setup.sh
+[2.072s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/local_setup.zsh
+[2.076s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/local_setup.dsv
+[2.079s] -- Symlinking: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/package.dsv
+[2.139s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/ament_index/resource_index/packages/lidar_bringup
+[2.144s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/cmake/lidar_bringupConfig.cmake
+[2.144s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/cmake/lidar_bringupConfig-version.cmake
+[2.151s] -- Up-to-date symlink: /home/kevin/ldlidar_ros2_ws/install/lidar_bringup/share/lidar_bringup/package.xml
+[2.334s] Invoked command in '/home/kevin/ldlidar_ros2_ws/build/lidar_bringup' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kevin/ldlidar_ros2_ws/install/autonomous_exploration:/opt/ros/humble /usr/bin/cmake --install /home/kevin/ldlidar_ros2_ws/build/lidar_bringup

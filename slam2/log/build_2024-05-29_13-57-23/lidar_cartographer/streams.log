@@ -1,0 +1,48 @@
+[0.078s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/lidar_cartographer': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/kevin/ldlidar_ros2_ws/src/lidar_cartographer -DCMAKE_INSTALL_PREFIX=/home/kevin/ldlidar_ros2_ws/install/lidar_cartographer
+[1.185s] -- The C compiler identification is GNU 11.4.0
+[1.979s] -- The CXX compiler identification is GNU 11.4.0
+[2.037s] -- Detecting C compiler ABI info
+[2.429s] -- Detecting C compiler ABI info - done
+[2.456s] -- Check for working C compiler: /usr/bin/cc - skipped
+[2.458s] -- Detecting C compile features
+[2.460s] -- Detecting C compile features - done
+[2.477s] -- Detecting CXX compiler ABI info
+[2.873s] -- Detecting CXX compiler ABI info - done
+[2.903s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[2.904s] -- Detecting CXX compile features
+[2.906s] -- Detecting CXX compile features - done
+[2.970s] -- Found ament_cmake: 1.3.9 (/opt/ros/humble/share/ament_cmake/cmake)
+[3.785s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[4.453s] -- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[4.952s] -- Added test 'flake8' to check Python code syntax and style conventions
+[4.961s] -- Added test 'lint_cmake' to check CMake code style
+[4.964s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[4.979s] -- Added test 'xmllint' to check XML markup files
+[4.991s] -- Configuring done
+[5.014s] -- Generating done
+[5.019s] -- Build files have been written to: /home/kevin/ldlidar_ros2_ws/build/lidar_cartographer
+[5.040s] Invoked command in '/home/kevin/ldlidar_ros2_ws/build/lidar_cartographer' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/kevin/ldlidar_ros2_ws/src/lidar_cartographer -DCMAKE_INSTALL_PREFIX=/home/kevin/ldlidar_ros2_ws/install/lidar_cartographer
+[5.050s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/lidar_cartographer': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/kevin/ldlidar_ros2_ws/build/lidar_cartographer -- -j4 -l4
+[5.207s] Invoked command in '/home/kevin/ldlidar_ros2_ws/build/lidar_cartographer' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/kevin/ldlidar_ros2_ws/build/lidar_cartographer -- -j4 -l4
+[5.334s] Invoking command in '/home/kevin/ldlidar_ros2_ws/build/lidar_cartographer': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/kevin/ldlidar_ros2_ws/build/lidar_cartographer
+[5.364s] -- Install configuration: ""
+[5.365s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/config
+[5.365s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/config/cartographer_2d.lua
+[5.367s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/launch
+[5.368s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/launch/cartographer.launch.py
+[5.369s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/ament_index/resource_index/package_run_dependencies/lidar_cartographer
+[5.371s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/ament_index/resource_index/parent_prefix_path/lidar_cartographer
+[5.373s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/environment/ament_prefix_path.sh
+[5.374s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/environment/ament_prefix_path.dsv
+[5.376s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/environment/path.sh
+[5.377s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/environment/path.dsv
+[5.378s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/local_setup.bash
+[5.379s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/local_setup.sh
+[5.381s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/local_setup.zsh
+[5.382s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/local_setup.dsv
+[5.383s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/package.dsv
+[5.385s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/ament_index/resource_index/packages/lidar_cartographer
+[5.386s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/cmake/lidar_cartographerConfig.cmake
+[5.387s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/cmake/lidar_cartographerConfig-version.cmake
+[5.389s] -- Installing: /home/kevin/ldlidar_ros2_ws/install/lidar_cartographer/share/lidar_cartographer/package.xml
+[5.397s] Invoked command in '/home/kevin/ldlidar_ros2_ws/build/lidar_cartographer' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/kevin/ldlidar_ros2_ws/build/lidar_cartographer

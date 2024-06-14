@@ -1,0 +1,2 @@
+Invoking command in '/home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2 -- -j8 -l8
+Invoked command in '/home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2' returned '2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/ldlidar_stl_ros2 -- -j8 -l8
