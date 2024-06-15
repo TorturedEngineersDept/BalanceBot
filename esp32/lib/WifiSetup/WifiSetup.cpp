@@ -220,6 +220,8 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
         }
         else if (strcmp(topic, "user/pid") == 0)
         {
+            Serial.println("Setting PID coefficients");
+
             // Get previous coefficients
             PidParams params = PidController::getParams();
 
@@ -254,12 +256,22 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
             if (message == "/auto" || message == "/a")
             {
                 // Release the mutex so the Raspberry Pi can take control
-                xSemaphoreGive(PidController::controlMutex);
+                if (xSemaphoreTake(
+                        PidController::controlMutex,
+                        (TickType_t)0) == pdTRUE)
+                {
+                    xSemaphoreGive(PidController::controlMutex);
+                }
             }
             else if (message == "/manual" || message == "/m")
             {
                 // Take the mutex so the Wifi can take control
                 xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
+            }
+            else if (message == "/reset" || message == "/r")
+            {
+                // Raise an exception, so the ESP32 resets
+                throw std::runtime_error("Resetting ESP32");
             }
 
             Serial.println("Received command from CLI: " + message);

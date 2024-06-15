@@ -23,8 +23,9 @@
 
 struct PidParams
 {
-    PidParams(float ki_i, float kp_i, float kd_i, float tilt_setpoint,
-              float ki_o, float kp_o, float kd_o, float velocity_setpoint, float rotation_setpoint)
+    PidParams(float kp_i, float ki_i, float kd_i, float tilt_setpoint,
+              float kp_o, float ki_o, float kd_o, float velocity_setpoint,
+              float rotation_setpoint)
         : kp_i(kp_i), ki_i(ki_i), kd_i(kd_i), tilt_setpoint(tilt_setpoint),
           kp_o(kp_o), ki_o(ki_o), kd_o(kd_o), velocity_setpoint(velocity_setpoint),
           rotation_setpoint(rotation_setpoint) {}
@@ -122,6 +123,7 @@ private:
     // Class constants
     static constexpr int STEPPER_INTERVAL_US = 10;
     static constexpr float MOTOR_ACCEL_RAD = 30.0;
+    static constexpr double LOOP0_INTERVAL = 20;  // control
     static constexpr double LOOP1_INTERVAL = 10;  // inner
     static constexpr double LOOP2_INTERVAL = 200; // outer
     static constexpr double LOOP3_INTERVAL = 20;  // rotation
@@ -135,4 +137,6 @@ private:
     static double angle_setpoint; // inner loop setpoint
     static double filtered_value;
     static double rotation_correction;
+    static double speed_setpoint;
+    static double rotation_setpoint;
 };

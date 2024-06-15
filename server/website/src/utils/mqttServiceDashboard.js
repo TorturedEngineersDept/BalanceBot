@@ -103,7 +103,7 @@ export const sendTuning = (runId, innerKp, innerKi, innerKd, outerKp, outerKi, o
         return;
     }
     const message = JSON.stringify({
-        run_id: runId.toString(),
+        run_id: runId,
         kp_i: parseFloat(innerKp),
         ki_i: parseFloat(innerKi),
         kd_i: parseFloat(innerKd),
