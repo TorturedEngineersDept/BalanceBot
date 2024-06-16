@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useRef } from 'react';
+import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
 import './Control.css';
 import TopBar from '../components/TopBar';
 import WASDControl from '../components/WASDControl';
@@ -13,6 +13,7 @@ const Control = () => {
     const terminalRef = useRef(null);
     const terminalEndRef = useRef(null);
     const [isManualScroll, setIsManualScroll] = useState(false);
+    const [mapInfo, setMapInfo] = useState(null);
 
     // Handler for incoming debug messages
     const handleDebugMessage = (message) => {
@@ -35,6 +36,12 @@ const Control = () => {
                 });
             initializeMQTT(setBatteryPercentage, handleDebugMessage, runId);
         }
+
+        // Fetch map information from JSON file
+        fetch('/data/map_processed/map.json')
+            .then(response => response.json())
+            .then(data => setMapInfo(data))
+            .catch(error => console.error('Error loading map information:', error));
     }, [runId, setBatteryPercentage]);
 
     // Scroll terminal to the latest message if not in manual scroll mode
@@ -80,6 +87,46 @@ const Control = () => {
         }
     };
 
+    // Function to convert map coordinates to pixel positions
+    const mapToPixel = (x, y, mapImage, mapResolution, mapOrigin) => {
+        const pixelX = (x - mapOrigin[0]) / mapResolution;
+        const pixelY = mapImage.height - (y - mapOrigin[1]) / mapResolution; // Invert Y axis
+        return { pixelX, pixelY };
+    };
+
+    // Memoized function to add waypoints to the map
+    const addWaypoints = useCallback((mapImage, mapResolution, mapOrigin, waypoints) => {
+        const mapContainer = document.getElementById('map-container');
+
+        waypoints.forEach((waypoint, index) => {
+            const { x, y, image } = waypoint;
+            const { pixelX, pixelY } = mapToPixel(x, y, mapImage, mapResolution, mapOrigin);
+
+            const waypointElement = document.createElement('div');
+            waypointElement.classList.add('waypoint');
+            waypointElement.style.left = `${pixelX}px`;
+            waypointElement.style.top = `${pixelY}px`;
+
+            waypointElement.addEventListener('click', () => {
+                const cameraImage = document.getElementById('camera-image');
+                cameraImage.src = image;
+                cameraImage.style.display = 'block';
+            });
+
+            mapContainer.appendChild(waypointElement);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (mapInfo) {
+            const mapImageElement = document.getElementById('map');
+            mapImageElement.src = '/data/map_processed/map.png';
+            mapImageElement.onload = () => {
+                addWaypoints(mapImageElement, mapInfo.resolution, mapInfo.origin, mapInfo.waypoints);
+            };
+        }
+    }, [mapInfo, addWaypoints]);
+
     return (
         <div className="control-container">
             <div className="control-left">
@@ -120,14 +167,16 @@ const Control = () => {
             </div>
             <div className="control-right">
                 <div className="map">
-                    <h2>Map</h2>
-                    {/* Empty frame for Map */}
+                    <div id="map-container">
+                        <img id="map" src="" alt="Robot navigation map" />
+                        {/* Waypoints will be added here */}
+                    </div>
+                    <img id="camera-image" src="" alt="Camera view" />
                 </div>
             </div>
             <WASDControl />
         </div>
     );
 };
-
 
 export default Control;
