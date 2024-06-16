@@ -1,3 +1,4 @@
+// src/components/Dashboard.js
 import React, { useState, useEffect, useContext } from 'react';
 import './Dashboard.css';
 import CanvasJSReact from '@canvasjs/react-charts';
@@ -7,8 +8,8 @@ import { initializeMQTT, sendTuning, sendPingMessage } from '../utils/mqttServic
 import { GlobalContext } from '../context/GlobalState';
 import BatteryGraph from '../components/BatteryGraph';
 import PowerGraph from '../components/PowerGraph';
-import logo from '../images/logo.png';
-
+// Remove this line
+// import logo from '../images/logo.png'; 
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -195,7 +196,8 @@ const Dashboard = () => {
                     <h2>Server Connection</h2>
                     <button className="test-button" onClick={handlePingTest}>Test Server Connectivity</button>
                     <p>RTT: {rtt !== null ? `${rtt} ms` : '-- ms'}</p>
-                    <img src={logo} alt='logo' className='logo' /> {/* Use the imported image */}
+                    {/* Remove this line */}
+                    {/* <img src={logo} alt='logo' className='logo' /> */}
                 </div>
             </div>
         </div>
