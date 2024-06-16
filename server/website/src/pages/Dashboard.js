@@ -8,8 +8,6 @@ import { initializeMQTT, sendTuning, sendPingMessage } from '../utils/mqttServic
 import { GlobalContext } from '../context/GlobalState';
 import BatteryGraph from '../components/BatteryGraph';
 import PowerGraph from '../components/PowerGraph';
-// Remove this line
-// import logo from '../images/logo.png'; 
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -196,8 +194,6 @@ const Dashboard = () => {
                     <h2>Server Connection</h2>
                     <button className="test-button" onClick={handlePingTest}>Test Server Connectivity</button>
                     <p>RTT: {rtt !== null ? `${rtt} ms` : '-- ms'}</p>
-                    {/* Remove this line */}
-                    {/* <img src={logo} alt='logo' className='logo' /> */}
                 </div>
             </div>
         </div>
