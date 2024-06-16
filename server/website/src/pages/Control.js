@@ -14,6 +14,7 @@ const Control = () => {
     const terminalEndRef = useRef(null);
     const [isManualScroll, setIsManualScroll] = useState(false);
     const [mapInfo, setMapInfo] = useState(null);
+    const [incidentImage, setIncidentImage] = useState(null);
 
     // Handler for incoming debug messages
     const handleDebugMessage = (message) => {
@@ -108,9 +109,7 @@ const Control = () => {
             waypointElement.style.top = `${pixelY}px`;
 
             waypointElement.addEventListener('click', () => {
-                const cameraImage = document.getElementById('camera-image');
-                cameraImage.src = image;
-                cameraImage.style.display = 'block';
+                setIncidentImage(image);
             });
 
             mapContainer.appendChild(waypointElement);
@@ -132,8 +131,11 @@ const Control = () => {
             <div className="control-left">
                 <div className="camera-feed">
                     <TopBar batteryPercentage={batteryPercentage} />
-                    <h2>Camera Feed</h2>
-                    {/* Empty frame for Camera Feed */}
+                    {incidentImage ? (
+                        <img id="incident-image" src={incidentImage} alt="Incident view" />
+                    ) : (
+                        <p>Select an incident to view.</p>
+                    )}
                 </div>
                 <div className="terminal-container">
                     <h2 className="terminal-title">TERMINAL</h2>
@@ -171,7 +173,6 @@ const Control = () => {
                         <img id="map" src="" alt="Robot navigation map" />
                         {/* Waypoints will be added here */}
                     </div>
-                    <img id="camera-image" src="" alt="Camera view" />
                 </div>
             </div>
             <WASDControl />
