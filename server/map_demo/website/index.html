@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Map with Waypoints</title>
@@ -8,23 +9,27 @@
             position: relative;
             display: inline-block;
         }
+
         #map {
             display: block;
         }
+
         .waypoint {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 2px;
+            height: 2px;
             background-color: red;
             border-radius: 50%;
             cursor: pointer;
         }
+
         #camera-image {
             display: none;
             margin-top: 20px;
         }
     </style>
 </head>
+
 <body>
     <div id="map-container">
         <img id="map" src="" alt="Map">
@@ -33,4 +38,5 @@
     <img id="camera-image" src="" alt="Camera Image">
     <script src="script.js"></script>
 </body>
+
 </html>
