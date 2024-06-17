@@ -385,6 +385,10 @@
     [
       "77ca7a9b-150f-45c1-b3df-41dc9bd7ebc9",
       "Root"
+    ],
+    [
+      "55c09154-9740-4dca-a785-0ccad0026e49",
+      "PowerPCB"
     ]
   ],
   "text_variables": {}
