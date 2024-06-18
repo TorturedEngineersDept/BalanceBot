@@ -1,6 +1,6 @@
 #include "BatteryModule.h"
 
-std::map<float, int> BatteryModule::battery_data = {
+std::unordered_map<float, int> BatteryModule::battery_data = {
     {16.19, 100},
     {16.18, 100},
     {16.17, 100},

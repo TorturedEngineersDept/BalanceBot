@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <freertos/semphr.h>
 #endif
-#include <map>
+#include <unordered_map>
 
 // Define the pins connected to the PCB
 // ADC2 (GPIO 25-27) is used for Wi-Fi, so we can't use it
@@ -32,7 +32,7 @@ public:
     static void setPowerConsumption(float power);
 
     // Public to allow testing
-    static std::map<float, int> battery_data;
+    static std::unordered_map<float, int> battery_data;
 
 private:
     static float filtered_battery_voltage;

@@ -143,8 +143,8 @@ void PidController::stabilizedLoop()
     PidDirection currentDirection = PidController::getDirection();
     KeyDirection key_dir = currentDirection.key_dir;
 
-    const float SPEED = 10.0;
-    const float ROTATION_SPEED = 5.0;
+    const float SPEED = 1.5;
+    const float ROTATION_SPEED = 0.5;
 
     switch (key_dir)
     {
@@ -174,6 +174,9 @@ void PidController::stabilizedLoop()
         step2.setTargetSpeedRad(0);
         // Serial.println("STOP");
     }
+
+    // Yield to other tasks
+    delay(10);
 }
 
 void PidController::setParams(PidParams params)

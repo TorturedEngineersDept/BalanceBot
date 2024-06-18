@@ -5,8 +5,8 @@
 
 /**
  * Takes an 8-bit message and decodes to direction and speed
- * The first 2 bits are the direction
- * The last 6 bits are the speed
+ * The first 3 bits are the direction
+ * The last 5 bits are the speed
  */
 void decode(uint8_t message, KeyDirection &direction, uint8_t &speed)
 {
@@ -27,6 +27,7 @@ namespace SerialLoop
      */
     void loop()
     {
+        Serial.println("SERIAL");
         // Discard all buffer data
         while (Serial.available() > 1)
         {
@@ -63,6 +64,9 @@ namespace SerialLoop
             PidController::setDirection(PidDirection(speed, direction));
             xSemaphoreGive(PidController::controlMutex);
         }
+
+        // Yield to other tasks
+        delay(10);
     }
 }
 

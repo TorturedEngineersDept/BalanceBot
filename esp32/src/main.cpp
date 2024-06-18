@@ -104,8 +104,8 @@ void pidLoop(void *pvParameters)
 {
     while (true)
     {
-        PidController::loop();
-        // PidController::stabilizedLoop();
+        // PidController::loop();
+        PidController::stabilizedLoop();
 
         // Delay to allow other tasks to run
         yield();
