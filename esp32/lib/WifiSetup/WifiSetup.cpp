@@ -1,6 +1,8 @@
 #include "WifiSetup.h"
 #include "ESP32Ping.h"
 
+#include <string>
+
 WifiSetup::WifiSetup(
     const char *ssid,
     const char *password,
@@ -9,7 +11,8 @@ WifiSetup::WifiSetup(
     : ssid(ssid),
       username(nullptr),
       password(password),
-      mqtt(mqtt_server, mqtt_port)
+      timeClient(ntpUDP, "pool.ntp.org", 0, 60000),
+      mqtt(mqtt_server, mqtt_port, timeClient)
 {
 }
 
@@ -22,7 +25,8 @@ WifiSetup::WifiSetup(
     : ssid(ssid),
       username(username),
       password(password),
-      mqtt(mqtt_server, mqtt_port)
+      timeClient(ntpUDP, "pool.ntp.org", 0, 60000),
+      mqtt(mqtt_server, mqtt_port, timeClient)
 {
 }
 
@@ -55,6 +59,12 @@ void WifiSetup::connect(unsigned long timeout)
         start += d;
     }
 
+    if (WiFi.status() != WL_CONNECTED)
+    {
+        Serial.println("Failed to connect to WiFi");
+        return;
+    }
+
     Serial.println("");
     Serial.println("WiFi connected");
     Serial.println("IP address: ");
@@ -75,6 +85,9 @@ void WifiSetup::connect(unsigned long timeout)
         resolveId();
         runIdResolved = true;
     }
+
+    // Setup NTP
+    timeClient.begin();
 }
 
 void WifiSetup::getStrength() const
@@ -130,7 +143,7 @@ void WifiSetup::print(const char *message)
 {
     if (mqttConnected())
     {
-        DebugMessage debugMessage(message);
+        DebugMessage debugMessage(message, mqtt.getEpochTime());
         mqtt.publishMessage(debugMessage);
         delay(100);
     }
@@ -142,7 +155,7 @@ void WifiSetup::println(const char *message)
     if (mqttConnected())
     {
         std::string msg = std::string(message) + "\n";
-        DebugMessage debugMessage(msg.c_str());
+        DebugMessage debugMessage(msg.c_str(), mqtt.getEpochTime());
         mqtt.publishMessage(debugMessage);
         delay(100);
     }
@@ -207,6 +220,8 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
         }
         else if (strcmp(topic, "user/pid") == 0)
         {
+            Serial.println("Setting PID coefficients");
+
             // Get previous coefficients
             PidParams params = PidController::getParams();
 
@@ -214,13 +229,12 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
             float kp_i = doc["kp_i"] | params.kp_i;
             float ki_i = doc["ki_i"] | params.ki_i;
             float kd_i = doc["kd_i"] | params.kd_i;
-            float setpoint_i = doc["setpoint_i"] | params.tilt_setpoint;
             float kp_o = doc["kp_o"] | params.kp_o;
             float ki_o = doc["ki_o"] | params.ki_o;
             float kd_o = doc["kd_o"] | params.kd_o;
             float tilt_setpoint = doc["tilt_setpoint"] | params.tilt_setpoint;
             float velocity_setpoint = doc["velocity_setpoint"] | params.velocity_setpoint;
-            float comp_coeff = doc["comp_coeff"] | params.comp_coeff;
+            float rotation_setpoint = doc["rotation_setpoint"] | params.rotation_setpoint;
             Serial.println("kp_i: " + String(kp_i) +
                            ", ki_i: " + String(ki_i) +
                            ", kd_i: " + String(kd_i) +
@@ -229,10 +243,70 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
                            ", ki_o: " + String(ki_o) +
                            ", kd_o: " + String(kd_o) +
                            ", velocity_setpoint: " + String(velocity_setpoint) +
-                           ", comp_coeff: " + String(comp_coeff));
+                           ", rotation_setpoint: " + String(rotation_setpoint));
 
             // Use the callback given in the static class
-            PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, comp_coeff));
+            PidController::setParams(PidParams(
+                kp_i, ki_i, kd_i, tilt_setpoint,
+                kp_o, ki_o, kd_o, velocity_setpoint, rotation_setpoint));
+        }
+        else if (strcmp(topic, "esp32/cli") == 0)
+        {
+            String message = doc["message"];
+            if (message == "/auto" || message == "/a")
+            {
+                // Release the mutex so the Raspberry Pi can take control
+                if (xSemaphoreTake(
+                        PidController::controlMutex,
+                        (TickType_t)0) == pdTRUE)
+                {
+                    xSemaphoreGive(PidController::controlMutex);
+                }
+            }
+            else if (message == "/manual" || message == "/m")
+            {
+                // Take the mutex so the Wifi can take control
+                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
+            }
+            else if (message == "/reset" || message == "/r")
+            {
+                // Raise an exception, so the ESP32 resets
+                throw std::runtime_error("Resetting ESP32");
+            }
+
+            Serial.println("Received command from CLI: " + message);
+        }
+        else if (strcmp(topic, "esp32/cli") == 0)
+        {
+            String message = doc["message"];
+            if (message == "/auto")
+            {
+                // Release the mutex so the Raspberry Pi can take control
+                xSemaphoreGive(PidController::controlMutex);
+            }
+            else if (message == "/manual")
+            {
+                // Take the mutex so the Wifi can take control
+                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
+            }
+
+            Serial.println("Received command from CLI: " + message);
+        }
+        else if (strcmp(topic, "esp32/cli") == 0)
+        {
+            String message = doc["message"];
+            if (message == "/auto")
+            {
+                // Release the mutex so the Raspberry Pi can take control
+                xSemaphoreGive(PidController::controlMutex);
+            }
+            else if (message == "/manual")
+            {
+                // Take the mutex so the Wifi can take control
+                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
+            }
+
+            Serial.println("Received command from CLI: " + message);
         }
         else
         {
@@ -269,8 +343,11 @@ void WifiSetup::resolveId()
     BotID = doc["BotId"];
     RunID = doc["RunId"];
 
-    Serial.print("BotId: ");
-    Serial.println(BotID);
-    Serial.print("RunId: ");
-    Serial.println(RunID);
+    println(("BotId:" + std::to_string(BotID)).c_str());
+    println(("RunId:" + std::to_string(RunID)).c_str());
+}
+
+NTPClient &WifiSetup::getNTPClient()
+{
+    return timeClient;
 }

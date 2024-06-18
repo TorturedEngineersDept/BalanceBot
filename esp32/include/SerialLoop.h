@@ -1,27 +1,33 @@
 #pragma once
 
 #include <cstdint>
+#include "KeyDirection.h"
 
-enum class Direction
+/**
+ * Takes an 8-bit message and decodes to direction and speed
+ * The first 3 bits are the direction
+ * The last 5 bits are the speed
+ */
+void decode(uint8_t message, KeyDirection &direction, uint8_t &speed)
 {
-    RIGHT = 0,
-    FORWARD = 1,
-    LEFT = 2,
-    BACKWARD = 3
-};
+    direction = static_cast<KeyDirection>(message >> 5);
+    speed = message & 0b00011111;
+}
 
 #ifndef NATIVE
 
 #include <Arduino.h>
+#include "PidController.h"
 
-/**
- * Allows the Raspberry Pi to communicate with the ESP32 over serial.
- * Decodes as a 8-bit ASCII
- */
-void serialLoop()
+namespace SerialLoop
 {
-    while (true)
+    /**
+     * Allows the Raspberry Pi to communicate with the ESP32 over serial.
+     * Decodes as a 8-bit ASCII
+     */
+    void loop()
     {
+        Serial.println("SERIAL");
         // Discard all buffer data
         while (Serial.available() > 1)
         {
@@ -30,33 +36,38 @@ void serialLoop()
 
         char message = Serial.read();
 
-        Direction direction;
+        KeyDirection direction;
         uint8_t speed;
         decode(message, direction, speed);
 
         switch (direction)
         {
-        case Direction::RIGHT:
+        case KeyDirection::FORWARD:
+            Serial.println("[rpi] FORWARD");
             break;
-        case Direction::FORWARD:
+        case KeyDirection::BACKWARD:
+            Serial.println("[rpi] BACKWARD");
             break;
-        case Direction::LEFT:
+        case KeyDirection::LEFT:
+            Serial.println("[rpi] LEFT");
             break;
-        case Direction::BACKWARD:
+        case KeyDirection::RIGHT:
+            Serial.println("[rpi] RIGHT");
+            break;
+        case KeyDirection::STOP:
+            Serial.println("[rpi] STOP");
             break;
         }
+
+        if (xSemaphoreTake(PidController::controlMutex, (TickType_t)0) == pdTRUE)
+        {
+            PidController::setDirection(PidDirection(speed, direction));
+            xSemaphoreGive(PidController::controlMutex);
+        }
+
+        // Yield to other tasks
+        delay(10);
     }
 }
 
 #endif
-
-/**
- * Takes an 8-bit message and decodes to direction and speed
- * The first 2 bits are the direction
- * The last 6 bits are the speed
- */
-void decode(uint8_t message, Direction &direction, uint8_t &speed)
-{
-    direction = static_cast<Direction>(message >> 6);
-    speed = message & 0b00111111;
-}

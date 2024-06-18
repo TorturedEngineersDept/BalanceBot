@@ -1,21 +1,25 @@
 .dashboard-container {
     padding: 20px;
+    height: 100vh;
+    /* Ensure it takes the full height of the viewport */
 }
 
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    height: 40%;
+    /* Adjust to 30% of the screen */
 }
 
 .chart {
     border: 1px solid black;
     border-radius: 5px;
     padding: 0;
-    /* Remove padding to ensure the chart fits perfectly */
     margin: 10px;
-    width: 45%;
-    height: 300px;
+    width: 49%;
+    height: 100%;
+    /* Adjusted height to fit 30% of the screen */
     position: relative;
 }
 
@@ -28,17 +32,18 @@
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    height: 60%
 }
 
 .section-left,
 .section-right {
-    width: 45%;
+    width: 47%;
+    align: top;
 }
 
 .section-right {
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .input-group {
@@ -93,5 +98,13 @@
 
 .chart-container {
     height: calc(100% - 40px);
-    /* Adjust the height to fit the chart container */
+}
+
+.logo {
+    height: 15vh;
+    /* Set the height to 15% of the viewport height */
+    width: auto;
+    /* Maintain aspect ratio */
+    max-width: 100%;
+    /* Ensure it does not exceed the container's width */
 }

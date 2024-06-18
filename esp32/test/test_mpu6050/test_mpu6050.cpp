@@ -5,6 +5,8 @@
 #include <unity.h>
 
 MPU6050 mpu;
+// Declare variables for RunID and BotID
+int BotID, RunID;
 
 void setUp(void)
 {

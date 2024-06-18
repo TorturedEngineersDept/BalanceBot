@@ -4,6 +4,7 @@
 #include <freertos/semphr.h>
 #include <TimerInterrupt_Generic.h>
 #include "MPU6050.h"
+#include "KeyDirection.h"
 #include "Step.h"
 #include "IWifi.h"
 
@@ -20,22 +21,14 @@
 // Diagnostic pin for oscilloscope
 #define TOGGLE_PIN 32 // Arduino A4
 
-enum KeyDirection
-{
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT,
-    STOP = -1
-};
-
 struct PidParams
 {
-    PidParams(float ki_i, float kp_i, float kd_i, float tilt_setpoint,
-              float ki_o, float kp_o, float kd_o, float velocity_setpoint, float comp_coeff)
+    PidParams(float kp_i, float ki_i, float kd_i, float tilt_setpoint,
+              float kp_o, float ki_o, float kd_o, float velocity_setpoint,
+              float rotation_setpoint)
         : kp_i(kp_i), ki_i(ki_i), kd_i(kd_i), tilt_setpoint(tilt_setpoint),
           kp_o(kp_o), ki_o(ki_o), kd_o(kd_o), velocity_setpoint(velocity_setpoint),
-          comp_coeff(comp_coeff) {}
+          rotation_setpoint(rotation_setpoint) {}
 
     float kp_i;
     float ki_i;
@@ -45,7 +38,7 @@ struct PidParams
     float ki_o;
     float kd_o;
     float velocity_setpoint;
-    float comp_coeff;
+    float rotation_setpoint;
 };
 
 struct PidDirection
@@ -89,9 +82,34 @@ public:
 
     static PidDirection getDirection();
 
+    // Public members
+    static SemaphoreHandle_t controlMutex;
+
 private:
     static bool timerHandler(void *args);
 
+    /**
+     * Controls tilt.
+     */
+    static void innerLoop();
+
+    /**
+     * Controls velocity.
+     */
+    static void outerLoop();
+
+    /**
+     * Controls rotation.
+     */
+    static void rotationLoop();
+
+    /**
+     * Calibrates the MPU6050.
+     * Outputs values into accXoffset etc.
+     */
+    static void calibrate();
+
+    // Class members
     static IWifi *wifi;
     static MPU6050 mpu;
     static ESP32Timer ITimer;
@@ -103,7 +121,22 @@ private:
     static SemaphoreHandle_t directionMutex;
 
     // Class constants
-    static constexpr double LOOP_INTERVAL = 5;
     static constexpr int STEPPER_INTERVAL_US = 10;
     static constexpr float MOTOR_ACCEL_RAD = 30.0;
+    static constexpr double LOOP0_INTERVAL = 20;  // control
+    static constexpr double LOOP1_INTERVAL = 10;  // inner
+    static constexpr double LOOP2_INTERVAL = 200; // outer
+    static constexpr double LOOP3_INTERVAL = 20;  // rotation
+
+    // Class variables
+    static double accXoffset;
+    static double accYoffset;
+    static double accZoffset;
+    static double gyroXoffset;
+    static double gyroYoffset;
+    static double angle_setpoint; // inner loop setpoint
+    static double filtered_value;
+    static double rotation_correction;
+    static double speed_setpoint;
+    static double rotation_setpoint;
 };

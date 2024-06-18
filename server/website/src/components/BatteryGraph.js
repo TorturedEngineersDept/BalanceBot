@@ -1,34 +1,37 @@
-// src/components/BatteryGraph.js
-import React, { useEffect, useState, useContext } from 'react';
-import { GlobalContext } from '../context/GlobalState';
-import { fetchData } from '../utils/fetchBatteryData';
-import { initializeMQTT } from '../utils/mqttServiceControl';
+import React, { useEffect, useContext } from 'react';
+import CanvasJSReact from '@canvasjs/react-charts';
+import './graph.css';
 
-const BatteryGraph = () => {
-    const { runId } = useContext(GlobalContext);
-    const [batteryData, setBatteryData] = useState([]);
+const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
+const BatteryGraph = ({ batteryData, setBatteryData }) => {
     useEffect(() => {
-        if (runId) {
-            fetchData(runId).then(initialData => {
-                setBatteryData(initialData);
-            }).catch(error => {
-                console.error('Error fetching initial data:', error);
-            });
+        console.log("Battery data updated:", batteryData);
+    }, [batteryData]);
 
-            initializeMQTT(setBatteryData);
-        }
-    }, [runId]);
+    const batteryOptions = {
+        title: {
+            text: "Battery Usage"
+        },
+        axisX: {
+            title: "Time",
+            valueFormatString: "HH:mm:ss"
+        },
+        axisY: {
+            title: "Battery",
+            maximum: 100,
+            suffix: "%"
+        },
+        data: [{
+            type: "line",
+            xValueType: "dateTime",
+            dataPoints: batteryData.slice(-20)
+        }]
+    };
 
     return (
-        <div>
-            {/* Render your graph here using the batteryData state */}
-            <h1>Battery Graph</h1>
-            {batteryData.map((dataPoint, index) => (
-                <div key={index}>
-                    Time: {dataPoint.x}, Battery: {dataPoint.y}
-                </div>
-            ))}
+        <div className="graph-container">
+            <CanvasJSChart options={batteryOptions} containerProps={{ height: "100%", width: "100%" }} />
         </div>
     );
 };

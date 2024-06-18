@@ -2,6 +2,9 @@
 
 #include <PubSubClient.h>
 #include <WiFiClient.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+#include <Arduino.h>
 #include "MqttMessage.h"
 
 extern int RunID;
@@ -9,7 +12,7 @@ extern int BotID;
 class MqttSetup
 {
 public:
-    MqttSetup(const char *server, int port);
+    MqttSetup(const char *server, int port, NTPClient &timeClient);
     void connect(unsigned long timeout = ULONG_MAX);
 
     /**
@@ -28,13 +31,21 @@ public:
     void pingServer() const;
     const char *getServer() const;
 
+    unsigned long getEpochTime();
+
 private:
     const char *server;
     int port;
     WiFiClient espClient;
     PubSubClient client;
 
-    int lastMsgSent = 0;
-    int delayMsgSent = 2000;
-    int batteryLevel = 100;
+    NTPClient &timeClient;
+
+    int lastBatteryMessageSent = 0;
+    int delayBatterySent = 2000;
+
+    int lastPowerMessageSent = 0;
+    int delayPowerSent = 1000;
+
+    char *client_id;
 };
