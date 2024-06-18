@@ -23,6 +23,7 @@ def download_from_s3(bucket_name, object_name, output_path):
 bucket_name = 'ted-balance-bot'
 png_object_name = 'output/map.png'
 json_object_name = 'output/map.json'
+incident_object_name = 'output/incident.jpg'
 output_dir = '.'
 
 # Ensure output directory exists
@@ -32,9 +33,13 @@ if not os.path.exists(output_dir):
 # Local paths where files will be saved
 png_output_path = os.path.join(output_dir, 'map.png')
 json_output_path = os.path.join(output_dir, 'map.json')
+incident_output_path = os.path.join(output_dir, 'incident.jpg')
 
-# Download the .pgm file
+# Download the .png file
 download_from_s3(bucket_name, png_object_name, png_output_path)
 
-# Download the .yaml file
+# Download the .json file
 download_from_s3(bucket_name, json_object_name, json_output_path)
+
+# Download the .jpg file
+download_from_s3(bucket_name, incident_object_name, incident_output_path)
