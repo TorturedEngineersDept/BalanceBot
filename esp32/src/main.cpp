@@ -1,4 +1,10 @@
-// ESP32 Guide: https://RandomNerdTutorials.com/esp32-mpu-6050-accelerometer-gyroscope-arduino/
+/*
+ESP32 Guide: https://RandomNerdTutorials.com/esp32-mpu-6050-accelerometer-gyroscope-arduino/
+
+The stack size of xTaskCreatePinnedToCore() is in bytes not words (differs from
+vanilla FreeRTOS). Source (also read the documentation):
+https://www.ojisanseiuchi.com/2024/02/20/freertos-stack-size-on-esp32-words-or-bytes/
+*/
 
 #include <Arduino.h>
 #include "BatteryModule.h"
@@ -17,6 +23,7 @@ unsigned long timeout = ULONG_MAX;
 // Declare variables for RunID and BotID
 int BotID, RunID;
 
+void wifiLoop(void *pvParameters);
 void pidLoop(void *pvParameters);
 void serialLoop(void *pvParameters);
 void batteryLoop(void *pvParameters);
@@ -29,51 +36,79 @@ void setup()
     wifi.connect(timeout);
     BatteryModule::setup();
 
+    // Setup the wifiLoop
+    // Important: wifiLoop must run on core 0 due to ESP32 restrictions
+    xTaskCreatePinnedToCore(
+        wifiLoop,   /* Task function. */
+        "wifiLoop", /* name of task. */
+        10000,      /* Stack size of task = 10 KB */
+        NULL,       /* parameter of the task */
+        1,          /* priority of the task */
+        NULL,       /* Task handle to keep track of created task */
+        0);         /* pin task to core 0 */
+
+    delay(100);
+
     if (PidController::setup(wifi, timeout))
     {
         // Setup the pidLoop
         xTaskCreatePinnedToCore(
             pidLoop,   /* Task function. */
             "pidLoop", /* name of task. */
-            15000,     /* Stack size of task = 60 KB */
+            30000,     /* Stack size of task = 30 KB */
             NULL,      /* parameter of the task */
-            1,         /* priority of the task */
+            2,         /* priority of the task */
             NULL,      /* Task handle to keep track of created task */
             1);        /* pin task to core 1 */
+    }
+    else
+    {
+        wifi.println("Failed to setup PidController");
     }
 
     // Setup the serialLoop
     xTaskCreatePinnedToCore(
-        serialLoop,   /* Task function. */
-        "serialLoop", /* name of task. */
-        10000,        /* Stack size of task = 40 KB */
-        NULL,         /* parameter of the task */
-        1,            /* priority of the task */
-        NULL,         /* Task handle to keep track of created task */
-        1);           /* pin task to core 1 */
+        serialLoop,      /* Task function. */
+        "serialLoop",    /* name of task. */
+        10000,           /* Stack size of task = 10 KB */
+        NULL,            /* parameter of the task */
+        1,               /* priority of the task */
+        NULL,            /* Task handle to keep track of created task */
+        tskNO_AFFINITY); /* core 0/1 */
 
     // Setup the batteryLoop
-    // xTaskCreatePinnedToCore(
-    //     batteryLoop,   /* Task function. */
-    //     "batteryLoop", /* name of task. */
-    //     15000,          /* Stack size of task = 60 KB */
-    //     NULL,          /* parameter of the task */
-    //     1,             /* priority of the task */
-    //     NULL,          /* Task handle to keep track of created task */
-    //     1);            /* pin task to core 1 */
+    xTaskCreatePinnedToCore(
+        batteryLoop,     /* Task function. */
+        "batteryLoop",   /* name of task. */
+        15000,           /* Stack size of task = 15 KB */
+        NULL,            /* parameter of the task */
+        1,               /* priority of the task */
+        NULL,            /* Task handle to keep track of created task */
+        tskNO_AFFINITY); /* core 0/1 */
 }
 
+// loop() is the only task not guaranteed to run in RTOS
 void loop()
 {
-    wifi.loop();
+}
+
+void wifiLoop(void *pvParameters)
+{
+    while (true)
+    {
+        wifi.loop();
+    }
 }
 
 void pidLoop(void *pvParameters)
 {
     while (true)
     {
-        // PidController::loop();
-        PidController::stabilizedLoop();
+        PidController::loop();
+        // PidController::stabilizedLoop();
+
+        // Delay to allow other tasks to run
+        yield();
     }
 }
 

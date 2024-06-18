@@ -220,6 +220,8 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
         }
         else if (strcmp(topic, "user/pid") == 0)
         {
+            Serial.println("Setting PID coefficients");
+
             // Get previous coefficients
             PidParams params = PidController::getParams();
 
@@ -227,7 +229,6 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
             float kp_i = doc["kp_i"] | params.kp_i;
             float ki_i = doc["ki_i"] | params.ki_i;
             float kd_i = doc["kd_i"] | params.kd_i;
-            float setpoint_i = doc["setpoint_i"] | params.tilt_setpoint;
             float kp_o = doc["kp_o"] | params.kp_o;
             float ki_o = doc["ki_o"] | params.ki_o;
             float kd_o = doc["kd_o"] | params.kd_o;
@@ -245,7 +246,35 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
                            ", rotation_setpoint: " + String(rotation_setpoint));
 
             // Use the callback given in the static class
-            PidController::setParams(PidParams(kp_i, ki_i, kd_i, tilt_setpoint, kp_o, ki_o, kd_o, velocity_setpoint, rotation_setpoint));
+            PidController::setParams(PidParams(
+                kp_i, ki_i, kd_i, tilt_setpoint,
+                kp_o, ki_o, kd_o, velocity_setpoint, rotation_setpoint));
+        }
+        else if (strcmp(topic, "esp32/cli") == 0)
+        {
+            String message = doc["message"];
+            if (message == "/auto" || message == "/a")
+            {
+                // Release the mutex so the Raspberry Pi can take control
+                if (xSemaphoreTake(
+                        PidController::controlMutex,
+                        (TickType_t)0) == pdTRUE)
+                {
+                    xSemaphoreGive(PidController::controlMutex);
+                }
+            }
+            else if (message == "/manual" || message == "/m")
+            {
+                // Take the mutex so the Wifi can take control
+                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
+            }
+            else if (message == "/reset" || message == "/r")
+            {
+                // Raise an exception, so the ESP32 resets
+                throw std::runtime_error("Resetting ESP32");
+            }
+
+            Serial.println("Received command from CLI: " + message);
         }
         else if (strcmp(topic, "esp32/cli") == 0)
         {

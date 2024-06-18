@@ -1,3 +1,4 @@
+/* Navbar.css */
 .navbar {
     background-color: #fff;
     border-bottom: 1px solid #ddd;
@@ -35,6 +36,17 @@
 
 .nav-links a:hover {
     color: black;
+}
+
+.logo-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.navbar-logo {
+    height: 40px;
+    /* Adjust the height as needed */
 }
 
 .login-container {

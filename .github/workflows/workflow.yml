@@ -2,14 +2,14 @@ name: Integration test
 on:
   push:
     branches:
-      - "*"
+      - "main"
   pull_request:
 
 jobs:
   test:
     runs-on: [self-hosted, linux]
     steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v4
 
         - name: Create Passwords.h
           run: |
@@ -17,6 +17,7 @@ jobs:
             echo "#define g_password \"${{ secrets.WIFI_PASSWORD }}\"" >> esp32/lib/WifiSetup/Passwords.h
 
         - name: Run PlatformIO tests 
+          shell: bash
           run: |
             cd esp32
-            pio test
+            ~/.platformio/penv/bin/pio test
