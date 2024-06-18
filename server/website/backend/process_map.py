@@ -8,12 +8,14 @@ def ensure_dir_exists(directory):
     directory.mkdir(parents=True, exist_ok=True)
 
 def read_pgm(filename):
-    with filename.open('r') as file:
-        assert file.readline() == 'P2\n'
-        width, height = [int(i) for i in file.readline().split()]
-        max_val = int(file.readline())
-        data = [int(i) for line in file for i in line.split()]
-        return np.array(data).reshape((height, width))
+    with filename.open('rb') as file:  # Open the file in binary mode
+        header = file.readline().decode('ascii').strip()
+        assert header == 'P5', 'Not a binary PGM file'
+        width, height = [int(i) for i in file.readline().decode('ascii').split()]
+        max_val = int(file.readline().decode('ascii'))
+        # Read the rest of the data
+        data = np.fromfile(file, dtype=np.uint8).reshape((height, width))
+        return data
 
 def yaml_to_json(yaml_file, json_file):
     # Load the YAML file
@@ -43,12 +45,12 @@ def yaml_to_json(yaml_file, json_file):
         json.dump(map_info, file, indent=4)
 
 def pgm_to_png(pgm_file, png_file):
-        # Read the PGM file
-        pgm_data = read_pgm(pgm_file)
+    # Read the PGM file
+    pgm_data = read_pgm(pgm_file)
 
-        # Convert the PGM data to an image and save as PNG
-        pgm_image = Image.fromarray(np.uint8(pgm_data))
-        pgm_image.save(png_file)
+    # Convert the PGM data to an image and save as PNG
+    pgm_image = Image.fromarray(np.uint8(pgm_data))
+    pgm_image.save(png_file)
 
 def process_map():
     # Define the input and output directories
