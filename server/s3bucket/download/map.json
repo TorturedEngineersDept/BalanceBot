@@ -1,0 +1,10 @@
+{
+    "image": "map.png",
+    "resolution": 0.05,
+    "origin": [
+        -2.09,
+        -2.35,
+        0
+    ],
+    "waypoints": []
+}
