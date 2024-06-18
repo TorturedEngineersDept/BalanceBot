@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import './Navbar.css';
 import { handleLoginSubmit as login } from '../utils/loginUtils';
 import { GlobalContext } from '../context/GlobalState';
+import logo from '../images/logo.png'; // Import the logo
 
 const Navbar = () => {
     const [botId, setBotId] = useState('');
@@ -36,6 +37,9 @@ const Navbar = () => {
                     </NavLink>
                 </li>
             </ul>
+            <div className="logo-container">
+                <img src={logo} alt="logo" className="navbar-logo" />
+            </div>
             <div className="login-container">
                 <form onSubmit={handleLogin} className="login-form">
                     <input

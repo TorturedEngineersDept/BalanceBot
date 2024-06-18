@@ -1,5 +1,6 @@
 #include "MqttSetup.h"
 #include "BatteryModule.h"
+#include "PidController.h"
 
 float x = 0;
 float y = 0;
@@ -46,6 +47,9 @@ void MqttSetup::loop()
     // Ensure the client remains connected
     if (!isConnected())
     {
+        // Safety mechanism
+        PidController::setDirection(PidDirection(0, KeyDirection::STOP));
+
         Serial.println("MQTT not connected, attempting to reconnect...");
         connect();
     }

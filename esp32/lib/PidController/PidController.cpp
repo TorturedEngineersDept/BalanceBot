@@ -18,6 +18,8 @@ double PidController::gyroYoffset = 0;
 double PidController::angle_setpoint = 0;
 double PidController::filtered_value = 0;
 double PidController::rotation_correction = 0;
+double PidController::speed_setpoint = 0;
+double PidController::rotation_setpoint = 0;
 
 // Initialise PID parameters using known values
 PidParams PidController::params(0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00);
@@ -48,14 +50,7 @@ bool PidController::setup(IWifi &wifi, unsigned long timeout)
         }
     }
 
-    if (start >= timeout)
-    {
-        return false;
-    }
-
     calibrate();
-
-    wifi.println("Initialised Interrupt for Stepper");
 
     // Set motor acceleration values
     step1.setAccelerationRad(MOTOR_ACCEL_RAD);
@@ -65,27 +60,77 @@ bool PidController::setup(IWifi &wifi, unsigned long timeout)
     pinMode(STEPPER_EN, OUTPUT);
     digitalWrite(STEPPER_EN, false);
 
+    Serial.println("Finished setting up PidController");
+
     return true;
 }
 
 void PidController::loop()
 {
     // Time of the next control update
+    static unsigned long loop0Timer = 0; // control
     static unsigned long loop1Timer = 0; // inner
     static unsigned long loop2Timer = 0; // outer
     static unsigned long loop3Timer = 0; // rotation loop
+
+    const float SPEED_SETPOINT = 1.5;
+    const float ROTATION_SPEED_SETPOINT = 0.5;
+
+    // Control the robot
+    if (millis() > loop0Timer)
+    {
+        PidDirection currentDirection = PidController::getDirection();
+        KeyDirection key_dir = currentDirection.key_dir;
+
+        switch (key_dir)
+        {
+        case KeyDirection::RIGHT:
+            speed_setpoint = 0;
+            rotation_setpoint = -ROTATION_SPEED_SETPOINT;
+            // Serial.println("RIGHT");
+            break;
+        case KeyDirection::FORWARD:
+            speed_setpoint = SPEED_SETPOINT;
+            rotation_setpoint = 0;
+            // Serial.println("FORWARD");
+            break;
+        case KeyDirection::LEFT:
+            speed_setpoint = 0;
+            rotation_setpoint = ROTATION_SPEED_SETPOINT;
+            // Serial.println("LEFT");
+            break;
+        case KeyDirection::BACKWARD:
+            speed_setpoint = -SPEED_SETPOINT;
+            rotation_setpoint = 0;
+            // Serial.println("BACKWARDS");
+            break;
+        case KeyDirection::STOP:
+        default:
+            speed_setpoint = 0;
+            rotation_setpoint = 0;
+            // Serial.println("STOP");
+        }
+
+        loop0Timer += LOOP0_INTERVAL;
+    }
 
     // Run the control loop every LOOP_INTERVAL ms
     if (millis() > loop1Timer)
     {
         innerLoop();
-        loop1Timer += LOOP_INTERVAL;
+        loop1Timer += LOOP1_INTERVAL;
     }
 
     if (millis() > loop2Timer)
     {
         outerLoop();
         loop2Timer += LOOP2_INTERVAL;
+    }
+
+    if (millis() > loop3Timer)
+    {
+        rotationLoop();
+        loop3Timer += LOOP3_INTERVAL;
     }
 }
 
@@ -98,13 +143,14 @@ void PidController::stabilizedLoop()
     PidDirection currentDirection = PidController::getDirection();
     KeyDirection key_dir = currentDirection.key_dir;
 
-    const float SPEED = 10;
+    const float SPEED = 10.0;
+    const float ROTATION_SPEED = 5.0;
 
     switch (key_dir)
     {
     case KeyDirection::RIGHT:
-        step1.setTargetSpeedRad(SPEED);
-        step2.setTargetSpeedRad(SPEED);
+        step1.setTargetSpeedRad(ROTATION_SPEED);
+        step2.setTargetSpeedRad(ROTATION_SPEED);
         // Serial.println("RIGHT");
         break;
     case KeyDirection::FORWARD:
@@ -113,8 +159,8 @@ void PidController::stabilizedLoop()
         // Serial.println("FORWARD");
         break;
     case KeyDirection::LEFT:
-        step1.setTargetSpeedRad(-SPEED);
-        step2.setTargetSpeedRad(-SPEED);
+        step1.setTargetSpeedRad(-ROTATION_SPEED);
+        step2.setTargetSpeedRad(-ROTATION_SPEED);
         // Serial.println("LEFT");
         break;
     case KeyDirection::BACKWARD:
@@ -184,6 +230,7 @@ void PidController::innerLoop()
     // betweeen subsequent calls to this function
     static double previous_angle_error = 0;
     static double robot_angle = 0.0;
+    static double integral_angle = 0;
 
     const double COMP_FILTER = 0.98;  // complementary filter coefficient
     const double LOOP1_INTERVAL = 10; // inner loop
@@ -195,7 +242,6 @@ void PidController::innerLoop()
     float kp_i = params.kp_i;
     float ki_i = params.ki_i;
     float kd_i = params.kd_i;
-    float tilt_setpoint = params.tilt_setpoint;
     xSemaphoreGive(paramsMutex);
 
     // Fetch data from MPU6050
@@ -212,13 +258,14 @@ void PidController::innerLoop()
 
     double gyro_angle = g.gyro.y - gyroYoffset;
 
-    robot_angle = (1 - COMP_FILTER) * (tiltx) + COMP_FILTER;
-    robot_angle *= ((gyro_angle * (LOOP1_INTERVAL / 1000)) + robot_angle);
+    robot_angle = (1 - COMP_FILTER) * (tiltx) +
+                  COMP_FILTER *
+                      ((gyro_angle * (LOOP1_INTERVAL / 1000)) + robot_angle);
 
     // PIDeez Nuts
     double angle_error = angle_setpoint - robot_angle * 57.32;
     double Pout_a = kp_i * angle_error;
-    double integral_angle = integral_angle + ((angle_error * LOOP1_INTERVAL) / 1000);
+    integral_angle += ((angle_error * LOOP1_INTERVAL) / 1000);
     double Iout_a = ki_i * integral_angle;
     double Dout_a = kd_i * ((angle_error - previous_angle_error) / LOOP1_INTERVAL) * 1000;
     double motor_out = Pout_a + Iout_a + Dout_a;
@@ -246,14 +293,14 @@ void PidController::innerLoop()
 
 void PidController::outerLoop()
 {
-    static double avgspeed = 0, avg_temp = 0, speed_error = 0, previous_speed_error = 0, integral_speed = 0, derivative_speed = 0, Pout_s = 0, Iout_s = 0, Dout_s = 0, ramp_rate = 0;
+    static double speed_error = 0;
+    static double previous_speed_error = 0;
+    static double integral_speed = 0;
+    static double derivative_speed = 0;
     static double current_speed_setpoint = 0;
-    static double speed_setpoint = 0; // outer loop setpoint
-    static int speed_size = 0;
 
-    double max_ramp_rate = 0.5;
-    double time_constant = 2000;
-    double beta = 1 - exp(-LOOP2_INTERVAL / time_constant);
+    const double TIME_CONSTANT = 2000;
+    const double BETA = 1 - exp(-LOOP2_INTERVAL / TIME_CONSTANT);
 
     // Fetch PID parameters - take mutex and wait forever until it is available
     xSemaphoreTake(paramsMutex, portMAX_DELAY);
@@ -261,14 +308,12 @@ void PidController::outerLoop()
     float ki_o = params.ki_o;
     float kd_o = params.kd_o;
     float balancing_setpoint = params.velocity_setpoint;
+    xSemaphoreGive(paramsMutex);
 
-    current_speed_setpoint += beta * (speed_setpoint - current_speed_setpoint);
+    current_speed_setpoint += BETA * (speed_setpoint - current_speed_setpoint);
 
-    // filtered_value = (step1.getSpeedRad()-step2.getSpeedRad())/2;
     speed_error = -(current_speed_setpoint - filtered_value);
-
-    Pout_s = kp_o * speed_error;
-
+    double Pout_s = kp_o * speed_error;
     integral_speed = integral_speed + speed_error * (LOOP2_INTERVAL / 1000);
 
     if (ki_o == 0)
@@ -276,11 +321,9 @@ void PidController::outerLoop()
         integral_speed = 0;
     }
 
-    Iout_s = ki_o * integral_speed;
-
+    double Iout_s = ki_o * integral_speed;
     derivative_speed = ((speed_error - previous_speed_error) / LOOP2_INTERVAL) * 1000;
-
-    Dout_s = kd_o * derivative_speed;
+    double Dout_s = kd_o * derivative_speed;
 
     angle_setpoint = Pout_s + Iout_s + Dout_s + balancing_setpoint;
 
@@ -313,6 +356,30 @@ void PidController::outerLoop()
 
 void PidController::rotationLoop()
 {
+    static double rotation_angle = 0;
+    static double rotation_target_angle = 0;
+    static double previous_rotation_error;
+
+    const float KP_ROTATION = 3.00;
+    const float KD_ROTATION = 5.00;
+
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
+
+    double rotationX = g.gyro.x - gyroXoffset;
+
+    // rotation_angle should not reset every time this loop is called.
+    rotation_angle = rotationX * (LOOP3_INTERVAL / 1000) + rotation_angle;
+    rotation_target_angle += (rotation_setpoint * 0.4 * LOOP3_INTERVAL) / 1000;
+
+    double rotation_error = -(rotation_target_angle - rotation_angle);
+    double Pout_r = KP_ROTATION * rotation_error;
+    double delta_error = rotation_error - previous_rotation_error;
+    double Dout_r = KD_ROTATION * (delta_error / LOOP3_INTERVAL) * 1000;
+
+    previous_rotation_error = rotation_error;
+
+    rotation_correction = Pout_r + Dout_r;
 }
 
 void PidController::calibrate()
