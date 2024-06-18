@@ -1,5 +1,5 @@
 {
-    "image": "data/map_processed/map.png",
+    "image": "map_processed/map.png",
     "resolution": 0.1,
     "origin": [
         -0.5,
