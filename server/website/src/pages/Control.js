@@ -15,6 +15,7 @@ const Control = () => {
     const [isManualScroll, setIsManualScroll] = useState(false);
     const [mapInfo, setMapInfo] = useState(null);
     const [incidentImage, setIncidentImage] = useState(null);
+    const canvasRef = useRef(null);
 
     // Handler for incoming debug messages
     const handleDebugMessage = (message) => {
@@ -89,42 +90,55 @@ const Control = () => {
     };
 
     // Function to convert map coordinates to pixel positions
-    const mapToPixel = (x, y, mapImage, mapResolution, mapOrigin) => {
+    const mapToPixel = (x, y, mapWidth, mapHeight, mapResolution, mapOrigin) => {
         const pixelX = (x - mapOrigin[0]) / mapResolution;
-        const pixelY = mapImage.height - (y - mapOrigin[1]) / mapResolution; // Invert Y axis
+        const pixelY = mapHeight - (y - mapOrigin[1]) / mapResolution; // Invert Y axis
         return { pixelX, pixelY };
     };
 
-    // Memoized function to add waypoints to the map
-    const addWaypoints = useCallback((mapImage, mapResolution, mapOrigin, waypoints) => {
-        const mapContainer = document.getElementById('map-container');
+    // Function to draw the map on the canvas
+    const drawMap = useCallback((mapImage, mapResolution, mapOrigin, waypoints) => {
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
 
-        waypoints.forEach((waypoint, index) => {
-            const { x, y, image } = waypoint;
-            const { pixelX, pixelY } = mapToPixel(x, y, mapImage, mapResolution, mapOrigin);
+        // Draw the map image on the canvas
+        const img = new Image();
+        img.src = mapImage;
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            context.drawImage(img, 0, 0);
 
-            const waypointElement = document.createElement('div');
-            waypointElement.classList.add('waypoint');
-            waypointElement.style.left = `${pixelX}px`;
-            waypointElement.style.top = `${pixelY}px`;
+            // Draw waypoints on the canvas
+            waypoints.forEach((waypoint) => {
+                const { x, y, image } = waypoint;
+                const { pixelX, pixelY } = mapToPixel(x, y, img.width, img.height, mapResolution, mapOrigin);
 
-            waypointElement.addEventListener('click', () => {
-                setIncidentImage(image);
+                context.beginPath();
+                context.arc(pixelX, pixelY, 5, 0, 2 * Math.PI);
+                context.fillStyle = 'red';
+                context.fill();
+                context.closePath();
+
+                // Add click event listener to waypoints
+                canvas.addEventListener('click', (event) => {
+                    const rect = canvas.getBoundingClientRect();
+                    const clickX = event.clientX - rect.left;
+                    const clickY = event.clientY - rect.top;
+
+                    if (Math.sqrt((clickX - pixelX) ** 2 + (clickY - pixelY) ** 2) < 5) {
+                        setIncidentImage(image);
+                    }
+                });
             });
-
-            mapContainer.appendChild(waypointElement);
-        });
+        };
     }, []);
 
     useEffect(() => {
         if (mapInfo) {
-            const mapImageElement = document.getElementById('map');
-            mapImageElement.src = '/data/map_processed/map.png';
-            mapImageElement.onload = () => {
-                addWaypoints(mapImageElement, mapInfo.resolution, mapInfo.origin, mapInfo.waypoints);
-            };
+            drawMap('/data/map_processed/map.png', mapInfo.resolution, mapInfo.origin, mapInfo.waypoints);
         }
-    }, [mapInfo, addWaypoints]);
+    }, [mapInfo, drawMap]);
 
     return (
         <div className="control-container">
@@ -170,8 +184,7 @@ const Control = () => {
             <div className="control-right">
                 <div className="map">
                     <div id="map-container">
-                        <img id="map" src="" alt="Robot navigation map" />
-                        {/* Waypoints will be added here */}
+                        <canvas ref={canvasRef} id="map-canvas" />
                     </div>
                 </div>
             </div>
