@@ -276,6 +276,22 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
 
             Serial.println("Received command from CLI: " + message);
         }
+        else if (strcmp(topic, "esp32/cli") == 0)
+        {
+            String message = doc["message"];
+            if (message == "/auto")
+            {
+                // Release the mutex so the Raspberry Pi can take control
+                xSemaphoreGive(PidController::controlMutex);
+            }
+            else if (message == "/manual")
+            {
+                // Take the mutex so the Wifi can take control
+                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
+            }
+
+            Serial.println("Received command from CLI: " + message);
+        }
         else
         {
             Serial.println("Unsupported topic");
