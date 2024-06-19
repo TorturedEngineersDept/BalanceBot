@@ -25,11 +25,9 @@
     padding-left: 10px;
 }
 
-.camera-feed,
-.map {
+.camera-feed {
     border: 1px solid black;
     padding: 0;
-    /* Remove padding */
     margin-bottom: 10px;
     flex: 1;
     min-height: 0;
@@ -63,7 +61,6 @@
     border-radius: 5px;
     flex: 1;
     overflow-y: auto;
-    /* Ensure the terminal is scrollable */
     display: flex;
     flex-direction: column;
 }
@@ -121,39 +118,6 @@
 .cli button:hover {
     background-color: #00ff00;
     color: #1e1e1e;
-}
-
-/* Map Styles */
-#map-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-
-#map {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.waypoint {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: red;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-#incident-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Ensure the image covers the entire area */
 }
 
 #camera-image {
