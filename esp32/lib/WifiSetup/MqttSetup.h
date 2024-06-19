@@ -14,6 +14,7 @@ class MqttSetup
 public:
     MqttSetup(const char *server, int port, NTPClient &timeClient);
     void connect(unsigned long timeout = ULONG_MAX);
+    void setClientID();
 
     /**
      * Loop function that takes care of the sending of messages

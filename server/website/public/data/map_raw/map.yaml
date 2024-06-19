@@ -1,0 +1,15 @@
+image: map.pgm
+mode: trinary
+resolution: 0.05
+origin: [-2.09, -2.35, 0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.25
+
+waypoints:
+  - x: -0.3
+    y: -0.3
+    image: data/incidents/incident1.jpg
+  - x: 0.3
+    y: 0.3
+    image: data/incidents/incident2.jpg

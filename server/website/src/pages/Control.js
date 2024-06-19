@@ -5,6 +5,7 @@ import WASDControl from '../components/WASDControl';
 import { initializeMQTT, sendCLICommand } from '../utils/mqttServiceControl';
 import { GlobalContext } from '../context/GlobalState';
 import { fetchData } from '../utils/fetchTerminalCommands';
+import Map from '../components/Map';
 
 const Control = () => {
     const { runId, batteryPercentage, setBatteryPercentage } = useContext(GlobalContext);
@@ -13,8 +14,8 @@ const Control = () => {
     const terminalRef = useRef(null);
     const terminalEndRef = useRef(null);
     const [isManualScroll, setIsManualScroll] = useState(false);
+    const [selectedIncident, setSelectedIncident] = useState(null);
 
-    // Handler for incoming debug messages
     const handleDebugMessage = (message) => {
         setTerminalMessages(prevMessages => {
             const messages = [...prevMessages, { ...message, type: 'received' }];
@@ -22,7 +23,6 @@ const Control = () => {
         });
     };
 
-    // Fetch initial data and initialize MQTT on component mount or runId change
     useEffect(() => {
         if (runId) {
             fetchData(runId)
@@ -37,14 +37,12 @@ const Control = () => {
         }
     }, [runId, setBatteryPercentage]);
 
-    // Scroll terminal to the latest message if not in manual scroll mode
     useEffect(() => {
         if (!isManualScroll && terminalEndRef.current) {
             terminalEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [terminalMessages, isManualScroll]);
 
-    // Handle scroll to determine if the user has manually scrolled
     const handleScroll = () => {
         if (terminalRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = terminalRef.current;
@@ -53,12 +51,10 @@ const Control = () => {
         }
     };
 
-    // Handle touch move to set manual scroll mode
     const handleTouchMove = () => {
         setIsManualScroll(true);
     };
 
-    // Send CLI command and add the message to the terminal
     const handleSendCLICommand = () => {
         if (cliInput.trim() !== '') {
             const message = { timestamp: new Date().toLocaleTimeString(), text: cliInput, type: 'sent' };
@@ -68,11 +64,10 @@ const Control = () => {
             });
             sendCLICommand(cliInput, runId);
             setCliInput('');
-            setIsManualScroll(false); // Reset manual scroll state when sending a command
+            setIsManualScroll(false);
         }
     };
 
-    // Handle Enter key press to send CLI command
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -85,8 +80,7 @@ const Control = () => {
             <div className="control-left">
                 <div className="camera-feed">
                     <TopBar batteryPercentage={batteryPercentage} />
-                    <h2>Camera Feed</h2>
-                    {/* Empty frame for Camera Feed */}
+                    {selectedIncident ? <img src={selectedIncident} alt="Selected Incident" /> : <p>Select an incident to view.</p>}
                 </div>
                 <div className="terminal-container">
                     <h2 className="terminal-title">TERMINAL</h2>
@@ -119,15 +113,11 @@ const Control = () => {
                 </div>
             </div>
             <div className="control-right">
-                <div className="map">
-                    <h2>Map</h2>
-                    {/* Empty frame for Map */}
-                </div>
+                <Map selectedIncidentProp={setSelectedIncident} />
             </div>
             <WASDControl />
         </div>
     );
 };
-
 
 export default Control;
