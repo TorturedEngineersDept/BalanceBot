@@ -9,6 +9,10 @@ MqttSetup::MqttSetup(const char *server, int port, NTPClient &timeClient)
     : server(server), port(port), client(espClient), timeClient(timeClient)
 {
     client.setServer(server, port);
+}
+
+void MqttSetup::setClientID()
+{
     String tmp_id = "Bot-" + String(BotID);
     client_id = new char[tmp_id.length() + 1];
     strcpy(client_id, tmp_id.c_str());
@@ -19,6 +23,8 @@ void MqttSetup::connect(unsigned long timeout)
     unsigned long start = 0;
     while (!client.connected() && start < timeout)
     {
+        Serial.print("CLIENT ID:");
+        Serial.println(client_id);
         Serial.print("Attempting MQTT connection...");
         if (client.connect(client_id))
         {

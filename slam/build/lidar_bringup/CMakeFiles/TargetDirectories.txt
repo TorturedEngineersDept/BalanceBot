@@ -1,9 +1,0 @@
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/uninstall.dir
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/lidar_bringup_uninstall.dir
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/test.dir
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/edit_cache.dir
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/rebuild_cache.dir
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/list_install_components.dir
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/install.dir
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/install/local.dir
-/home/kev/ldlidar_ros2_ws/build/lidar_bringup/CMakeFiles/install/strip.dir

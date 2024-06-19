@@ -1,6 +1,0 @@
-Invoking command in '/home/kev/ldlidar_ros2_ws/build/lidar_bringup': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/kev/ldlidar_ros2_ws/src/lidar_bringup -DCMAKE_INSTALL_PREFIX=/home/kev/ldlidar_ros2_ws/install/lidar_bringup
-Invoked command in '/home/kev/ldlidar_ros2_ws/build/lidar_bringup' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/kev/ldlidar_ros2_ws/src/lidar_bringup -DCMAKE_INSTALL_PREFIX=/home/kev/ldlidar_ros2_ws/install/lidar_bringup
-Invoking command in '/home/kev/ldlidar_ros2_ws/build/lidar_bringup': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/lidar_bringup -- -j8 -l8
-Invoked command in '/home/kev/ldlidar_ros2_ws/build/lidar_bringup' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/lidar_bringup -- -j8 -l8
-Invoking command in '/home/kev/ldlidar_ros2_ws/build/lidar_bringup': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/kev/ldlidar_ros2_ws/build/lidar_bringup
-Invoked command in '/home/kev/ldlidar_ros2_ws/build/lidar_bringup' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/kev/ldlidar_ros2_ws/build/lidar_bringup

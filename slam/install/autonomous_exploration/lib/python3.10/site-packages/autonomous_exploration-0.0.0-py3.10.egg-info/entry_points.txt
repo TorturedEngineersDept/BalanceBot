@@ -1,3 +1,0 @@
-[console_scripts]
-control = autonomous_exploration.control:main
-

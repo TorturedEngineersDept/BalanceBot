@@ -1,6 +1,0 @@
-[0.173s] Invoking command in '/home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry -- -j8 -l8
-[0.182s] [0mCMake Error: The current CMakeCache.txt directory /home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry/CMakeCache.txt is different than the directory /home/kevin/ldlidar_ros2_ws/build/rf2o_laser_odometry where CMakeCache.txt was created. This may result in binaries being created in the wrong place. If you are not sure, reedit the CMakeCache.txt[0m
-[0.192s] [0mCMake Error: The source directory "/home/kevin/ldlidar_ros2_ws/src/rf2o_laser_odometry" does not exist.
-[0.192s] Specify --help for usage, or press the help button on the CMake GUI.[0m
-[0.193s] gmake: *** [Makefile:311: cmake_check_build_system] Error 1
-[0.196s] Invoked command in '/home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry' returned '2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/kev/ldlidar_ros2_ws/build/rf2o_laser_odometry -- -j8 -l8

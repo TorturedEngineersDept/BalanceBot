@@ -1,5 +1,5 @@
 {
-    "image": "map_processed/map.png",
+    "image": "map.png",
     "resolution": 0.05,
     "origin": [
         -2.09,
@@ -10,7 +10,7 @@
         {
             "x": -0.3,
             "y": -0.3,
-            "image": "data/incidents/incident1.jpg"
+            "image": "data/incidents/incident.jpg"
         },
         {
             "x": 3,
