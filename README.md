@@ -4,21 +4,28 @@ Where all code should live. There may be some changes for CI to work properly bu
 I'll get those sorted out later. Docs can live in each individual folder as a 
 README.
 
-## To-do
+## Flashing the ESP32
 
-- [ ] Motors must spin.
-- [ ] Total latency between the control and the motor must not exceed 100ms.
-- [ ] Stabilised bot must be controlled naturally.
+Follow instructions on [the PlatformIO website](https://platformio.org/install/cli)
+to download PlatformIO CLI.
 
-- [ ] A control algorithm for a MatLab simulation.
-- [ ] Translating the controller into a digital implementation.
-- [ ] Accelerometer data <-> Control Algorithm (ESP32).
-- [ ] Tuning the controller for unaccounted values.
+Then run these following commands:
 
-- [ ] Power consumption <-> User.
-- [ ] Remaining battery energy <-> User.
+```bash
+cd esp32
+./run.sh
+```
 
-- [ ] Camera <-> User
+## Starting the website
 
-Specifications need to be defined for the application. Automonous behaviour
-must be shown.
+To run the website on `localhost:3000`, run the following commands:
+
+```bash
+cd server/website
+npm i
+npm start
+```
+
+## Raspberry Pi setup
+
+See the docs in the [`pi`](pi) folder.

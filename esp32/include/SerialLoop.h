@@ -4,14 +4,12 @@
 #include "KeyDirection.h"
 
 /**
- * Takes an 8-bit message and decodes to direction and speed
+ * Takes an 3-bit message and decodes to direction and speed
  * The first 3 bits are the direction
- * The last 5 bits are the speed
  */
-void decode(uint8_t message, KeyDirection &direction, uint8_t &speed)
+void decode(uint8_t message, KeyDirection &direction)
 {
-    direction = static_cast<KeyDirection>(message >> 5);
-    speed = message & 0b00011111;
+    direction = static_cast<KeyDirection>(message & 0b00000111);
 }
 
 #ifndef NATIVE
@@ -27,18 +25,21 @@ namespace SerialLoop
      */
     void loop()
     {
-        Serial.println("SERIAL");
         // Discard all buffer data
         while (Serial.available() > 1)
         {
             Serial.read();
         }
 
+        if (Serial.available() < 1)
+        {
+            return;
+        }
+
         char message = Serial.read();
 
         KeyDirection direction;
-        uint8_t speed;
-        decode(message, direction, speed);
+        decode(message, direction);
 
         switch (direction)
         {
@@ -61,8 +62,13 @@ namespace SerialLoop
 
         if (xSemaphoreTake(PidController::controlMutex, (TickType_t)0) == pdTRUE)
         {
-            PidController::setDirection(PidDirection(speed, direction));
+            PidController::setDirection(PidDirection(100, direction));
+            Serial.println("Speed: 100, key_dir: " + String(direction));
             xSemaphoreGive(PidController::controlMutex);
+        }
+        else
+        {
+            Serial.println("Enter /a to give control back to the Raspberry Pi");
         }
 
         // Yield to other tasks

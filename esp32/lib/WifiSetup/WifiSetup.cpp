@@ -214,9 +214,16 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
                 key_dir = KeyDirection::STOP;
             }
 
-            Serial.println("Speed: " + String(speed) + ", key_dir: " + String(key_dir));
-
-            PidController::setDirection(PidDirection(speed, key_dir));
+            if (xSemaphoreTake(PidController::controlMutex, (TickType_t)0) == pdFALSE)
+            {
+                Serial.println("Speed: " + String(speed) + ", key_dir: " + String(key_dir));
+                PidController::setDirection(PidDirection(speed, key_dir));
+            }
+            else
+            {
+                Serial.println("Enter /m to take control back from the Raspberry Pi");
+                xSemaphoreGive(PidController::controlMutex);
+            }
         }
         else if (strcmp(topic, "user/pid") == 0)
         {
@@ -255,58 +262,43 @@ void WifiSetup::callback(char *topic, byte *payload, unsigned int length)
             String message = doc["message"];
             if (message == "/auto" || message == "/a")
             {
-                // Release the mutex so the Raspberry Pi can take control
+                // Attempt to take the mutex so the Raspberry Pi can take control
                 if (xSemaphoreTake(
                         PidController::controlMutex,
-                        (TickType_t)0) == pdTRUE)
+                        (TickType_t)0) == pdFALSE)
                 {
-                    xSemaphoreGive(PidController::controlMutex);
+                    // Release the mutex so the Raspberry Pi can take control
+                    PidController::setDirection(PidDirection(0, KeyDirection::STOP));
+                    Serial.println("Automatic control activated and mutex released");
                 }
+                else
+                {
+                    Serial.println("Failed to activate automatic control, mutex not taken");
+                }
+                xSemaphoreGive(PidController::controlMutex);
             }
             else if (message == "/manual" || message == "/m")
             {
                 // Take the mutex so the Wifi can take control
-                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
+                if (xSemaphoreTake(PidController::controlMutex, (TickType_t)0) == pdTRUE)
+                {
+                    PidController::setDirection(PidDirection(0, KeyDirection::STOP));
+                    Serial.println("Manual control activated");
+                }
+                else
+                {
+                    Serial.println("Failed to activate manual control, mutex not taken");
+                }
             }
             else if (message == "/reset" || message == "/r")
             {
                 // Raise an exception, so the ESP32 resets
                 throw std::runtime_error("Resetting ESP32");
             }
-
-            Serial.println("Received command from CLI: " + message);
-        }
-        else if (strcmp(topic, "esp32/cli") == 0)
-        {
-            String message = doc["message"];
-            if (message == "/auto")
+            else
             {
-                // Release the mutex so the Raspberry Pi can take control
-                xSemaphoreGive(PidController::controlMutex);
+                Serial.println("Unsupported command: " + message);
             }
-            else if (message == "/manual")
-            {
-                // Take the mutex so the Wifi can take control
-                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
-            }
-
-            Serial.println("Received command from CLI: " + message);
-        }
-        else if (strcmp(topic, "esp32/cli") == 0)
-        {
-            String message = doc["message"];
-            if (message == "/auto")
-            {
-                // Release the mutex so the Raspberry Pi can take control
-                xSemaphoreGive(PidController::controlMutex);
-            }
-            else if (message == "/manual")
-            {
-                // Take the mutex so the Wifi can take control
-                xSemaphoreTake(PidController::controlMutex, (TickType_t)0);
-            }
-
-            Serial.println("Received command from CLI: " + message);
         }
         else
         {
