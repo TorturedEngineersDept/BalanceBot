@@ -22,7 +22,7 @@ def calculate_file_hash(file_path):
 def download_from_s3(bucket_name, object_name, output_path):
     # Initialize S3 client
     s3_client = boto3.client('s3', region_name='eu-west-2')
-    temp_output_path = output_path + '.tmp'
+    temp_output_path = '.tmp'
 
     try:
         # Download the file to a temporary location

@@ -8,9 +8,9 @@
 
 // Define the pins connected to the PCB
 // ADC2 (GPIO 25-27) is used for Wi-Fi, so we can't use it
-#define VB_PIN 36 // Analog pin for battery voltage - D0
-#define I5_PIN 34 // Analog pin for 5V current sense - D4
-#define IM_PIN 33 // Analog pin for motor current sense - D5
+#define VB_PIN 35 // Analog pin for battery voltage - a0
+#define IM_PIN 33 // Analog pin for motor current sense - a1
+#define I5_PIN 32 // Analog pin for 5V current sense - a2
 
 /**
  * BatteryModule is responsible for monitoring the battery level.
@@ -45,7 +45,7 @@ private:
     /// Constants for voltage dividers and calibration
 
     // Example ratio based on 100k and 20k resistors
-    static constexpr float VOLTAGE_DIVIDER_RATIO = 0.090909;
+    static constexpr float VOLTAGE_DIVIDER_RATIO = 0.086508; // 0.08170446; // 0.090909
     // Example value in ohms
     static constexpr float CURRENT_SENSE_RESISTOR = 0.01;
     // Maximum voltage for the ADC (Arduino Uno)

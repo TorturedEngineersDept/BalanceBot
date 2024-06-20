@@ -143,14 +143,14 @@ void PidController::stabilizedLoop()
     PidDirection currentDirection = PidController::getDirection();
     KeyDirection key_dir = currentDirection.key_dir;
 
-    const float SPEED = 1.5;
-    const float ROTATION_SPEED = 0.5;
+    const float SPEED = 2.5;
+    const float ROTATION_SPEED = 0.6;
 
     switch (key_dir)
     {
     case KeyDirection::RIGHT:
         step1.setTargetSpeedRad(ROTATION_SPEED);
-        step2.setTargetSpeedRad(ROTATION_SPEED);
+        step2.setTargetSpeedRad(-0.3 * ROTATION_SPEED);
         // Serial.println("RIGHT");
         break;
     case KeyDirection::FORWARD:
@@ -159,7 +159,7 @@ void PidController::stabilizedLoop()
         // Serial.println("FORWARD");
         break;
     case KeyDirection::LEFT:
-        step1.setTargetSpeedRad(-ROTATION_SPEED);
+        step1.setTargetSpeedRad(0.3 * ROTATION_SPEED);
         step2.setTargetSpeedRad(-ROTATION_SPEED);
         // Serial.println("LEFT");
         break;

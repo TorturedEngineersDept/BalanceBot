@@ -31,48 +31,49 @@ namespace SerialLoop
             Serial.read();
         }
 
-        if (Serial.available() < 1)
+        if (Serial.available() == 1)
         {
-            return;
-        }
+            char message = Serial.read();
 
-        char message = Serial.read();
+            KeyDirection direction;
+            decode(message, direction);
 
-        KeyDirection direction;
-        decode(message, direction);
+            switch (direction)
+            {
+            case KeyDirection::FORWARD:
+                Serial.println("[rpi] FORWARD");
+                break;
+            case KeyDirection::BACKWARD:
+                Serial.println("[rpi] BACKWARD");
+                break;
+            case KeyDirection::LEFT:
+                Serial.println("[rpi] LEFT");
+                break;
+            case KeyDirection::RIGHT:
+                Serial.println("[rpi] RIGHT");
+                break;
+            case KeyDirection::STOP:
+                Serial.println("[rpi] STOP");
+                break;
+            default:
+                delay(20);
+                return;
+            }
 
-        switch (direction)
-        {
-        case KeyDirection::FORWARD:
-            Serial.println("[rpi] FORWARD");
-            break;
-        case KeyDirection::BACKWARD:
-            Serial.println("[rpi] BACKWARD");
-            break;
-        case KeyDirection::LEFT:
-            Serial.println("[rpi] LEFT");
-            break;
-        case KeyDirection::RIGHT:
-            Serial.println("[rpi] RIGHT");
-            break;
-        case KeyDirection::STOP:
-            Serial.println("[rpi] STOP");
-            break;
-        }
-
-        if (xSemaphoreTake(PidController::controlMutex, (TickType_t)0) == pdTRUE)
-        {
-            PidController::setDirection(PidDirection(100, direction));
-            Serial.println("Speed: 100, key_dir: " + String(direction));
-            xSemaphoreGive(PidController::controlMutex);
-        }
-        else
-        {
-            Serial.println("Enter /a to give control back to the Raspberry Pi");
+            if (xSemaphoreTake(PidController::controlMutex, (TickType_t)0) == pdTRUE)
+            {
+                PidController::setDirection(PidDirection(100, direction));
+                Serial.println("Speed: 100, key_dir: " + String(direction));
+                xSemaphoreGive(PidController::controlMutex);
+            }
+            else
+            {
+                Serial.println("Enter /a to give control back to the Raspberry Pi");
+            }
         }
 
         // Yield to other tasks
-        delay(10);
+        delay(20);
     }
 }
 

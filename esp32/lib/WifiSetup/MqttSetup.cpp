@@ -11,7 +11,7 @@ MqttSetup::MqttSetup(const char *server, int port, NTPClient &timeClient)
     client.setServer(server, port);
 }
 
-void MqttSetup::setClientID()
+void MqttSetup::setClientId()
 {
     String tmp_id = "Bot-" + String(BotID);
     client_id = new char[tmp_id.length() + 1];
@@ -26,6 +26,7 @@ void MqttSetup::connect(unsigned long timeout)
         Serial.print("CLIENT ID:");
         Serial.println(client_id);
         Serial.print("Attempting MQTT connection...");
+        Serial.println(client_id);
         if (client.connect(client_id))
         {
             client.setKeepAlive(60); // Set keep-alive to 60 seconds

@@ -73,7 +73,7 @@ void WifiSetup::connect(unsigned long timeout)
     // Get the WiFi signal strength
     getStrength();
 
-    // Resolve RunID and BotID
+    // Resolve the BotId and RunId
     if (!runIdResolved)
     {
         resolveId();
@@ -84,8 +84,8 @@ void WifiSetup::connect(unsigned long timeout)
     pingServer(mqtt.getServer());
 
     // Setup MQTT
-    mqtt.setClientID();
     mqtt.setCallback(callback);
+    mqtt.setClientId();
     mqtt.connect(timeout - start);
 
     // Setup NTP

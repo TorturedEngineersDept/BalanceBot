@@ -327,20 +327,31 @@ void BatteryModule::loop()
 
     /// Calculate actual battery voltage and currents
     float battery_voltage = vb_voltage / VOLTAGE_DIVIDER_RATIO;
-    filtered_battery_voltage = 0.01 * (battery_voltage) + (1 - 0.01) * filtered_battery_voltage;
+    filtered_battery_voltage = 0.03 * (battery_voltage) + (1 - 0.03) * filtered_battery_voltage;
     filtered_battery_voltage = std::round(filtered_battery_voltage * 100.0) / 100.0;
     int battery_percentage = calcBatteryPercentage(filtered_battery_voltage);
     setBatteryPercentage(0.05 * (battery_percentage) + (1 - 0.05) * getBatteryPercentage());
 
     /// Calculate power consumption
     float current_5v = i5_voltage / (CURRENT_SENSE_RESISTOR * USB_RATIO);
-    float current_motor = im_voltage / (CURRENT_SENSE_RESISTOR * IM_RATIO);
+    float current_motor = (im_voltage * 2) / (CURRENT_SENSE_RESISTOR * IM_RATIO);
     // Power consumption in the 5V rail (in W)
     float power_consumption_5v = 5.25 * current_5v;
     // Power consumption in the motor (in W)
     float power_consumption_motor = battery_voltage * current_motor;
     // Total power consumption (in W)
     setPowerConsumption(power_consumption_5v + power_consumption_motor);
+
+    float elapsed_time_hours = (millis() - start_time) / 3600000.0;
+
+    // Calculate remaining battery capacity in Watt Hours
+    float used_capacity_WAh = (total_power_consumption * elapsed_time_hours * 1000);
+
+    Serial.println("Filtered battery voltage: " + String(filtered_battery_voltage));
+    Serial.println("Filtered battery percentage: " + String(filtered_battery_percentage));
+    Serial.println("Used capacity (WAh): " + String(used_capacity_WAh));
+    Serial.println("Power consumption (W): " + String(total_power_consumption));
+    Serial.println();
 
     // Delay before next reading
     delay(1000);

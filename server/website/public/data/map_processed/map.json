@@ -8,8 +8,8 @@
     ],
     "waypoints": [
         {
-            "x": -0.3,
-            "y": -0.3,
+            "x": 0,
+            "y": 0,
             "image": "data/incidents/incident.jpg"
         },
         {
