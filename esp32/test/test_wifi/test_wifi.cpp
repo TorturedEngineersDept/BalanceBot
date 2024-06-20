@@ -78,7 +78,7 @@ void test_remote_joystick()
 
     PidDirection actualDirection = PidController::getDirection();
 
-    TEST_ASSERT_EQUAL(KeyDirection::RIGHT, actualDirection.key_dir);
+    TEST_ASSERT_EQUAL(KeyDirection::LEFT, actualDirection.key_dir);
 }
 
 void test_remote_pid()

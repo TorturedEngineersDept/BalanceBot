@@ -29,3 +29,7 @@ npm start
 ## Raspberry Pi setup
 
 See the docs in the [`pi`](pi) folder.
+
+## TED
+
+https://www.icloud.com/photos/#0a2uti09LlGT3iNQHhM8b2zsg
