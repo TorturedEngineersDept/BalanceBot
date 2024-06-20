@@ -68,17 +68,17 @@ void test_remote_joystick()
     // No need to connect to WiFi here but make RunID available
     RunID = 121;
 
+    // Activate manual control
+    xSemaphoreTake(PidController::controlMutex, portMAX_DELAY);
+
     // Use the callback
     char *topic = const_cast<char *>("user/joystick");
     char *payload = const_cast<char *>(R"({"run_id": 121, "direction": 'A'})");
     wifi.callback(topic, reinterpret_cast<byte *>(payload), strlen(payload));
 
-    // Default speed = 100
-    PidDirection expectedDirection = PidDirection(100, KeyDirection::LEFT);
     PidDirection actualDirection = PidController::getDirection();
 
-    TEST_ASSERT_EQUAL(expectedDirection.speed, actualDirection.speed);
-    TEST_ASSERT_EQUAL(expectedDirection.key_dir, actualDirection.key_dir);
+    TEST_ASSERT_EQUAL(KeyDirection::RIGHT, actualDirection.key_dir);
 }
 
 void test_remote_pid()

@@ -6,16 +6,5 @@
         -2.35,
         0
     ],
-    "waypoints": [
-        {
-            "x": 0,
-            "y": 0,
-            "image": "data/incidents/incident.jpg"
-        },
-        {
-            "x": 3,
-            "y": 0.3,
-            "image": "data/incidents/incident2.jpg"
-        }
-    ]
+    "waypoints": []
 }
